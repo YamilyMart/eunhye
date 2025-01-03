@@ -277,7 +277,7 @@
 				                <th class="table-light text-center">Sum</th>
 				            </tr>
 				        </thead>
-				        <tbody>
+				        <tbody id="a">
 				            <!-- 데이터가 여기 추가됩니다 -->
 				        </tbody>
 				    </table>
@@ -357,6 +357,11 @@
 		    	            if (result && result.length > 0) {
 		    	                const tbody = document.querySelector('#productListContainer tbody');
 		    	                tbody.innerHTML = ''; // 기존 데이터를 초기화
+		    	                
+		    	        	    var a = document.getElementById('a');
+
+		    	                
+		    	                var html = "";
 
 		    	                // 리스트를 순회하며 테이블 행 생성
 		    	                result.forEach((detail) => {
@@ -369,7 +374,11 @@
 		    	                        <td style="text-align: center;">${detail.orderDetail_amount}</td>
 		    	                        <td style="text-align: center;">${detail.orderDetail_sum}</td>
 		    	                    `;
+		    	                    		    	                    
 		    	                    tbody.appendChild(tr);
+		    	                    
+		    	                    html += '<td style="text-align: center;">${detail.orderDetail_id}</td><td style="text-align: center;">${detail.orderDetail_orderid}</td><td style="text-align: center;">${detail.orderDetail_productid}</td><td style="text-align: center;">${detail.orderDetail_price}</td><td style="text-align: center;">${detail.orderDetail_amount}</td><td style="text-align: center;">${detail.orderDetail_sum}</td>';
+		    	                    a.html(htmls);
 		    	                });
 
 		    	                // 모달 표시
