@@ -2,6 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.yamilymart.dao.YamilyDao">
 
-
+    <insert id="admin_stock_product_add" parameterType="ProductDTO">
+        insert into product(product_id, product_partnerid, product_name, product_price)
+        values (#{product_id}, #{product_partnerid}, #{product_name}, #{product_price})
+    </insert>
+    
+    <update id="admin_stock_update_post" parameterType="ProductDTO">
+        update product
+        set product_price = #{product_price}, product_name = #{product_name}
+        where buydetail_no = #{buydetail_no}
+    </update>
 
 </mapper>

@@ -37,13 +37,16 @@
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   	  <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+  	  
+  	  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  	  
     
    	  <style>
-   	  #modalOpenButton, #modalCloseButton {
+   	    #modalOpenButtonAdd, #modalCloseButtonAdd, #modalCloseButtonUpdate {
 		  cursor: pointer;
 		}
 		
-		#modalContainer {
+		#modalContainerAdd, #modalContainerUpdate {
 		  width: 100%;
 		  height: 100%;
 		  position: fixed;
@@ -60,10 +63,10 @@
 		  background-color: #ffffff;
 		  width: 1000px;
 		  height: 500px;
-		  padding: 15px;
+		  padding: 30px 50px;
 		}
 		
-		#modalContainer.hidden {
+		#modalContainerAdd.hidden, #modalContainerUpdate.hidden {
 		  display: none;
 		}
    	  
@@ -95,48 +98,44 @@
 		               </select> <input type="text" name="searchKeyword" placeholder="검색어 입력">
 		               </td>
 		            </tr>
-           
-            
-            
-         </table>
-         <div style="text-align: right;">
-            <button type="submit" class="btn btn-primary btn-sm"
-               style="width: 70px; border-radius: 8px;">검색</button>
-            <button type="reset" class="btn btn-secondary btn-sm"
-               style="width: 70px; border-radius: 8px;">초기화</button>
-         </div>
-      </form>
+         		</table>
+		         <div style="text-align: right;">
+		            <button type="submit" class="btn btn-primary btn-sm"
+		               style="width: 70px; border-radius: 8px;">검색</button>
+		            <button type="reset" class="btn btn-secondary btn-sm"
+		               style="width: 70px; border-radius: 8px;">초기화</button>
+		         </div>
+      		</form>
+      
       <hr style="color: black">
 
       <div class="wrapper mt-5" id="productListContainer">
+	      	<div style="margin: 10px; text-align: right;">
+	      		<button type="button" class="btn cur-p btn-success" th:onclick="stockAdd();">상품등록</button>
+	      	</div>
+      
          <table class="table product-list-table">
             <thead>
                <tr>
-
                   <th class="table-light text-center">NO</th>
                   <th class="table-light text-center">상품코드</th>
                   <th class="table-light text-center">상품명  </th>
                   <th class="table-light text-center">단가</th>
                   <th class="table-light text-center">남은수량</th>
                   <th class="table-light text-center">관리</th>
-              
                </tr>
             </thead>
             <tbody>
-               <tr>
-	               <c:forEach var="product" items="${productList}">
-	                      <tr>
-	                         <td style="text-align: center;">1</td>
-	                         <td style="text-align: center;">pd-0101</td>
-	                         <td style="text-align: center;">가나 초콜릿</td>
-	                         <td style="text-align: center;">1,500원</td>
-	                         <td style="text-align: center;">468개</td>
-  	                         <td style="text-align: center;">
-                             <button type="button" class="btn btn-secondary btn-sm" style="border-radius: 8px; color: white;" onclick="window.location.href = `catdog-product-modify?product_code=${product.product_code}`">
-                             	수정</button>
-                         	 </td>
-	                      </tr>    
-	               </c:forEach>
+            	<th::block th:each="list: ${list}">
+					     <tr>
+	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_id}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_productid}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">상품명</td> 
+	                         <td style="text-align: center; vertical-align: middle;">단가</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_remain}]]</td>
+	                         <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="stockUpdate([[${list.stock_productid}]])">상품수정</button></td>
+	                      </tr>
+				</th:block>
             </tbody>
          </table>
          <br>
@@ -146,52 +145,103 @@
        <c:set var="basePath" value="${not empty searchKeyword or not empty searchType or not empty startDate or not empty endDate ? 'searchProduct' : 'catdog-product-list-admin'}" />
 
 
-		<div id="modalContainer" class="hidden">  
-		  <div id="modalContent">
-		    <p>상품등록</p>
+		 <!-- 상품등록 모달 -->
+		 <div id="modalContainerAdd" class="hidden">
+		  	<div id="modalContent">
+		  
+				  	<div style="margin: 10px; text-align: right; float: center;">
+				  		<a id="modalCloseButtonAdd" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
+				  	</div>
+				  	
+				  	<div style="margin: 10px; text-align: center; float: center;">
+				  		<div>
+					  		<h4 style="text-align: center;">상품등록</h4>
+				  		</div>
+				  	</div>
+		    		
+		    		<form action="/admin/stock/product/add" method="post">
+			    		<table class="table table-bordered">
+				            <tr>
+				               <th>거래처 명</th>
+	   			               <td><input id="product_partnerid" name="product_partnerid" type="text"/></td>
+				            </tr>
+				            <tr>
+				               <th>상품명</th>
+	   			               <td><input id="product_name" name="product_name" type="text"/></td>
+				            </tr>
+				            <tr>
+				               <th>상품단가</th>
+	   			               <td><input id="product_price" name="product_price" type="text"/></td>
+				            </tr>
+				            <tr>
+				               <th>상품코드 </th>
+	   			               <td><input id="product_id" name="product_id" type="text"/></td>
+				            </tr>  
+			            </table>
+		
+						<div style="margin: 0 30px 0 0; text-align: center;">
+							<div>
+								<button type="reset" class="btn cur-p btn-danger">초기화</button>
+								<button type="submit" class="btn cur-p btn-success">저장</button>
+							</div>
+						</div>
+		    		
+		    		</form>
 		    
-		  		 <form action="searchProduct" method="post">
-		         <table class="table table-bordered">
-		            <tr>
-		               <th>거래처 명</th>
-		               <td>
-		               		<input type="text" name="searchKeyword">
-		               		<button>거래처 검색</button>
-		               </td>
-		            </tr>
-		            <tr>
-		               <th>상품명</th>
-		               <td>
-		               		<input type="text" name="searchKeyword">
-		               </td>
-		            </tr>
-		            <tr>
-		               <th>상품단가</th>
-		               <td>
-		               		<input type="text" name="searchKeyword">
-		               </td>
-		            </tr>
-		            <tr>
-		               <th>상품코드</th>
-		               <td>
-		               		<input type="text" name="searchKeyword">
-		               </td>
-		            </tr>
-         </table>
-         
-         <div style="text-align: right;">
-            <button type="reset" class="btn btn-secondary btn-sm"
-               style="width: 70px; border-radius: 8px;">초기화</button>
-            <button type="submit" class="btn btn-primary btn-sm"
-               style="width: 70px; border-radius: 8px;">저장</button>
-         </div>
-      </form>
-		    	
-		    	
-		    <button id="modalCloseButton">닫기</button>
-		  </div>
+		  	</div>
 		</div>
+		<!-- 모달 끝 -->
+		
+	     <!-- 상품수정 모달 -->
+		 <div id="modalContainerUpdate" class="hidden">
+		  	<div id="modalContent">
+		  
+				  	<div style="margin: 10px; text-align: right; float: center;">
+				  		<a id="modalCloseButtonUpdate" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
+				  	</div>
+				  	
+				  	<div style="margin: 10px; text-align: center; float: center;">
+				  		<div>
+					  		<h4 style="text-align: center;">상품수정</h4>
+				  		</div>
+				  	</div>
+		    
+		    		<form action="/admin/stock/update" method="post">
+			    		<table class="table table-bordered">
+				            <tr>
+				               <th>거래처 명</th>
+	   			               <td><input id="up_product_partnerid" name="product_partnerid" type="text" readonly/></td>
+				            </tr>
+				            <tr>
+				               <th>상품명</th>
+	   			               <td><input id="up_product_name" name="product_name" type="text"/></td>
+				            </tr>
+				            <tr>
+				               <th>상품단가</th>
+	   			               <td><input id="up_product_price" name="product_price" type="text"/></td>
+				            </tr>
+				            <tr>
+				               <th>상품코드 </th>
+	   			               <td><input id="up_product_id" name="product_id" type="text" readonly/></td>
+				            </tr>  
+			            </table>
 
+						<div style="margin: 0 30px 0 0; text-align: center;">
+							<div>
+								<button type="reset" class="btn cur-p btn-danger">초기화</button>
+								<button type="submit" class="btn cur-p btn-success">저장</button>
+							</div>
+						</div>
+		    		
+		    		</form>
+		  	</div>
+		</div>
+		<!-- 모달 끝 -->
+		
+		
+		
+		
+		<!-- 
 		<div class="pagination-container">
 		    <div class="pagination">
 		        <c:if test="${startPage > 1}">
@@ -206,35 +256,77 @@
 		        </c:if>
 		    </div>
 		</div>
+		 -->
+		
+		
    </div>
                
    <!-- 메인 내용 END -->
-               
-
               
-              
-              
-              
-              
-              
-              
-
             </div>
          </div>
       </div>
       
+      
       <script>
-      	  const modalOpenButton = document.getElementById('modalBtn');
-	      const modalCloseButton = document.getElementById('modalCloseButton');
-	      const modal = document.getElementById('modalContainer');
+      	  //본사 상품 재고 수정
+	      function stockUpdate(stock_productid) {	
+					//수정 시 정보 조회	    	
+		    	    $.ajax({
+		    	        url: '/admin/stock/update',
+		    	        method: 'GET',
+		    	        data: {stock_productid: stock_productid},
+		    	        success: function(result) {
+		    	            if (result) {
+		    	        	    document.getElementById("up_product_id").value = result.product_id;
+		    	        	    document.getElementById("up_product_partnerid").value = result.product_partnerid;
+		    	        	    document.getElementById("up_product_name").value = result.product_name;
+		    	        	    document.getElementById("up_product_price").value = result.product_price;
+		    	        	    
+		    	        	    const modal = document.getElementById('modalContainerUpdate');
+		    			  	    modal.classList.remove('hidden');
+		    	            } else {
+		    	                alert("데이터 응답 실패");
+		    	            }
+		    	        },
+		    	        error: function(xhr, status, error) {
+		    	            alert("Ajax 요청 실패");
+		    	        }
+		    	    });
+	    	}
+      </script>
+      
+      <script>
+	      //본사 상품 등록
+	      function stockAdd() {
+	    	  const modal = document.getElementById('modalContainerAdd');
+		  	    modal.classList.remove('hidden');
+	      }
+      </script>
+      
+      <script>
+	      const modalCloseButtonAdd = document.getElementById('modalCloseButtonAdd');
+	      const modalAdd = document.getElementById('modalContainerAdd');
 	
-	      modalOpenButton.addEventListener('click', () => {
-	        modal.classList.remove('hidden');
+	      modalCloseButtonAdd.addEventListener('click', () => {
+	    	  modalAdd.classList.add('hidden');
 	      });
-	
-	      modalCloseButton.addEventListener('click', () => {
-	        modal.classList.add('hidden');
+	      
+	      const modalCloseButtonUpdate = document.getElementById('modalCloseButtonUpdate');
+	      const modalUpdate = document.getElementById('modalContainerUpdate');
+	      
+	      modalCloseButtonUpdate.addEventListener('click', () => {
+	    	  modalUpdate.classList.add('hidden');
 	      });
+	      
+	       window.addEventListener('click', (event) => {
+	           if (event.target === modalAdd) { // 클릭된 요소가 모달 배경인지 확인
+	           	modalAdd.classList.add('hidden');
+	           } else if (event.target === modalUpdate) {
+	           	modalUpdate.classList.add('hidden');
+	           }
+	       });
+	      
       </script>
       
       
@@ -242,7 +334,7 @@
        
       
       <!-- jQuery -->
-      <script src="/js/jquery.min.js"></script>
+      <!-- <script src="/js/jquery.min.js"></script>  -->
       <script src="/js/popper.min.js"></script>
       <script src="/js/bootstrap.min.js"></script>
       <!-- wow animation -->

@@ -102,18 +102,18 @@
 		               </td>
 		            </tr>
                <tr>
-               <th>발주일자</th>
-               <td>
-                <input type="date" id="endDate" name="endDate"> - 
-                <input   type="date" id="startDate" name="startDate">
-                  <div class="date-buttons" style="display: inline-block;">
-                     <button type="button" onclick="setDate(-1)">1일</button>
-                     <button type="button" onclick="setDate(-3)">3일</button>
-                     <button type="button" onclick="setDate(-7)">일주일</button>
-                     <button type="button" onclick="setDate(-30)">한달</button>
-                  </div>
-               </td>
-            </tr>
+               	   <th>발주일자</th>
+		               <td>
+		                <input type="date" id="endDate" name="endDate"> - 
+		                <input   type="date" id="startDate" name="startDate">
+		                  <div class="date-buttons" style="display: inline-block;">
+		                     <button type="button" onclick="setDate(-1)">1일</button>
+		                     <button type="button" onclick="setDate(-3)">3일</button>
+		                     <button type="button" onclick="setDate(-7)">일주일</button>
+		                     <button type="button" onclick="setDate(-30)">한달</button>
+		                  </div>
+		               </td>
+               </tr>
             <tr>
                <th>납기일자</th>
                <td>
@@ -136,7 +136,6 @@
 					<input type="radio" name="order_status" value="3">입고완료
                </td>
             </tr>
-            
             
          </table>
          <div style="text-align: right;">
@@ -183,6 +182,7 @@
 									<span th:case="2"><button type="button" class="btn cur-p btn-danger">발주취소</button></span>
 								</th:block>
   	                         </td>
+  	                         
                          	 <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="orderDetail2([[${str.order_id}]])">상세보기</button></td>
 	                      </tr> 
 				</th:block>
@@ -195,14 +195,17 @@
 
 		<!-- 모달 -->
 		 <div id="modalContainer" class="hidden">
-		  <div id="modalContent">
+		  	<div id="modalContent">
 		  
-		  	<div style="margin: 10px; text-align: center; float: center;">
-		  		<div>
-			  		<span style="text-align: center;">발주 상세 정보</span>
-				    <a id="modalCloseButton" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
-		  		</div>
-		  	</div>
+			  	<div style="margin: 10px; text-align: right; float: center;">
+			  		<a id="modalCloseButton" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
+			  	</div>
+			  	
+			  	<div style="margin: 10px; text-align: center; float: center;">
+			  		<div>
+				  		<h4 style="text-align: center;">발주 상세 정보</h4>
+			  		</div>
+			  	</div>
 		    
 		    		<table class="table table-bordered">
 			            <tr>
@@ -221,58 +224,56 @@
 			               <th>담당자명</th>
    			               <td><input id="order_manager" type="text" readonly/></td>
    			               <th>발주상태</th>
-   			               <th><input id="order_status" type="text" readonly/></th>
+   			               
+   			               <!-- <th><input id="order_status" type="text" readonly/></th>  -->
+   			               
+   			               <th style="text-align: left;" id="order_status_btn">
+  	                         	
+  	                       </th>
+
 			            </tr>
 			            <tr>
 			               <th>수량</th>
    			               <td><input id="order_amount" type="text" readonly/></td>
-   			               <th>총합</th>
-   			               <!-- <th><input id="order_sum" type="text" readonly/></th>  -->
+   			               <th>메모</th>
+   			               <td><input id="order_memo" type="text" readonly/></td>
 			            </tr> 
-			            <tr>
-			               <th>메모</th>
-   			               <td colspan="3"><input id="order_memo" type="text" readonly/></td>
-			            </tr>
 		            </table>
-		  
 
-				<div id="productListContainer2">
-				    <table class="table product-list-table">
-				        <thead>
-				            <tr>
-				                <th class="table-light text-center">NO</th>
-				                <th class="table-light text-center">발주코드</th>
-				                <th class="table-light text-center">상품코드</th>
-				                <th class="table-light text-center">가격</th>
-				                <th class="table-light text-center">수량</th>
-				                <th class="table-light text-center">총합</th>
-				            </tr>
-				        </thead>
-				        <tbody id="a">
-				            <!-- 데이터가 여기 추가됩니다 -->
-				        </tbody>
-				    </table>
-				</div>
-				
-				<div style="margin: 0 30px 0 0; text-align: right;">
-					<h5>합계</h5>
-					<h2 id="order_sum"></h2>
-				</div>
-
-				<div style="margin: 0 30px 0 0; text-align: center;">
-					<div>
-					
-						<button type="button" class="btn cur-p btn-danger">거절</button>
-						<button type="button" class="btn cur-p btn-success">승인</button>
+					<div id="productListContainer2">
+					    <table class="table product-list-table">
+					        <thead>
+					            <tr>
+					                <th class="table-light text-center">NO</th>
+					                <th class="table-light text-center">발주코드</th>
+					                <th class="table-light text-center">상품코드</th>
+					                <th class="table-light text-center">가격</th>
+					                <th class="table-light text-center">수량</th>
+					                <th class="table-light text-center">총합</th>
+					            </tr>
+					        </thead>
+					        <tbody id="a">
+					            <!-- 데이터가 여기 추가됩니다 -->
+					        </tbody>
+					    </table>
 					</div>
-				</div>
-         	
-
-		  </div>
+				
+					<div style="margin: 0 30px 0 0; text-align: right;">
+						<h5>합계</h5>
+						<h2 id="order_sum"></h2>
+					</div>
+	
+					<div style="margin: 0 30px 0 0; text-align: center;">
+						<div>
+							<button type="button" class="btn cur-p btn-danger">거절</button>
+							<button type="button" class="btn cur-p btn-success">승인</button>
+						</div>
+					</div>
+		  	</div>
 		</div>
 		<!-- 모달 끝 -->
 
-<!-- 
+		<!-- 
 		<div class="pagination-container">
 		    <div class="pagination">
 		        <c:if test="${startPage > 1}">
@@ -286,7 +287,8 @@
 		            <a href="${basePath}?pageNum=${endPage + 1}&pageListNum=${pageListNum}&searchType=${searchType}&searchKeyword=${searchKeyword}&startDate=${startDate}&endDate=${endDate}">&gt;</a>
 		        </c:if>
 		    </div>
-		</div>  -->
+		</div>  
+		-->
 	 
    </div>
                
@@ -313,13 +315,32 @@
 		    	        	    //document.getElementById("order_sender").value = result.order_sender;
 		    	        	    document.getElementById("order_date").value = result.order_date;
 		    	        	    document.getElementById("order_amount").value = result.order_amount;
-		    	        	    document.getElementById("order_status").value = result.order_status;
 		    	        	    document.getElementById("order_manager").value = result.order_manager;
 		    	        	    document.getElementById("order_delivery").value = result.order_delivery;
 		    	        	    document.getElementById("order_memo").value = result.order_memo;
 		    	        	    
 		    	        	    const heading = document.getElementById('order_sum');
 		    	                heading.textContent = result.order_sum;
+		    	                
+		    	                const buttonsContainer = document.getElementById('order_status_btn');
+		    	                buttonsContainer.innerHTML = '';
+		    	                switch (result.order_status) {
+		    	                	case 0:
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
+		    	                		break;
+		    	                	case 1:
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-primary">발주승인</button>';
+				    	                break;
+		    	                	case 2:
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-success">입고완료</button>';
+				    	                break;
+		    	                	case 3:
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-danger">발주취소</button>';
+				    	                break;
+				    	            default:
+				    	            	buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
+				    	            	break;
+		    	                }
 		    	        	    
 		    	        	    const modal = document.getElementById('modalContainer');
 		    			  	    modal.classList.remove('hidden');
@@ -380,13 +401,15 @@
 	      const modalCloseButton = document.getElementById('modalCloseButton');
 	      const modal = document.getElementById('modalContainer');
 	
-	      //modalOpenButton.addEventListener('click', () => {
-	        //modal.classList.remove('hidden');
-	      //});
-	
 	      modalCloseButton.addEventListener('click', () => {
 	        modal.classList.add('hidden');
 	      });
+	      
+	        window.addEventListener('click', (event) => {
+	            if (event.target === modal) { // 클릭된 요소가 모달 배경인지 확인
+	    	        modal.classList.add('hidden');
+	            }
+	        });
       </script>
 
       
