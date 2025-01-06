@@ -10,7 +10,7 @@ import lombok.Setter;
 @Alias("OrderDTO")
 public class OrderDTO {
 	private String order_id;
-	private String order_partner;
+	private String order_partnerid;
 	private String order_sender;
 	private String order_date;
 	private int order_amount;

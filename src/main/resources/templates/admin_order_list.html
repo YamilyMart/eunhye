@@ -66,7 +66,7 @@
 		  position: absolute;
 		  background-color: #ffffff;
 		  width: 1000px;
-		  height: 500px;
+		  height: 730px;
 		  padding: 15px;
 		}
 		
@@ -85,12 +85,11 @@
             <div id="content">
             	<head th:include="fragments/topbar :: topbar"></head>
 
-
 			<!-- 메인 내용 -->
-                 <div class="main p-5">
-		      <h6>
-		         <strong>발주 요청 목록</strong>
-		      </h6>
+              <div class="main p-5">
+			      <h6>
+			         <strong>발주 요청 목록</strong>
+			      </h6>
 		      <form action="searchProduct" method="post">
 		         <table class="table table-bordered">
 		            <tr>
@@ -154,7 +153,6 @@
          <table class="table product-list-table">
             <thead>
                <tr>
-
                   <th class="table-light text-center">NO</th>
                   <th class="table-light text-center">지점명</th>
                   <th class="table-light text-center">발주일자</th>
@@ -167,21 +165,27 @@
                </tr>
             </thead>
             <tbody>
-             
             	<th::block th:each="str: ${list}">
 					     <tr>
-	                         <td style="text-align: center;">[[${str.order_id}]]</td>
-	                         <td style="text-align: center;">[[${str.order_partner}]]</td>
-	                         <td style="text-align: center;">[[${str.order_date}]]</td>
-	                         <td style="text-align: center;">[[${str.order_delivery}]]</td>
-	                         <td style="text-align: center;">내용</td>
-	                         <td style="text-align: center;">[[${str.order_amount}]]</td>
-  	                         <td style="text-align: center;">[[${str.order_sum}]]</td>
-  	                         <td style="text-align: center;">[[${str.order_status}]]</td>
-                         	 <td style="text-align: center;"><button th:onclick="orderDetail2([[${str.order_id}]])">상세보기</button></td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_id}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_partnerid}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_date}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_delivery}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">내용</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_amount}]]</td>
+  	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_sum}]]</td>
+
+  	                         <td style="text-align: center;">
+  	                         	<th:block th:switch="${str.order_status}">
+									<span th:case="0"><button type="button" class="btn cur-p btn-secondary">발주대기</button></span>
+									<span th:case="1"><button type="button" class="btn cur-p btn-primary">발주승인</button></span>
+									<span th:case="2"><button type="button" class="btn cur-p btn-success">입고완료</button></span>
+									<span th:case="2"><button type="button" class="btn cur-p btn-danger">발주취소</button></span>
+								</th:block>
+  	                         </td>
+                         	 <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="orderDetail2([[${str.order_id}]])">상세보기</button></td>
 	                      </tr> 
 				</th:block>
- 			
             </tbody>
          </table>
          <br>
@@ -189,92 +193,59 @@
          <br>
       </div>
 
-
-
 		<!-- 모달 -->
 		 <div id="modalContainer" class="hidden">
 		  <div id="modalContent">
-		    <span>발주 상세 정보</span>
-		    <span><button id="modalCloseButton">닫기</button></span>
+		  
+		  	<div style="margin: 10px; text-align: center; float: center;">
+		  		<div>
+			  		<span style="text-align: center;">발주 상세 정보</span>
+				    <a id="modalCloseButton" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
+		  		</div>
+		  	</div>
 		    
-		          
-		      	<input id="order_id" type="text"/> 
-		      	<input id="order_partner" type="text"/>
-		      	<input id="order_sender" type="text"/>
-		      	<input id="order_date" type="text"/>
-		      	<input id="order_amount" type="text"/>
-		      	<input id="order_sum" type="text"/>
-		      	<input id="order_status" type="text"/>
-		      	<input id="order_manager" type="text"/>
-		      	<input id="order_delivery" type="text"/>
-		      	<input id="order_memo" type="text"/>
-		   
-		   <!-- 
-		    	<table>
-		    		<tr>
-		    			<th>No</th>
-		    			<td>13</td>
-		    		</tr>
-		    		<tr>
-		    			<th>발주일자</td>
-		    			<td >2024.12.23</td>
-		    		</tr>
-		    		<tr>
-		    			<th>납기일자</th>
-		    			<td>2024.12.25</td>
-		    		</tr>
-		    		<tr>
-		    			<th>지점명</th>
-		    			<td>수원인계점</td>
-		    		</tr>
-		    		<tr>
-		    			<th>담당자 명</th>
-		    			<td>김점장</td>
-		    		</tr>
-		    		<tr>
-		    			<th>메모사항</th>
-		    			<td>메모입니다~~</td>
-		    		</tr>
-		    	</table>
-		    	 -->
-		    	
-		    	<!-- 
-		    <table class="table product-list-table">
-	            <thead>
-	               <tr>
-	                  <th class="table-light text-center">NO</th>
-	                  <th class="table-light text-center">회사명</th>
-	                  <th class="table-light text-center">상품명</th>
-	                  <th class="table-light text-center">수량</th>
-	                  <th class="table-light text-center">단가</th>
-	                  <th class="table-light text-center">총 금액</th>
-	               </tr>
-	            </thead>
-	            <tbody>
-	               <tr>
-	               	  <c:forEach var="product" items="${productList}">
-	                      <tr>
-	                         <td style="text-align: center;" id="orderDetail_id">1</td>
-	                         <td style="text-align: center;" id="orderDetail_orderid">롯데제과</td>
-	                         <td style="text-align: center;" id="orderDetail_productid">가나 초콜릿</td>
-	                         <td style="text-align: center;" id="orderDetail_amount">30개</td>
-	                         <td style="text-align: center;" id="orderDetail_price">1,500원</td>
-	                         <td style="text-align: center;" id="orderDetail_sum">45,000원</td>
-	                      </tr>    
-	                </c:forEach>
-	            </tbody>
-         	</table>  -->
-         	
-				<div id="productListContainer">
+		    		<table class="table table-bordered">
+			            <tr>
+			               <th>주문ID</th>
+   			               <td><input id="order_id" type="text" readonly/></td>
+   			               <th>지점명</th>
+   			               <th><input id="order_partnerid" type="text" readonly/></th>
+			            </tr>
+			            <tr>
+			               <th>발주일자</th>
+   			               <td><input id="order_date" type="text" readonly/></td>
+   			               <th>납기일자</th>
+   			               <th><input id="order_delivery" type="text" readonly/></th>
+			            </tr>
+			            <tr>
+			               <th>담당자명</th>
+   			               <td><input id="order_manager" type="text" readonly/></td>
+   			               <th>발주상태</th>
+   			               <th><input id="order_status" type="text" readonly/></th>
+			            </tr>
+			            <tr>
+			               <th>수량</th>
+   			               <td><input id="order_amount" type="text" readonly/></td>
+   			               <th>총합</th>
+   			               <!-- <th><input id="order_sum" type="text" readonly/></th>  -->
+			            </tr> 
+			            <tr>
+			               <th>메모</th>
+   			               <td colspan="3"><input id="order_memo" type="text" readonly/></td>
+			            </tr>
+		            </table>
+		  
+
+				<div id="productListContainer2">
 				    <table class="table product-list-table">
 				        <thead>
 				            <tr>
 				                <th class="table-light text-center">NO</th>
-				                <th class="table-light text-center">Order ID</th>
-				                <th class="table-light text-center">Product ID</th>
-				                <th class="table-light text-center">Price</th>
-				                <th class="table-light text-center">Amount</th>
-				                <th class="table-light text-center">Sum</th>
+				                <th class="table-light text-center">발주코드</th>
+				                <th class="table-light text-center">상품코드</th>
+				                <th class="table-light text-center">가격</th>
+				                <th class="table-light text-center">수량</th>
+				                <th class="table-light text-center">총합</th>
 				            </tr>
 				        </thead>
 				        <tbody id="a">
@@ -282,11 +253,24 @@
 				        </tbody>
 				    </table>
 				</div>
+				
+				<div style="margin: 0 30px 0 0; text-align: right;">
+					<h5>합계</h5>
+					<h2 id="order_sum"></h2>
+				</div>
 
+				<div style="margin: 0 30px 0 0; text-align: center;">
+					<div>
+					
+						<button type="button" class="btn cur-p btn-danger">거절</button>
+						<button type="button" class="btn cur-p btn-success">승인</button>
+					</div>
+				</div>
          	
 
 		  </div>
 		</div>
+		<!-- 모달 끝 -->
 
 <!-- 
 		<div class="pagination-container">
@@ -315,10 +299,8 @@
       
     
     <script>
-	      function orderDetail2(order_id) {
-		    	alert("디테일정보");
-		    	alert(order_id);
-		    	
+	      function orderDetail2(order_id) {	
+					//order 정보 요청		    	
 		    	    $.ajax({
 		    	        url: '/admin/order/detail2',
 		    	        method: 'GET',
@@ -327,41 +309,39 @@
 		    	            if (result) {
 		    	                
 		    	        	    document.getElementById("order_id").value = result.order_id;
-		    	        	    document.getElementById("order_partner").value = result.order_partner;
-		    	        	    document.getElementById("order_sender").value = result.order_sender;
+		    	        	    document.getElementById("order_partnerid").value = result.order_partnerid;
+		    	        	    //document.getElementById("order_sender").value = result.order_sender;
 		    	        	    document.getElementById("order_date").value = result.order_date;
 		    	        	    document.getElementById("order_amount").value = result.order_amount;
-		    	        	    document.getElementById("order_sum").value = result.order_sum;
 		    	        	    document.getElementById("order_status").value = result.order_status;
 		    	        	    document.getElementById("order_manager").value = result.order_manager;
 		    	        	    document.getElementById("order_delivery").value = result.order_delivery;
 		    	        	    document.getElementById("order_memo").value = result.order_memo;
 		    	        	    
+		    	        	    const heading = document.getElementById('order_sum');
+		    	                heading.textContent = result.order_sum;
+		    	        	    
 		    	        	    const modal = document.getElementById('modalContainer');
-		    			  	      modal.classList.remove('hidden');
+		    			  	    modal.classList.remove('hidden');
 		    	        	      
 		    	            } else {
-		    	                alert("No data received");
+		    	                alert("데이터 응답 실패");
 		    	            }
 		    	        },
 		    	        error: function(xhr, status, error) {
-		    	            alert("Ajax request failed");
+		    	            alert("Ajax 요청 실패");
 		    	        }
 		    	    });
 		    	    
+		    	    //orderDetail 정보 요청
 		    	    $.ajax({
 		    	        url: '/admin/order/detail',
 		    	        method: 'GET',
 		    	        data: { orderDetail_orderid: order_id },
 		    	        success: function(result) {
 		    	            if (result && result.length > 0) {
-		    	                const tbody = document.querySelector('#productListContainer tbody');
+		    	                const tbody = document.querySelector('#productListContainer2 tbody');
 		    	                tbody.innerHTML = ''; // 기존 데이터를 초기화
-		    	                
-		    	        	    var a = document.getElementById('a');
-
-		    	                
-		    	                var html = "";
 
 		    	                // 리스트를 순회하며 테이블 행 생성
 		    	                result.forEach((detail) => {
@@ -376,27 +356,20 @@
 		    	                    `;
 		    	                    		    	                    
 		    	                    tbody.appendChild(tr);
-		    	                    
-		    	                    html += '<td style="text-align: center;">${detail.orderDetail_id}</td><td style="text-align: center;">${detail.orderDetail_orderid}</td><td style="text-align: center;">${detail.orderDetail_productid}</td><td style="text-align: center;">${detail.orderDetail_price}</td><td style="text-align: center;">${detail.orderDetail_amount}</td><td style="text-align: center;">${detail.orderDetail_sum}</td>';
-		    	                    a.html(htmls);
 		    	                });
 
 		    	                // 모달 표시
 		    	                const modal = document.getElementById('modalContainer');
 		    	                modal.classList.remove('hidden');
+		    	                
 		    	            } else {
-		    	                alert("데이터를 찾을 수 없습니다.");
+		    	            	alert("데이터 응답 실패");
 		    	            }
 		    	        },
 		    	        error: function(xhr, status, error) {
 		    	            alert("Ajax 요청 실패: " + xhr.status + " " + error);
 		    	        }
 		    	    });
-
-		    	    
-		  	      const modal = document.getElementById('modalContainer');
-		  	      modal.classList.remove('hidden');
-
 
 	    	}
     </script>
