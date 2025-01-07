@@ -14,4 +14,7 @@ public class StockDTO {
 	private String stock_branchid;
 	private int stock_remain;
 	private int stock_type;
+	
+	private String product_name;
+	private int product_price;
 }

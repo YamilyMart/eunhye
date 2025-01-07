@@ -1,6 +1,7 @@
 package com.example.yamilymart.dto;
 
 import org.apache.ibatis.type.Alias;
+import org.springframework.format.annotation.NumberFormat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +21,6 @@ public class OrderDTO {
 	private String order_manager;
 	private String order_delivery;
 	private String order_memo;
+	
+	private String branch_name;
 }

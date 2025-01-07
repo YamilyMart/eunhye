@@ -87,15 +87,16 @@
 		      <h6>
 		         <strong>재고 목록</strong>
 		      </h6>
-		      <form action="searchProduct" method="post">
+		      <form action="/admin/stock/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
 		               <th>검색어</th>
-		               <td><select name="searchType">
-		                     <option value="product_name">상품명</option>
-		                     <option value="product_code">상품코드</option>
-		                     <!--  <option value="product_category">카테고리 번호</option> -->
-		               </select> <input type="text" name="searchKeyword" placeholder="검색어 입력">
+		               <td>
+		               		<select name="searchType">
+			                     <option value="0">상품명</option>
+			                     <option value="1">상품코드</option>
+		               		</select> 
+		               		<input type="text" name="keyword" placeholder="검색어 입력">
 		               </td>
 		            </tr>
          		</table>
@@ -117,7 +118,7 @@
          <table class="table product-list-table">
             <thead>
                <tr>
-                  <th class="table-light text-center">NO</th>
+                  <th class="table-light text-center">No</th>
                   <th class="table-light text-center">상품코드</th>
                   <th class="table-light text-center">상품명  </th>
                   <th class="table-light text-center">단가</th>
@@ -130,10 +131,30 @@
 					     <tr>
 	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_id}]]</td>
 	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_productid}]]</td>
-	                         <td style="text-align: center; vertical-align: middle;">상품명</td> 
-	                         <td style="text-align: center; vertical-align: middle;">단가</td>
-	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_remain}]]</td>
-	                         <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="stockUpdate([[${list.stock_productid}]])">상품수정</button></td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${list.product_name}]]</td> 
+	                         
+	                         <td style="text-align: center; vertical-align: middle;">
+  	                         <div data-th-text="${#numbers.formatInteger(list.product_price, 3, 'COMMA') + '원'}"></div>
+  	                         </td>
+
+	                         <td style="text-align: center; vertical-align: middle;">
+	                         
+	                         <!-- 수량 설정/변경 -->
+	                         <form action="admin/stock/amount" method="get">
+		                         <button type="button" th:onclick="amountMinus([[${list.stock_id}]]);" style="border: 0; background-color: transparent;">
+								    <img style="width: 20px; height: 20px; padding: 0 0 0 0;" src="/images/minus.png" alt="minus">
+								</button>
+								<input th:value="${list.stock_remain}" name="stock_amount" th:id="'stock_amount_' + ${list.stock_id}" />
+								<button type="button" th:onclick="amountPlus([[${list.stock_id}]]);" style="border: 0; background-color: transparent;">
+								    <img style="width: 20px; height: 20px; padding: 0 0 0 0;" src="/images/plus.png" alt="plus">
+								</button>
+	                         </form>
+	                         
+	                         </td>
+	                         <td style="text-align: center;">
+		                         <button type="button" class="btn cur-p btn-outline-primary" th:onclick="amountUpdate([[${list.stock_id}]])">재고변경</button>
+		                         <button type="button" class="btn cur-p btn-outline-primary" th:onclick="stockUpdate([[${list.stock_productid}]])">상품수정</button>
+	                         </td>
 	                      </tr>
 				</th:block>
             </tbody>
@@ -176,7 +197,7 @@
 				            <tr>
 				               <th>상품코드 </th>
 	   			               <td><input id="product_id" name="product_id" type="text"/></td>
-				            </tr>  
+				            </tr>
 			            </table>
 		
 						<div style="margin: 0 30px 0 0; text-align: center;">
@@ -203,6 +224,15 @@
 				  	<div style="margin: 10px; text-align: center; float: center;">
 				  		<div>
 					  		<h4 style="text-align: center;">상품수정</h4>
+				  		</div>
+				  	</div>
+				  	
+				  	<div style="margin: 10px; text-align: right; float: right;">
+				  		<div>
+				  			<form action="/admin/stock/delete" method="get">
+				  				<input id="delete_product_id" name="product_id" type="hidden"/>
+				  				<button class="btn cur-p btn-danger" type="submit">상품삭제</button>
+				  			</form>
 				  		</div>
 				  	</div>
 		    
@@ -283,6 +313,8 @@
 		    	        	    document.getElementById("up_product_name").value = result.product_name;
 		    	        	    document.getElementById("up_product_price").value = result.product_price;
 		    	        	    
+		    	        	    document.getElementById("delete_product_id").value = result.product_id;
+		    	        	    
 		    	        	    const modal = document.getElementById('modalContainerUpdate');
 		    			  	    modal.classList.remove('hidden');
 		    	            } else {
@@ -303,6 +335,68 @@
 		  	    modal.classList.remove('hidden');
 	      }
       </script>
+      
+      <script>
+	      //본사 상품 삭제
+	      function productDelete() {
+	    	    $.ajax({
+	    	        url: '/admin/stock/delete',
+	    	        method: 'GET',
+	    	        data: {stock_productid: stock_productid},
+	    	        success: function(result) {
+	    	            if (result) {
+	    	        	    document.getElementById("up_product_id").value = result.product_id;
+	    	        	    document.getElementById("up_product_partnerid").value = result.product_partnerid;
+	    	        	    document.getElementById("up_product_name").value = result.product_name;
+	    	        	    document.getElementById("up_product_price").value = result.product_price;
+	    	        	    
+	    	        	    const modal = document.getElementById('modalContainerUpdate');
+	    			  	    modal.classList.remove('hidden');
+	    	            } else {
+	    	                alert("데이터 응답 실패");
+	    	            }
+	    	        },
+	    	        error: function(xhr, status, error) {
+	    	            alert("Ajax 요청 실패");
+	    	        }
+	    	    });
+	      }
+      </script>
+      
+      <script>
+	      //수량 감소
+	      function amountMinus(stock_id) {
+	    	  const stock_amount = document.getElementById("stock_amount_"+stock_id);
+	  		if (stock_amount.value > 1) {
+		    	  stock_amount.value--;
+			}
+	      }
+	      
+	      //수량 추가
+	      function amountPlus(stock_id) {
+	    	  const stock_amount = document.getElementById("stock_amount_"+stock_id);
+	    	  stock_amount.value++;
+	      }
+	      
+	      //재고 변경
+	      function amountUpdate(stock_id) {
+	    	  const stock_remain = document.getElementById("stock_amount_"+stock_id).value;
+	    	  
+	    	    $.ajax({
+	    	        url: '/admin/stock/amount',
+	    	        method: 'GET',
+	    	        data: {stock_id, stock_remain: stock_id, stock_remain},
+	    	        success: function(result) {
+	    	        	alert("재고가 변경되었습니다.");
+	    	        },
+	    	        error: function(xhr, status, error) {
+	    	            alert("재고 변경 실패");
+	    	        }
+	    	    });
+	      }
+      </script>
+      
+      
       
       <script>
 	      const modalCloseButtonAdd = document.getElementById('modalCloseButtonAdd');

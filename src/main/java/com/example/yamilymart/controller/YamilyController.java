@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
+import com.example.yamilymart.dto.OrderSearchDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.service.YamilyService;
 
@@ -42,24 +43,19 @@ public class YamilyController {
         return mv;
     }
 	
-//	@GetMapping("admin/order/detail")
-//    public ResponseEntity<List<OrderDetailDTO>> admin_order_detail(@RequestParam("orderDetail_orderid") String orderDetail_orderid){
-//		List<OrderDetailDTO> list = yServ.admin_order_detail(orderDetail_orderid);
-//		
-//        if (list != null) {
-//            // DTO를 JSON으로 반환
-//            return ResponseEntity.ok(list);
-//        } else {
-//            // 데이터가 없을 경우 HTTP 404 상태 반환
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//    }
+	//본사 - 발주요청목록검색
+	@PostMapping("/admin/order/list")
+    public ModelAndView admin_order_list_search(OrderSearchDTO dto){
+        mv = yServ.admin_order_list_search(dto);
+        return mv;
+    }
 	
 	//본사 - 발주상세정보1
 	//ajax 다건 검색
 	@GetMapping("/admin/order/detail")
 	@ResponseBody
 	public List<OrderDetailDTO> adminOrderDetail(@RequestParam("orderDetail_orderid") String orderDetailOrderId) {
+		
 	    return yServ.admin_order_detail(orderDetailOrderId);
 	}
 
@@ -82,6 +78,14 @@ public class YamilyController {
 	@GetMapping("/admin/stock/list")
     public ModelAndView admin_stock_list(){
         mv = yServ.admin_stock_list();
+        return mv;
+    }
+	
+	//본사 - 재고관리목록
+	@PostMapping("/admin/stock/list")
+    public ModelAndView admin_stock_list_search(@RequestParam("searchType") int searchType, 
+    		@RequestParam("keyword") String keyword){
+        mv = yServ.admin_stock_list_search(searchType, keyword);
         return mv;
     }
 	
@@ -109,6 +113,22 @@ public class YamilyController {
 	@PostMapping("admin/stock/update")
     public ModelAndView admin_stock_update_post(ProductDTO pdto){
         mv = yServ.admin_stock_update_post(pdto);
+        return mv;
+    }
+	
+	//본사 - 상품삭제(GET)
+	@GetMapping("admin/stock/delete")
+    public ModelAndView admin_stock_delete(@RequestParam("product_id") String product_id){
+        mv = yServ.admin_stock_delete(product_id);
+        
+        return mv;
+    }
+	
+	//본사 - 상품수령변경(GET)
+	@GetMapping("admin/stock/amount")
+    public ModelAndView admin_stock_amount(@RequestParam("stock_id") int stock_id, @RequestParam("stock_remain") int stock_remain){
+        mv = yServ.admin_stock_amount(stock_id, stock_remain);
+        
         return mv;
     }
 

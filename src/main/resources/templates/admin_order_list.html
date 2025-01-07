@@ -90,61 +90,69 @@
 			      <h6>
 			         <strong>발주 요청 목록</strong>
 			      </h6>
-		      <form action="searchProduct" method="post">
+			      
+			  <!-- 필터 -->
+		      <form action="/admin/order/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
 		               <th>검색어</th>
-		               <td><select name="searchType">
-		                     <option value="product_name">지점명</option>
-		                     <option value="product_code">발주내용</option>
-		                     <!--  <option value="product_category">카테고리 번호</option> -->
-		               </select> <input type="text" name="searchKeyword" placeholder="검색어 입력">
+		               <td>		               		
+		               		<select><option>지점명</option></select>
+		               		<input type="text" name="keyword" placeholder="검색어 입력">
 		               </td>
 		            </tr>
                <tr>
                	   <th>발주일자</th>
 		               <td>
-		                <input type="date" id="endDate" name="endDate"> - 
-		                <input   type="date" id="startDate" name="startDate">
+		                <input type="date" value="0" id="startDate1" name="startDate1"> - 
+		                <input type="date" value="0" id="endDate1" name="endDate1">
+		                  <!-- 
 		                  <div class="date-buttons" style="display: inline-block;">
 		                     <button type="button" onclick="setDate(-1)">1일</button>
 		                     <button type="button" onclick="setDate(-3)">3일</button>
 		                     <button type="button" onclick="setDate(-7)">일주일</button>
 		                     <button type="button" onclick="setDate(-30)">한달</button>
 		                  </div>
+		                   -->
 		               </td>
-               </tr>
-            <tr>
-               <th>납기일자</th>
-               <td>
-                <input type="date" id="endDate" name="endDate"> - 
-                <input   type="date" id="startDate" name="startDate">
+               		</tr>
+           			 <tr>
+			               <th>납기일자</th>
+			               <td>
+			               <input type="date" value="0" id="startDate2" name="startDate2"> - 
+			               <input type="date" value="0" id="endDate2" name="endDate2">
+                  <!-- 
                   <div class="date-buttons" style="display: inline-block;">
                      <button type="button" onclick="setDate(-1)">1일</button>
                      <button type="button" onclick="setDate(-3)">3일</button>
                      <button type="button" onclick="setDate(-7)">일주일</button>
                      <button type="button" onclick="setDate(-30)">한달</button>
                   </div>
-               </td>
-            </tr>
-            <tr>
-               <th>발주상태</th>
-               <td>
-					<input type="radio" name="order_status" value="0" checked="checked">발주대기
-					<input type="radio" name="order_status" value="1">발주승인
-					<input type="radio" name="order_status" value="2">발주취소
-					<input type="radio" name="order_status" value="3">입고완료
-               </td>
-            </tr>
-            
-         </table>
-         <div style="text-align: right;">
-            <button type="submit" class="btn btn-primary btn-sm"
-               style="width: 70px; border-radius: 8px;">검색</button>
-            <button type="reset" class="btn btn-secondary btn-sm"
-               style="width: 70px; border-radius: 8px;">초기화</button>
-         </div>
+                  -->
+		               </td>
+		            </tr>
+		            <tr>
+		               <th>발주상태</th>
+		               <td>
+							<input type="radio" name="status" value="0" checked="checked">발주대기
+							<input type="radio" name="status" value="1">발주승인
+							<input type="radio" name="status" value="2">발주취소
+							<input type="radio" name="status" value="3">입고완료
+		               </td>
+		            </tr>
+         	</table>
+         
+	         <div style="text-align: right;">
+	            <button type="submit" class="btn btn-primary btn-sm"
+	               style="width: 70px; border-radius: 8px;">검색</button>
+	            <button type="reset" class="btn btn-secondary btn-sm"
+	               style="width: 70px; border-radius: 8px;">초기화</button>
+	         </div>
+         
       </form>
+       <!-- 필터 끝 -->
+      
+      
       <hr style="color: black">
 
       <div class="wrapper mt-5" id="productListContainer">
@@ -152,11 +160,10 @@
          <table class="table product-list-table">
             <thead>
                <tr>
-                  <th class="table-light text-center">NO</th>
+                  <th class="table-light text-center">발주코드</th>
                   <th class="table-light text-center">지점명</th>
                   <th class="table-light text-center">발주일자</th>
                   <th class="table-light text-center">납기일자</th>
-                  <th class="table-light text-center">발주내용</th>
                   <th class="table-light text-center">발주수량</th>
                   <th class="table-light text-center">총 금액</th>
                   <th class="table-light text-center">발주상태</th>
@@ -167,13 +174,13 @@
             	<th::block th:each="str: ${list}">
 					     <tr>
 	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_id}]]</td>
-	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_partnerid}]]</td>
+  	                         <td style="text-align: center; vertical-align: middle;">[[${str.branch_name}]]</td>
 	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_date}]]</td>
 	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_delivery}]]</td>
-	                         <td style="text-align: center; vertical-align: middle;">내용</td>
-	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_amount}]]</td>
-  	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_sum}]]</td>
-
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_amount}]]</td>    
+  	                         <td style="text-align: center; vertical-align: middle;">
+  	                         <div data-th-text="${#numbers.formatInteger(str.order_sum, 3, 'COMMA') + '원'}"></div>
+  	                         </td>    
   	                         <td style="text-align: center;">
   	                         	<th:block th:switch="${str.order_status}">
 									<span th:case="0"><button type="button" class="btn cur-p btn-secondary">발주대기</button></span>
@@ -311,7 +318,7 @@
 		    	            if (result) {
 		    	                
 		    	        	    document.getElementById("order_id").value = result.order_id;
-		    	        	    document.getElementById("order_partnerid").value = result.order_partnerid;
+		    	        	    document.getElementById("order_partnerid").value = result.branch_name;
 		    	        	    //document.getElementById("order_sender").value = result.order_sender;
 		    	        	    document.getElementById("order_date").value = result.order_date;
 		    	        	    document.getElementById("order_amount").value = result.order_amount;
@@ -367,11 +374,12 @@
 		    	                // 리스트를 순회하며 테이블 행 생성
 		    	                result.forEach((detail) => {
 		    	                    const tr = document.createElement('tr');
+		
 		    	                    tr.innerHTML = `
 		    	                        <td style="text-align: center;">${detail.orderDetail_id}</td>
 		    	                        <td style="text-align: center;">${detail.orderDetail_orderid}</td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_productid}</td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_price}</td>
+		    	                        <td style="text-align: center;">${detail.product_name}</td>
+		    	                        <td style="text-align: center;">${detail.product_price}</td>
 		    	                        <td style="text-align: center;">${detail.orderDetail_amount}</td>
 		    	                        <td style="text-align: center;">${detail.orderDetail_sum}</td>
 		    	                    `;

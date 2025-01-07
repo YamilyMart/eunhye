@@ -7,10 +7,43 @@
         values (#{product_id}, #{product_partnerid}, #{product_name}, #{product_price})
     </insert>
     
+    <insert id="admin_stock_add" parameterType="StockDTO">
+        insert into stock(stock_productid, stock_remain, stock_type)
+        values (#{product_id}, 0, 1)
+    </insert>
+    
     <update id="admin_stock_update_post" parameterType="ProductDTO">
         update product
         set product_price = #{product_price}, product_name = #{product_name}
-        where buydetail_no = #{buydetail_no}
+        where product_id = #{product_id}
     </update>
+    
+    <select id="admin_order_list_search" parameterType="OrderSearchDTO">
+    	select * from `order`, branch 
+    	where `order`.order_sender = branch.branch_id
+    	and `order`.order_status = #{status}
+   		<if test="keyword != ''">
+   			and branch.branch_name like concat('%',#{keyword},'%')
+   		</if>
+   		<if test="startDate1 != ''">
+   			and `order`.order_date between #{startDate1} and #{endDate1}
+   		</if>
+   		<if test="startDate2 != ''">
+   			and `order`.order_delivery between #{startDate2} and #{endDate2}
+   		</if>
+    </select>
+    
+    <select id="admin_stock_list_search">
+    	select * from `stock`, `product` 
+    	where stock.stock_productid = product.product_id 
+    	and stock.stock_type = 1
+   		<if test="searchType == 0">
+   			and product.product_name like concat('%',#{keyword},'%')
+   		</if>
+   		<if test="searchType == 1">
+   			and product.product_id like concat('%',#{keyword},'%')
+   		</if>
+    </select>
+    
 
 </mapper>
