@@ -26,10 +26,16 @@
    			and branch.branch_name like concat('%',#{keyword},'%')
    		</if>
    		<if test="startDate1 != ''">
-   			and `order`.order_date between #{startDate1} and #{endDate1}
+   			and `order`.order_date &gt;= #{startDate1}
    		</if>
    		<if test="startDate2 != ''">
-   			and `order`.order_delivery between #{startDate2} and #{endDate2}
+   			and `order`.order_delivery &gt;= #{startDate2}
+   		</if>
+   		<if test="endDate1 != ''">
+   			and `order`.order_date &lt;= #{endDate1}
+   		</if>
+   		<if test="endDate2 != ''">
+   			and `order`.order_delivery &lt;= #{endDate2}
    		</if>
     </select>
     
@@ -43,6 +49,55 @@
    		<if test="searchType == 1">
    			and product.product_id like concat('%',#{keyword},'%')
    		</if>
+    </select>
+    
+    <select id="admin_sale_list">
+		select 
+		    SUM(sale.sale_sum) AS sale_sum, 
+		    sale.sale_branchid, 
+		    sale.sale_date, 
+		    branch.branch_name, 
+		    branch.branch_id
+		from 
+		    sale
+		join 
+		    branch 
+		on 
+		    branch.branch_id = sale.sale_branchid
+		group by
+		    sale.sale_date, 
+		    sale.sale_branchid, 
+		    branch.branch_name, 
+		    branch.branch_id;
+    </select>
+    
+    <select id="admin_sale_list_search">
+    	select 
+		    SUM(sale.sale_sum) AS sale_sum, 
+		    sale.sale_branchid, 
+		    sale.sale_date, 
+		    branch.branch_name, 
+		    branch.branch_id
+		from 
+		    sale
+		join 
+		    branch 
+		on 
+		    branch.branch_id = sale.sale_branchid
+		    <if test="keyword != ''">
+	   			and branch.branch_name like concat('%',#{keyword},'%')
+	   		</if>
+	   		<if test="startDate != ''">
+	   			and sale.sale_date &gt;= #{startDate}
+	   		</if>
+	   		<if test="endDate != ''">
+	   			and sale.sale_date &lt;= #{endDate}
+	   		</if>
+		group by
+		    sale.sale_date, 
+		    sale.sale_branchid, 
+		    branch.branch_name, 
+		    branch.branch_id;
     </select>
     
 

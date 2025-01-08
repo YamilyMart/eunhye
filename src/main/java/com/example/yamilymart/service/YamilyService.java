@@ -1,5 +1,6 @@
 package com.example.yamilymart.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
 import com.example.yamilymart.dto.ProductDTO;
+import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
 
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +121,53 @@ public class YamilyService {
         mv.setViewName("redirect:/admin/stock/list"); 
         
         return mv;
+    }
+    
+    public ModelAndView admin_sale_list() {
+   	   mv = new ModelAndView();
+   	   List<SaleDTO> list = yDao.admin_sale_list();
+   	   
+       int count = list.size();
+       int sum = 0;
+       
+       //총 매출 계산하기
+       for(int i=0; i<count; i++) {
+    	   SaleDTO dto = list.get(i);
+			sum += dto.getSale_sum();
+       }
+       
+       mv.addObject("list", list);
+       mv.addObject("count", count);
+       mv.addObject("sum", sum);
+       mv.setViewName("admin_sale_list");
+
+       return mv;
+   }
+    
+    public ModelAndView admin_sale_list_search(String keyword, String starDate, String endDate) {
+    	mv = new ModelAndView();
+    	List<SaleDTO> list = yDao.admin_sale_list_search(keyword, starDate, endDate);
+    	
+        int count = list.size();
+        int sum = 0;
+        
+        //총 매출 계산하기
+        for(int i=0; i<count; i++) {
+     	   SaleDTO dto = list.get(i);
+ 			sum += dto.getSale_sum();
+        }
+        
+        mv.addObject("list", list);
+        mv.addObject("count", count);
+        mv.addObject("sum", sum);
+        mv.setViewName("admin_sale_list");
+
+        return mv;
+    }
+    
+    public List<SaleDTO> admin_sale_detail(String sale_branchid, String sale_date) {    	        
+    	List<SaleDTO> dto = yDao.admin_sale_detail(sale_branchid, sale_date);
+        return dto;
     }
 
 }

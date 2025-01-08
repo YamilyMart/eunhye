@@ -16,6 +16,7 @@ import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
 import com.example.yamilymart.dto.ProductDTO;
+import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.service.YamilyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -81,7 +82,7 @@ public class YamilyController {
         return mv;
     }
 	
-	//본사 - 재고관리목록
+	//본사 - 재고관리 필터검색
 	@PostMapping("/admin/stock/list")
     public ModelAndView admin_stock_list_search(@RequestParam("searchType") int searchType, 
     		@RequestParam("keyword") String keyword){
@@ -131,6 +132,33 @@ public class YamilyController {
         
         return mv;
     }
+	
+	//본사 - 매출목록(GET)
+	@GetMapping("admin/sale/list")
+    public ModelAndView admin_sale_list(){
+        mv = yServ.admin_sale_list();
+        
+        return mv;
+    }
+	
+	//본사 - 매출목록 필터검색(POST)
+	@PostMapping("admin/sale/list")
+    public ModelAndView admin_sale_list_search(@RequestParam("keyword") String keyword, 
+    		@RequestParam("startDate") String startDate,
+    		@RequestParam("endDate") String endDate){
+        mv = yServ.admin_sale_list_search(keyword, startDate, endDate);
+        
+        return mv;
+    }
+	
+	//본사 - 매출상세정보 목록
+	//ajax 다건 검색
+	@GetMapping("/admin/sale/detail")
+	@ResponseBody
+	public List<SaleDTO> admin_sale_detail(@RequestParam("sale_branchid") String sale_branchid, @RequestParam("sale_date") String sale_date) {
+		
+	    return yServ.admin_sale_detail(sale_branchid, sale_date);
+	}
 
 }
 

@@ -8,7 +8,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <!-- site metas -->
-      <title>발주 요청 관리</title>
+      <title>매출 관리</title>
       <meta name="keywords" content="">
       <meta name="description" content="">
       <meta name="author" content="">
@@ -88,11 +88,11 @@
 			<!-- 메인 내용 -->
               <div class="main p-5">
 			      <h6>
-			         <strong>발주 요청 목록</strong>
+			         <strong>매출 목록</strong>
 			      </h6>
 			      
 			  <!-- 필터 -->
-		      <form action="/admin/order/list" method="post">
+		      <form action="/admin/sale/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
 		               <th>검색어</th>
@@ -100,12 +100,12 @@
 		               		<select><option>지점명</option></select>
 		               		<input type="text" name="keyword" placeholder="검색어 입력">
 		               </td>
-		            </tr>
-               <tr>
-               	   <th>발주일자</th>
+		             </tr>
+               	  <tr>
+               	   <th>날짜</th>
 		               <td>
-		                <input type="date" value="0" id="startDate1" name="startDate1"> - 
-		                <input type="date" value="0" id="endDate1" name="endDate1">
+		                <input type="date" value="0" id="startDate1" name="startDate"> - 
+		                <input type="date" value="0" id="endDate1" name="endDate">
 		                  <!-- 
 		                  <div class="date-buttons" style="display: inline-block;">
 		                     <button type="button" onclick="setDate(-1)">1일</button>
@@ -116,30 +116,6 @@
 		                   -->
 		               </td>
                		</tr>
-           			 <tr>
-			               <th>납기일자</th>
-			               <td>
-			               <input type="date" value="0" id="startDate2" name="startDate2"> - 
-			               <input type="date" value="0" id="endDate2" name="endDate2">
-                  <!-- 
-                  <div class="date-buttons" style="display: inline-block;">
-                     <button type="button" onclick="setDate(-1)">1일</button>
-                     <button type="button" onclick="setDate(-3)">3일</button>
-                     <button type="button" onclick="setDate(-7)">일주일</button>
-                     <button type="button" onclick="setDate(-30)">한달</button>
-                  </div>
-                  -->
-		               </td>
-		            </tr>
-		            <tr>
-		               <th>발주상태</th>
-		               <td>
-							<input type="radio" name="status" value="0" checked="checked">발주대기
-							<input type="radio" name="status" value="1">발주승인
-							<input type="radio" name="status" value="2">발주취소
-							<input type="radio" name="status" value="3">입고완료
-		               </td>
-		            </tr>
          	</table>
          
 	         <div style="text-align: right;">
@@ -150,48 +126,68 @@
 	         </div>
          
       </form>
-       <!-- 필터 끝 -->
-      
+      <!-- 필터 끝 -->
       
       <hr style="color: black">
 
       <div class="wrapper mt-5" id="productListContainer">
+      
+      
+                           <div class="row column1">
+                        <div class="col-md-12 col-lg-6">
+                           <div class="full counter_section margin_bottom_30">
+                              <div class="couter_icon">
+                                 <div> 
+                                    <i class="fa fa-file-text-o yellow_color"></i>
+                                 </div>
+                              </div>
+                              <div class="counter_no">
+                                 <div>
+                                    <p class="total_no">[[${count}]] 건</p>
+                                    <p class="head_couter">총 건수</p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-md-12 col-lg-6">
+                           <div class="full counter_section margin_bottom_30">
+                              <div class="couter_icon">
+                                 <div> 
+                                    <i class="fa fa-krw blue1_color"></i>
+                                 </div>
+                              </div>
+                              <div class="counter_no">
+                                 <div>
+                                    <p class="total_no" data-th-text="${#numbers.formatInteger(sum, 3, 'COMMA') + '원'}"></p>
+                                    <p class="head_couter">총 매출</p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
 
          <table class="table product-list-table">
             <thead>
                <tr>
-                  <th class="table-light text-center">발주코드</th>
+                  <th class="table-light text-center">날짜</th>
                   <th class="table-light text-center">지점명</th>
-                  <th class="table-light text-center">발주일자</th>
-                  <th class="table-light text-center">납기일자</th>
-                  <th class="table-light text-center">발주수량</th>
-                  <th class="table-light text-center">총 금액</th>
-                  <th class="table-light text-center">발주상태</th>
+                  <th class="table-light text-center">총 판매금액</th>
                   <th class="table-light text-center">관리</th>
+                 
                </tr>
             </thead>
             <tbody>
+        
             	<th::block th:each="str: ${list}">
 					     <tr>
-	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_id}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">[[${str.sale_date}]]</td>
   	                         <td style="text-align: center; vertical-align: middle;">[[${str.branch_name}]]</td>
-	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_date}]]</td>
-	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_delivery}]]</td>
-	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_amount}]]</td>    
   	                         <td style="text-align: center; vertical-align: middle;">
-  	                         <div data-th-text="${#numbers.formatInteger(str.order_sum, 3, 'COMMA') + '원'}"></div>
-  	                         </td>    
-  	                         <td style="text-align: center;">
-  	                         	<th:block th:switch="${str.order_status}">
-									<span th:case="0"><button type="button" class="btn cur-p btn-secondary">발주대기</button></span>
-									<span th:case="1"><button type="button" class="btn cur-p btn-primary">발주승인</button></span>
-									<span th:case="2"><button type="button" class="btn cur-p btn-success">입고완료</button></span>
-									<span th:case="3"><button type="button" class="btn cur-p btn-danger">발주취소</button></span>
-								</th:block>
+  	                         	<div data-th-text="${#numbers.formatInteger(str.sale_sum, 3, 'COMMA') + '원'}"></div>
   	                         </td>
-  	                         
-                         	 <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="orderDetail2([[${str.order_id}]])">상세보기</button></td>
-	                      </tr> 
+  	                          
+                         	 <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="saleDetail([[${str.sale_branchid}]], [[${str.sale_date}]], [[${str.sale_sum}]], [[${str.branch_name}]])">상세보기</button></td>
+	                      </tr>
 				</th:block>
             </tbody>
          </table>
@@ -216,35 +212,11 @@
 		    
 		    		<table class="table table-bordered">
 			            <tr>
-			               <th>주문ID</th>
-   			               <td><input id="order_id" type="text" readonly/></td>
+			               <th>날짜</th>
+   			               <td><input id="sale_date" type="text" readonly/></td>
    			               <th>지점명</th>
-   			               <th><input id="order_partnerid" type="text" readonly/></th>
+   			               <th><input id="sale_branchid" type="text" readonly/></th>
 			            </tr>
-			            <tr>
-			               <th>발주일자</th>
-   			               <td><input id="order_date" type="text" readonly/></td>
-   			               <th>납기일자</th>
-   			               <th><input id="order_delivery" type="text" readonly/></th>
-			            </tr>
-			            <tr>
-			               <th>담당자명</th>
-   			               <td><input id="order_manager" type="text" readonly/></td>
-   			               <th>발주상태</th>
-   			               
-   			               <!-- <th><input id="order_status" type="text" readonly/></th>  -->
-   			               
-   			               <th style="text-align: left;" id="order_status_btn">
-  	                         	
-  	                       </th>
-
-			            </tr>
-			            <tr>
-			               <th>수량</th>
-   			               <td><input id="order_amount" type="text" readonly/></td>
-   			               <th>메모</th>
-   			               <td><input id="order_memo" type="text" readonly/></td>
-			            </tr> 
 		            </table>
 
 					<div id="productListContainer2">
@@ -252,10 +224,10 @@
 					        <thead>
 					            <tr>
 					                <th class="table-light text-center">NO</th>
-					                <th class="table-light text-center">발주코드</th>
-					                <th class="table-light text-center">상품코드</th>
-					                <th class="table-light text-center">가격</th>
+					                <th class="table-light text-center">회사명</th>
+					                <th class="table-light text-center">상품명</th>
 					                <th class="table-light text-center">수량</th>
+					                <th class="table-light text-center">단가</th>
 					                <th class="table-light text-center">총합</th>
 					            </tr>
 					        </thead>
@@ -267,7 +239,7 @@
 				
 					<div style="margin: 0 30px 0 0; text-align: right;">
 						<h5>합계</h5>
-						<h2 id="order_sum"></h2>
+						<h2 id="sale_sum"></h2>
 					</div>
 	
 					<div style="margin: 0 30px 0 0; text-align: center;">
@@ -306,68 +278,22 @@
          </div>
       </div>
       
-    
-    <script>
-	      function orderDetail2(order_id) {	
-					//order 정보 요청		    	
+      
+          <script>
+	      function saleDetail(sale_branchid, sale_date, sale_sum, branch_name) {	
+		    	    //saleDetail 정보 요청
 		    	    $.ajax({
-		    	        url: '/admin/order/detail2',
+		    	        url: '/admin/sale/detail',
 		    	        method: 'GET',
-		    	        data: {order_id: order_id},
-		    	        success: function(result) {
-		    	            if (result) {
-		    	                
-		    	        	    document.getElementById("order_id").value = result.order_id;
-		    	        	    document.getElementById("order_partnerid").value = result.branch_name;
-		    	        	    //document.getElementById("order_sender").value = result.order_sender;
-		    	        	    document.getElementById("order_date").value = result.order_date;
-		    	        	    document.getElementById("order_amount").value = result.order_amount;
-		    	        	    document.getElementById("order_manager").value = result.order_manager;
-		    	        	    document.getElementById("order_delivery").value = result.order_delivery;
-		    	        	    document.getElementById("order_memo").value = result.order_memo;
-		    	        	    
-		    	        	    const heading = document.getElementById('order_sum');
-		    	                heading.textContent = result.order_sum;
-		    	                
-		    	                const buttonsContainer = document.getElementById('order_status_btn');
-		    	                buttonsContainer.innerHTML = '';
-		    	                switch (result.order_status) {
-		    	                	case 0:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
-		    	                		break;
-		    	                	case 1:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-primary">발주승인</button>';
-				    	                break;
-		    	                	case 2:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-success">입고완료</button>';
-				    	                break;
-		    	                	case 3:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-danger">발주취소</button>';
-				    	                break;
-				    	            default:
-				    	            	buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
-				    	            	break;
-		    	                }
-		    	        	    
-		    	        	    const modal = document.getElementById('modalContainer');
-		    			  	    modal.classList.remove('hidden');
-		    	        	      
-		    	            } else {
-		    	                alert("데이터 응답 실패");
-		    	            }
-		    	        },
-		    	        error: function(xhr, status, error) {
-		    	            alert("Ajax 요청 실패");
-		    	        }
-		    	    });
-		    	    
-		    	    //orderDetail 정보 요청
-		    	    $.ajax({
-		    	        url: '/admin/order/detail',
-		    	        method: 'GET',
-		    	        data: {orderDetail_orderid: order_id },
+		    	        data: { sale_branchid, sale_date: sale_branchid, sale_date},
 		    	        success: function(result) {
 		    	            if (result && result.length > 0) {
+		    	            	document.getElementById("sale_branchid").value = branch_name;
+		    	        	    document.getElementById("sale_date").value = sale_date; 
+		    	        	    
+		    	        	    const heading = document.getElementById('sale_sum');
+		    	                heading.textContent = sale_sum;
+		    	        	    
 		    	                const tbody = document.querySelector('#productListContainer2 tbody');
 		    	                tbody.innerHTML = ''; // 기존 데이터를 초기화
 
@@ -376,12 +302,12 @@
 		    	                    const tr = document.createElement('tr');
 		
 		    	                    tr.innerHTML = `
-		    	                        <td style="text-align: center;">${detail.orderDetail_id}</td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_orderid}</td>
-		    	                        <td style="text-align: center;">${detail.product_name}</td>
-		    	                        <td style="text-align: center;">${detail.product_price}</td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_amount}</td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_sum}</td>
+		    	                        <td style="text-align: center;">${detail.sale_code}</td>
+		    	                        <td style="text-align: center;">회사명</td>
+		    	                        <td style="text-align: center;">${detail.sale_productid}</td>
+		    	                        <td style="text-align: center;">${detail.sale_amount}</td>
+		    	                        <td style="text-align: center;">${detail.sale_date}</td>
+		    	                        <td style="text-align: center;">${detail.sale_sum}</td>
 		    	                    `;
 		    	                    		    	                    
 		    	                    tbody.appendChild(tr);
@@ -402,6 +328,9 @@
 
 	    	}
     </script>
+      
+    
+
 
       
       <script>

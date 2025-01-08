@@ -13,6 +13,7 @@ import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
 import com.example.yamilymart.dto.ProductDTO;
+import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
 
 
@@ -33,7 +34,8 @@ public interface YamilyDao {
 	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1")
 	List<StockDTO> admin_stock_list();
 	
-	List<StockDTO> admin_stock_list_search(@Param("searchType") int searchType, @Param("keyword") String keyword);
+	List<StockDTO> admin_stock_list_search(@Param("searchType") int searchType, 
+			@Param("keyword") String keyword);
 	
 	int admin_stock_product_add(ProductDTO pdto);
 	
@@ -49,5 +51,15 @@ public interface YamilyDao {
 	
 	@Update("update stock set stock_remain = #{stock_remain} where stock_id = #{stock_id}")
 	int admin_stock_amount(@Param("stock_id") int stock_id, @Param("stock_remain") int stock_remain);
+
+	List<SaleDTO> admin_sale_list();
+	
+	List<SaleDTO> admin_sale_list_search(@Param("keyword") String keyword, 
+    		@Param("startDate") String startDate,
+    		@Param("endDate") String endDate);
+	
+    @Select("SELECT * FROM sale WHERE sale_branchid = #{sale_branchid} and sale_date = #{sale_date}")
+    List<SaleDTO> admin_sale_detail(@Param("sale_branchid") String sale_branchid, @Param("sale_date") String sale_date);
+
 
 }
