@@ -15,7 +15,7 @@ public class OrderDetailDTO {
 	private int orderDetail_price;
 	private int orderDetail_amount;
 	private int orderDetail_sum;
-	
+
 	private String product_name;
 	private int product_price;
 

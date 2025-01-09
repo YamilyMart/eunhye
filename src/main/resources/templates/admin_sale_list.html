@@ -132,7 +132,6 @@
 
       <div class="wrapper mt-5" id="productListContainer">
       
-      
                            <div class="row column1">
                         <div class="col-md-12 col-lg-6">
                            <div class="full counter_section margin_bottom_30">
@@ -223,7 +222,6 @@
 					    <table class="table product-list-table">
 					        <thead>
 					            <tr>
-					                <th class="table-light text-center">NO</th>
 					                <th class="table-light text-center">회사명</th>
 					                <th class="table-light text-center">상품명</th>
 					                <th class="table-light text-center">수량</th>
@@ -242,12 +240,6 @@
 						<h2 id="sale_sum"></h2>
 					</div>
 	
-					<div style="margin: 0 30px 0 0; text-align: center;">
-						<div>
-							<button type="button" class="btn cur-p btn-danger">거절</button>
-							<button type="button" class="btn cur-p btn-success">승인</button>
-						</div>
-					</div>
 		  	</div>
 		</div>
 		<!-- 모달 끝 -->
@@ -302,11 +294,10 @@
 		    	                    const tr = document.createElement('tr');
 		
 		    	                    tr.innerHTML = `
-		    	                        <td style="text-align: center;">${detail.sale_code}</td>
-		    	                        <td style="text-align: center;">회사명</td>
-		    	                        <td style="text-align: center;">${detail.sale_productid}</td>
+		    	                        <td style="text-align: center;">${detail.partner_name}</td>
+		    	                        <td style="text-align: center;">${detail.product_name}</td>
 		    	                        <td style="text-align: center;">${detail.sale_amount}</td>
-		    	                        <td style="text-align: center;">${detail.sale_date}</td>
+		    	                        <td style="text-align: center;">${detail.product_price}</td>
 		    	                        <td style="text-align: center;">${detail.sale_sum}</td>
 		    	                    `;
 		    	                    		    	                    

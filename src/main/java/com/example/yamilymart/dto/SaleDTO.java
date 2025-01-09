@@ -18,4 +18,8 @@ public class SaleDTO {
 
 	private String branch_name;
 
+	private String product_name;
+	private String partner_name;
+
+	private String product_price;
 }

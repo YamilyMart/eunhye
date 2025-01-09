@@ -15,7 +15,7 @@ public class OrderSearchDTO {
 	private String startDate2;
 	private String endDate2;
 	private int status;
-	
-	
+
+
 
 }

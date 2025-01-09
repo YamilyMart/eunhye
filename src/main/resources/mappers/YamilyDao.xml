@@ -100,5 +100,18 @@
 		    branch.branch_id;
     </select>
     
+    <select id="admin_sale_detail">
+	    select sale.sale_productid, sale.sale_branchid, sum(sale_amount) sale_amount, sum(sale_sum) sale_sum, 
+	    product.product_name, product.product_price, partner.partner_name
+		from sale, branch, partner, product
+		where sale_branchid = #{sale_branchid} 
+		and sale_date = #{sale_date} 
+		and sale.sale_branchid = branch.branch_id 
+		and sale.sale_productid = product.product_id 
+		and product.product_partnerid = partner.partner_id
+		group by sale.sale_productid, sale.sale_branchid
+    </select>
+
+    
 
 </mapper>
