@@ -29,8 +29,10 @@ public interface YamilyDao {
 
 	@Select("SELECT * FROM `order`, branch where `order`.order_sender = branch.branch_id and order_id = #{order_id}")
 	OrderDTO admin_order_detail2(String order_id);
+	
+	int admin_order_approval(@Param("approval_type")int approval_type, @Param("order_id")String order_id);
 
-	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1")
+	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1 and stock_del = 0")
 	List<StockDTO> admin_stock_list();
 
 	List<StockDTO> admin_stock_list_search(@Param("searchType") int searchType,
@@ -45,7 +47,7 @@ public interface YamilyDao {
 
 	int admin_stock_update_post(ProductDTO pdto);
 
-	@Delete("delete from product where product_id = #{product_id}")
+	@Update("update stock set stock_del = 1 where stock_productid = #{product_id}")
 	int admin_stock_delete(String product_id);
 
 	@Update("update stock set stock_remain = #{stock_remain} where stock_id = #{stock_id}")
@@ -58,6 +60,9 @@ public interface YamilyDao {
     		@Param("endDate") String endDate);
 
     List<SaleDTO> admin_sale_detail(@Param("sale_branchid") String sale_branchid, @Param("sale_date") String sale_date);
+    
+
+
 
 
 }

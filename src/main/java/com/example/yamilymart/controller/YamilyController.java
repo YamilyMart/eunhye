@@ -36,11 +36,26 @@ public class YamilyController {
         mv = yServ.admin_main();
         return mv;
     }
-	
+
     @GetMapping("/login")
     public String login() {
-        return "login";
+        return "login"; // login.html
     }
+
+    @GetMapping("/admin/dashboard")
+    public String adminDashboard() {
+        return "admin_dashboard"; // admin_dashboard.html
+    }
+
+    @GetMapping("/branch/dashboard")
+    public String branchDashboard() {
+        return "branch_dashboard"; // branch_dashboard.html
+    }
+
+//    @GetMapping("/user/login")
+//    public String login() {
+//        return "login";
+//    }
 
 //	//로그인
 //	@GetMapping("/yamily/login")
@@ -100,6 +115,14 @@ public class YamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+	
+	//본사 - 발주승인/거절
+	@GetMapping("/admin/order/approval")
+    public ModelAndView admin_order_approval(@RequestParam("approval_type") int approval_type, @RequestParam("order_id") String order_id){
+        mv = yServ.admin_order_approval(approval_type, order_id);
+        return mv;
+    }
+
 
 	//본사 - 재고관리목록
 	@GetMapping("/admin/stock/list")

@@ -39,6 +39,17 @@
    		</if>
     </select>
     
+    <update id="admin_order_approval">
+    	update `order`
+   		<if test="approval_type == 0">
+   			set order_status = 1
+   		</if>
+   		<if test="approval_type == 1">
+   			set order_status = 3
+   		</if>
+        where order_id = #{order_id}
+    </update>
+    
     <select id="admin_stock_list_search">
     	select * from `stock`, `product` 
     	where stock.stock_productid = product.product_id 

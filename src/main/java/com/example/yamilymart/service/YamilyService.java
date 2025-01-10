@@ -85,10 +85,20 @@ public class YamilyService {
     }
 
     public ModelAndView admin_stock_list() {
-    	 mv = new ModelAndView();
+    	mv = new ModelAndView();
     	List<StockDTO> list = yDao.admin_stock_list();
         mv.addObject("list", list);
         mv.setViewName("admin_stock_list");
+
+        return mv;
+    }
+    
+
+    public ModelAndView admin_order_approval(int approval_type, String order_id) {
+    	mv = new ModelAndView();
+    	int a = yDao.admin_order_approval(approval_type, order_id);
+    	
+        mv.setViewName("redirect:/admin/order/list");
 
         return mv;
     }
@@ -107,6 +117,11 @@ public class YamilyService {
 
    	   //제품등록
    	   int a = yDao.admin_stock_product_add(pdto);
+   	   if(a == 0) {
+   		   
+   	   } else {
+   		   
+   	   }
 
    	   //초기 재고 등록
    	   int b = yDao.admin_stock_add(pdto.getProduct_id());
