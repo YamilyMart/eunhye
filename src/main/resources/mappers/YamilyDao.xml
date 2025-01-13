@@ -64,9 +64,9 @@
     
     <select id="admin_sale_list">
 		select 
-		    SUM(sale.sale_sum) AS sale_sum, 
+		    SUM(sale.sale_sum) as sale_sum, 
 		    sale.sale_branchid, 
-		    sale.sale_date, 
+		    DATE(sale.sale_date) as sale_date, 
 		    branch.branch_name, 
 		    branch.branch_id
 		from 
@@ -76,7 +76,7 @@
 		on 
 		    branch.branch_id = sale.sale_branchid
 		group by
-		    sale.sale_date, 
+		    DATE(sale.sale_date), 
 		    sale.sale_branchid, 
 		    branch.branch_name, 
 		    branch.branch_id;
@@ -86,7 +86,7 @@
     	select 
 		    SUM(sale.sale_sum) AS sale_sum, 
 		    sale.sale_branchid, 
-		    sale.sale_date, 
+		    DATE(sale.sale_date) as sale_date, 
 		    branch.branch_name, 
 		    branch.branch_id
 		from 
@@ -105,7 +105,7 @@
 	   			and sale.sale_date &lt;= #{endDate}
 	   		</if>
 		group by
-		    sale.sale_date, 
+		    DATE(sale.sale_date), 
 		    sale.sale_branchid, 
 		    branch.branch_name, 
 		    branch.branch_id;

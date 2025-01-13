@@ -37,20 +37,20 @@ public class YamilyController {
         return mv;
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login"; // login.html
-    }
-
-    @GetMapping("/admin/dashboard")
-    public String adminDashboard() {
-        return "admin_dashboard"; // admin_dashboard.html
-    }
-
-    @GetMapping("/branch/dashboard")
-    public String branchDashboard() {
-        return "branch_dashboard"; // branch_dashboard.html
-    }
+//    @GetMapping("/login")
+//    public String login() {
+//        return "login"; // login.html
+//    }
+//
+//    @GetMapping("/admin/dashboard")
+//    public String adminDashboard() {
+//        return "admin_dashboard"; // admin_dashboard.html
+//    }
+//
+//    @GetMapping("/branch/dashboard")
+//    public String branchDashboard() {
+//        return "branch_dashboard"; // branch_dashboard.html
+//    }
 
 //    @GetMapping("/user/login")
 //    public String login() {
