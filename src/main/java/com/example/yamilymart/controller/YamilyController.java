@@ -1,15 +1,33 @@
 package com.example.yamilymart.controller;
+import org.springframework.http.HttpHeaders;
 
+
+import java.io.File;
+import java.io.IOException;
+import java.net.FileNameMap;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.yamilymart.dto.OrderDTO;
@@ -30,6 +48,15 @@ public class YamilyController {
 	@Autowired
     private YamilyService yServ;
 
+
+
+
+
+
+
+
+	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
 	//메인 페이지
 	@GetMapping("/")
     public ModelAndView admin_main(){
@@ -40,42 +67,6 @@ public class YamilyController {
 //    @GetMapping("/login")
 //    public String login() {
 //        return "login"; // login.html
-//    }
-//
-//    @GetMapping("/admin/dashboard")
-//    public String adminDashboard() {
-//        return "admin_dashboard"; // admin_dashboard.html
-//    }
-//
-//    @GetMapping("/branch/dashboard")
-//    public String branchDashboard() {
-//        return "branch_dashboard"; // branch_dashboard.html
-//    }
-
-//    @GetMapping("/user/login")
-//    public String login() {
-//        return "login";
-//    }
-
-//	//로그인
-//	@GetMapping("/yamily/login")
-//    public ModelAndView yamily_login(){
-//        mv = yServ.yamily_login();
-//        return mv;
-//    }
-//
-//	//로그인
-//	@GetMapping("/login")
-//    public ModelAndView login(){
-//        mv = yServ.login();
-//        return mv;
-//    }
-//
-//	//로그인
-//	@PostMapping("/login")
-//    public ModelAndView login_submit(){
-//        mv = yServ.login_submit();
-//        return mv;
 //    }
 
 	//본사 - 발주요청목록 get
@@ -115,7 +106,7 @@ public class YamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-	
+
 	//본사 - 발주승인/거절
 	@GetMapping("/admin/order/approval")
     public ModelAndView admin_order_approval(@RequestParam("approval_type") int approval_type, @RequestParam("order_id") String order_id){
@@ -141,7 +132,23 @@ public class YamilyController {
 
 	//본사 - 상품등록
 	@PostMapping("admin/stock/product/add")
-    public ModelAndView admin_stock_product_add(ProductDTO pdto){
+    public ModelAndView admin_stock_product_add(ProductDTO pdto, @RequestParam("files") MultipartFile file){
+		
+		//String filename = origin.substring(origin.lastIndexOf("\\")+1); //브라우저별로 경로가 포함되서 올라오는 경우가 있기에 간단한 처리.
+		
+		String uuid = UUID.randomUUID().toString();
+		String filename = uuid + "_" + file.getOriginalFilename();
+		String savename = "/C:\\uploads/" + filename;
+
+		File dest = new File(savename);
+		pdto.setProduct_image(filename);
+
+		try {
+			file.transferTo(dest);//업로드 진행
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
         mv = yServ.admin_stock_product_add(pdto);
         return mv;
     }
@@ -158,17 +165,59 @@ public class YamilyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+	
+	//상품이미지 조회	
+	@GetMapping("/display")
+    public ResponseEntity<Resource> displayFile(@RequestParam("filename") String filename) {
+        try {
+            // 파일 경로 설정
+            Path filePath = Paths.get("C:/uploads").resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists()) {
+                // 올바르게 반환
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 	//본사 - 상품수정(POST)
 	@PostMapping("admin/stock/update")
-    public ModelAndView admin_stock_update_post(ProductDTO pdto){
-        mv = yServ.admin_stock_update_post(pdto);
+    public ModelAndView admin_stock_update_post(ProductDTO pdto, @RequestParam("files") MultipartFile file){
+		
+	    if (file.isEmpty()) {
+	        mv = yServ.admin_stock_update_post(pdto);
+
+	    } else { //수정할 이미지가 있으면
+			String uuid = UUID.randomUUID().toString();
+			String filename = uuid + "_" + file.getOriginalFilename();
+			String savename = "/C:\\uploads/" + filename;
+
+			File dest = new File(savename);
+			pdto.setProduct_image(filename);
+
+			try {
+				file.transferTo(dest);//업로드 진행
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	        mv = yServ.admin_stock_update_post(pdto);
+
+	    }
+		
         return mv;
     }
 
 	//본사 - 상품삭제(GET)
 	@GetMapping("admin/stock/delete")
-    public ModelAndView admin_stock_delete(@RequestParam("product_id") String product_id){
+    public ModelAndView admin_stock_delete(@RequestParam("product_id") String product_id) {
+		
         mv = yServ.admin_stock_delete(product_id);
 
         return mv;

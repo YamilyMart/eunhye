@@ -73,6 +73,11 @@
 		#modalContainer.hidden {
 		  display: none;
 		}
+		
+		.table-bordered th {
+			text-align: center; 
+			vertical-align: middle;
+		}
    	  
    	  </style>
    
@@ -95,17 +100,17 @@
 		      <form action="/admin/order/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
-		               <th>검색어</th>
+		               <th style="text-align: center; vertical-align: middle;">검색어</th>
 		               <td>		               		
-		               		<select><option>지점명</option></select>
-		               		<input type="text" name="keyword" placeholder="검색어 입력">
+		               		<select class="form-select" style="width: 100px; display: inline-block;"><option>지점명</option></select>
+		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
                <tr>
-               	   <th>발주일자</th>
+               	   <th style="text-align: center; vertical-align: middle;">발주일자</th>
 		               <td>
-		                <input type="date" value="0" id="startDate1" name="startDate1"> - 
-		                <input type="date" value="0" id="endDate1" name="endDate1">
+		                <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="startDate1" name="startDate1"> - 
+		                <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="endDate1" name="endDate1">
 		                  <!-- 
 		                  <div class="date-buttons" style="display: inline-block;">
 		                     <button type="button" onclick="setDate(-1)">1일</button>
@@ -117,10 +122,10 @@
 		               </td>
                		</tr>
            			 <tr>
-			               <th>납기일자</th>
+			               <th style="text-align: center; vertical-align: middle;">납기일자</th>
 			               <td>
-			               <input type="date" value="0" id="startDate2" name="startDate2"> - 
-			               <input type="date" value="0" id="endDate2" name="endDate2">
+			               <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="startDate2" name="startDate2"> - 
+			               <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="endDate2" name="endDate2">
                   <!-- 
                   <div class="date-buttons" style="display: inline-block;">
                      <button type="button" onclick="setDate(-1)">1일</button>
@@ -132,12 +137,32 @@
 		               </td>
 		            </tr>
 		            <tr>
-		               <th>발주상태</th>
+		               <th style="text-align: center; vertical-align: middle;">발주상태</th>
 		               <td>
-							<input type="radio" name="status" value="0" checked="checked">발주대기
-							<input type="radio" name="status" value="1">발주승인
-							<input type="radio" name="status" value="2">발주취소
-							<input type="radio" name="status" value="3">입고완료
+		               		<div style="display: inline-block;">
+			               	    <div class="form-check" style="display: inline-block; margin: 0 5px 0 0;">
+				               		<input class="form-check-input" type="radio" value="0" id="flexCheckDefault0" name="status">
+									<label class="form-check-label" for="flexCheckDefault0">발주대기</label>
+								</div>
+								
+								<div class="form-check" style="display: inline-block; margin: 0 5px 0 0;">
+									<input class="form-check-input" type="radio" value="1" id="flexCheckDefault1" name="status">
+									<label class="form-check-label" for="flexCheckDefault1">발주승인</label>
+								</div>
+								
+								<div class="form-check" style="display: inline-block; margin: 0 5px 0 0;">
+									<input class="form-check-input" type="radio" value="2" id="flexCheckDefault2" name="status">
+									<label class="form-check-label" for="flexCheckDefault2">입고완료</label>
+								</div>
+								
+								<div class="form-check" style="display: inline-block; margin: 0 5px 0 0;">
+									<input class="form-check-input" type="radio" value="3" id="flexCheckDefault3" name="status">
+									<label class="form-check-label" for="flexCheckDefault3">발주취소</label>
+								</div>
+		               	
+		               	
+		               	   </div>
+		               		
 		               </td>
 		            </tr>
          	</table>
@@ -217,19 +242,19 @@
 		    		<table class="table table-bordered">
 			            <tr>
 			               <th>주문ID</th>
-   			               <td><input id="order_id" type="text" readonly/></td>
+   			               <td><input id="order_id" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
    			               <th>지점명</th>
-   			               <th><input id="order_partnerid" type="text" readonly/></th>
+   			               <td><input id="order_partnerid" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
 			            </tr>
 			            <tr>
 			               <th>발주일자</th>
-   			               <td><input id="order_date" type="text" readonly/></td>
+   			               <td><input id="order_date" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
    			               <th>납기일자</th>
-   			               <th><input id="order_delivery" type="text" readonly/></th>
+   			               <td><input id="order_delivery" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
 			            </tr>
 			            <tr>
 			               <th>담당자명</th>
-   			               <td><input id="order_manager" type="text" readonly/></td>
+   			               <td><input id="order_manager" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
    			               <th>발주상태</th>
    			               
    			               <!-- <th><input id="order_status" type="text" readonly/></th>  -->
@@ -241,9 +266,9 @@
 			            </tr>
 			            <tr>
 			               <th>수량</th>
-   			               <td><input id="order_amount" type="text" readonly/></td>
+   			               <td><input id="order_amount" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
    			               <th>메모</th>
-   			               <td><input id="order_memo" type="text" readonly/></td>
+   			               <td><input id="order_memo" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
 			            </tr> 
 		            </table>
 

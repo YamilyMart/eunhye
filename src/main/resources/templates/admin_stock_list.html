@@ -62,13 +62,19 @@
 		  position: absolute;
 		  background-color: #ffffff;
 		  width: 1000px;
-		  height: 500px;
+		  height: 700px;
 		  padding: 30px 50px;
 		}
 		
 		#modalContainerAdd.hidden, #modalContainerUpdate.hidden {
 		  display: none;
 		}
+		
+		.table-bordered th {
+			text-align: center; 
+			vertical-align: middle;
+		}
+		
    	  
    	  </style>
    
@@ -92,11 +98,11 @@
 		            <tr>
 		               <th>검색어</th>
 		               <td>
-		               		<select name="searchType">
+		               		<select name="searchType" class="form-select" style="width: 100px; display: inline-block;">
 			                     <option value="0">상품명</option>
 			                     <option value="1">상품코드</option>
 		               		</select> 
-		               		<input type="text" name="keyword" placeholder="검색어 입력">
+		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
          		</table>
@@ -144,7 +150,7 @@
 		                         <button type="button" th:onclick="amountMinus([[${list.stock_id}]]);" style="border: 0; background-color: transparent;">
 								    <img style="width: 20px; height: 20px; padding: 0 0 0 0;" src="/images/minus.png" alt="minus">
 								</button>
-								<input th:value="${list.stock_remain}" name="stock_amount" th:id="'stock_amount_' + ${list.stock_id}" />
+								<input th:value="${list.stock_remain}" class="form-control" style="width: 100px; display: inline-block; text-align: center;" name="stock_amount" th:id="'stock_amount_' + ${list.stock_id}" />
 								<button type="button" th:onclick="amountPlus([[${list.stock_id}]]);" style="border: 0; background-color: transparent;">
 								    <img style="width: 20px; height: 20px; padding: 0 0 0 0;" src="/images/plus.png" alt="plus">
 								</button>
@@ -180,23 +186,29 @@
 				  		</div>
 				  	</div>
 		    		
-		    		<form action="/admin/stock/product/add" method="post">
+		    		<form action="/admin/stock/product/add" method="post" enctype="multipart/form-data">
 			    		<table class="table table-bordered">
 				            <tr>
 				               <th>거래처 명</th>
-	   			               <td><input id="product_partnerid" name="product_partnerid" type="text"/></td>
+	   			               <td><input id="product_partnerid" name="product_partnerid" class="form-control" type="text"/></td>
 				            </tr>
 				            <tr>
 				               <th>상품명</th>
-	   			               <td><input id="product_name" name="product_name" type="text"/></td>
+	   			               <td><input id="product_name" name="product_name" class="form-control" type="text"/></td>
 				            </tr>
 				            <tr>
-				               <th>상품단가</th>
-	   			               <td><input id="product_price" name="product_price" type="text"/></td>
+				               <th >상품단가</th>
+	   			               <td><input id="product_price" name="product_price" class="form-control" type="text"/></td>
 				            </tr>
 				            <tr>
 				               <th>상품코드 </th>
-	   			               <td><input id="product_id" name="product_id" type="text"/></td>
+	   			               <td><input id="product_id" name="product_id" class="form-control" type="text"/></td>
+				            </tr>
+				            <tr>
+				            	<th>이미지 업로드</th>
+				            	<td>
+									<input style="height: 33px; padding-left: 12px;" class="form-control" type="file" id="formFile" name="files">
+				            	</td>
 				            </tr>
 			            </table>
 		
@@ -236,24 +248,37 @@
 				  		</div>
 				  	</div>
 		    
-		    		<form action="/admin/stock/update" method="post">
+		    		<form action="/admin/stock/update" method="post" enctype="multipart/form-data">
 			    		<table class="table table-bordered">
 				            <tr>
 				               <th>거래처 명</th>
-	   			               <td><input id="up_product_partnerid" name="product_partnerid" type="text" readonly/></td>
+	   			               <td><input id="up_product_partnerid" name="product_partnerid" class="form-control" type="text" readonly/></td>
 				            </tr>
 				            <tr>
 				               <th>상품명</th>
-	   			               <td><input id="up_product_name" name="product_name" type="text"/></td>
+	   			               <td><input id="up_product_name" name="product_name" class="form-control" type="text"/></td>
 				            </tr>
 				            <tr>
 				               <th>상품단가</th>
-	   			               <td><input id="up_product_price" name="product_price" type="text"/></td>
+	   			               <td><input id="up_product_price" name="product_price" class="form-control" type="text"/></td>
 				            </tr>
 				            <tr>
 				               <th>상품코드 </th>
-	   			               <td><input id="up_product_id" name="product_id" type="text" readonly/></td>
+	   			               <td><input id="up_product_id" name="product_id" class="form-control" type="text" readonly/></td>
 				            </tr>  
+				            <tr>
+				            	<th>기존 이미지</th>
+				            	<td>
+				            		<input style="height: 35px; padding-left: 12px; margin: 0 0 10px 0;" class="form-control" type="text" id="up_product_image1">
+									<div id="image_box"></div>
+				            	</td>
+				            </tr>
+				            <tr>
+				            	<th>이미지 수정</th>
+				            	<td>
+									<input style="height: 33px;" class="form-control" type="file" id="up_product_image2" name="files">
+				            	</td>
+				            </tr>
 			            </table>
 
 						<div style="margin: 0 30px 0 0; text-align: center;">
@@ -262,7 +287,6 @@
 								<button type="submit" class="btn cur-p btn-success">저장</button>
 							</div>
 						</div>
-		    		
 		    		</form>
 		  	</div>
 		</div>
@@ -312,8 +336,13 @@
 		    	        	    document.getElementById("up_product_partnerid").value = result.product_partnerid;
 		    	        	    document.getElementById("up_product_name").value = result.product_name;
 		    	        	    document.getElementById("up_product_price").value = result.product_price;
-		    	        	    
+		    	        	    document.getElementById("up_product_image1").value = result.product_image;
+	
 		    	        	    document.getElementById("delete_product_id").value = result.product_id;
+		    	        	    
+		    	        	    //이미지 띄우기
+	    	                    const image_box = document.getElementById("image_box");
+	    	                    image_box.innerHTML = '<img style="width: 100px; height: 70px;" src="/display?filename=' + result.product_image + '">';
 		    	        	    
 		    	        	    const modal = document.getElementById('modalContainerUpdate');
 		    			  	    modal.classList.remove('hidden');

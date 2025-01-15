@@ -27,6 +27,25 @@ public class YamilyService {
 
     public ModelAndView admin_main() {
     	mv = new ModelAndView();
+    	
+    	//발주 상태별 건수 조회(order)
+    	List<OrderDTO> orderStatusList = yDao.admin_main_orderStatus();
+        mv.addObject("orderStatusList", orderStatusList);
+        
+        //제품별 판매 순위(sale)
+    	List<SaleDTO> productSaleList = yDao.admin_main_prductSale();
+        mv.addObject("productSaleList", productSaleList);
+        
+        //최근 상품 주문 목록(order)
+//    	List<SaleDTO> monthSaleList = yDao.admin_main_monthSale();
+//        mv.addObject("monthSaleList", monthSaleList);
+        
+        //달별 판매 순위(sale)
+        List<SaleDTO> monthSaleList = yDao.admin_main_monthSale();
+        mv.addObject("monthSaleList", monthSaleList);
+        
+        //전국 지점 수(branch)
+        
         mv.setViewName("admin_main");
 
         return mv;
@@ -92,12 +111,12 @@ public class YamilyService {
 
         return mv;
     }
-    
+
 
     public ModelAndView admin_order_approval(int approval_type, String order_id) {
     	mv = new ModelAndView();
     	int a = yDao.admin_order_approval(approval_type, order_id);
-    	
+
         mv.setViewName("redirect:/admin/order/list");
 
         return mv;
@@ -118,9 +137,9 @@ public class YamilyService {
    	   //제품등록
    	   int a = yDao.admin_stock_product_add(pdto);
    	   if(a == 0) {
-   		   
+
    	   } else {
-   		   
+
    	   }
 
    	   //초기 재고 등록

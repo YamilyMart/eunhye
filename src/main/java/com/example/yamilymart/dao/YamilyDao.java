@@ -2,7 +2,6 @@ package com.example.yamilymart.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -29,7 +28,7 @@ public interface YamilyDao {
 
 	@Select("SELECT * FROM `order`, branch where `order`.order_sender = branch.branch_id and order_id = #{order_id}")
 	OrderDTO admin_order_detail2(String order_id);
-	
+
 	int admin_order_approval(@Param("approval_type")int approval_type, @Param("order_id")String order_id);
 
 	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1 and stock_del = 0")
@@ -61,6 +60,14 @@ public interface YamilyDao {
 
     List<SaleDTO> admin_sale_detail(@Param("sale_branchid") String sale_branchid, @Param("sale_date") String sale_date);
     
+    List<OrderDTO> admin_main_orderStatus();
+    
+    List<SaleDTO> admin_main_prductSale();
+    
+    List<SaleDTO> admin_main_monthSale();
+
+
+
 
 
 

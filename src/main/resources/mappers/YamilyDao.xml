@@ -3,8 +3,8 @@
 <mapper namespace="com.example.yamilymart.dao.YamilyDao">
 
     <insert id="admin_stock_product_add" parameterType="ProductDTO">
-        insert into product(product_id, product_partnerid, product_name, product_price)
-        values (#{product_id}, #{product_partnerid}, #{product_name}, #{product_price})
+        insert into product(product_id, product_partnerid, product_name, product_price, product_image)
+        values (#{product_id}, #{product_partnerid}, #{product_name}, #{product_price}, #{product_image})
     </insert>
     
     <insert id="admin_stock_add" parameterType="StockDTO">
@@ -15,6 +15,9 @@
     <update id="admin_stock_update_post" parameterType="ProductDTO">
         update product
         set product_price = #{product_price}, product_name = #{product_name}
+	    <if test="product_image != null and product_image != ''">
+	        , product_image = #{product_image}
+	    </if>
         where product_id = #{product_id}
     </update>
     
@@ -112,17 +115,42 @@
     </select>
     
     <select id="admin_sale_detail">
-	    select sale.sale_productid, sale.sale_branchid, sum(sale_amount) sale_amount, sum(sale_sum) sale_sum, 
+	    select sale.sale_productid, sale.sale_branchid, sum(sale_amount) sale_amount, sum(sale_sum) sale_sum, sale.sale_date,
 	    product.product_name, product.product_price, partner.partner_name
 		from sale, branch, partner, product
-		where sale_branchid = #{sale_branchid} 
-		and sale_date = #{sale_date} 
+		where sale_branchid = #{sale_branchid}
+		and date(sale.sale_date) = #{sale_date}
 		and sale.sale_branchid = branch.branch_id 
 		and sale.sale_productid = product.product_id 
 		and product.product_partnerid = partner.partner_id
-		group by sale.sale_productid, sale.sale_branchid
+		group by sale.sale_productid, sale.sale_branchid, sale.sale_date
     </select>
-
+    
+    <select id="admin_main_orderStatus">
+		select order_type, order_status, count(order_id) as count
+		from `order`
+		where order_type = 0
+		group by order_status, order_type;
+    </select>
+    
+    <select id="admin_main_prductSale">
+		select sale.sale_productid, count(sale.sale_amount) as count, product.product_name, product.product_image, product.product_price, product.product_image
+		from sale, product
+		where sale.sale_productid = product.product_id
+		group by sale_productid
+		order by count desc;
+    </select>
+    
+    <select id="admin_main_monthSale">
+	    SELECT 
+		    SUM(sale_sum) AS sale_sum,
+		    MONTH(sale_date) AS sale_month,
+		    YEAR(sale_date) AS sale_year
+		FROM sale
+		GROUP BY YEAR(sale_date), MONTH(sale_date)
+		ORDER BY sale_year DESC, sale_month DESC
+		LIMIT 6;
+    </select>
     
 
 </mapper>

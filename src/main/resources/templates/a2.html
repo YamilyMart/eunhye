@@ -1,4 +1,5 @@
-<!DOCTYPE html >
+
+<!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
    <head>
       <!-- basic -->
@@ -8,96 +9,171 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <!-- site metas -->
-      <title>본사 메인페이지</title>
+      <title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
       <meta name="keywords" content="">
       <meta name="description" content="">
       <meta name="author" content="">
       <!-- site icon -->
-      <link rel="icon" href="/images/fevicon.png" type="image/png" />
+      <link rel="icon" href="images/fevicon.png" type="image/png" />
       <!-- bootstrap css -->
-      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+      <link rel="stylesheet" href="css/bootstrap.min.css" />
       <!-- site css -->
-      <link rel="stylesheet" href="/css/style.css" />
+      <link rel="stylesheet" href="style.css" />
       <!-- responsive css -->
-      <link rel="stylesheet" href="/css/responsive.css" />
+      <link rel="stylesheet" href="css/responsive.css" />
       <!-- color css -->
-      <!-- <link rel="stylesheet" href="/css/color_2.css" />  -->
-      <link rel="stylesheet" href="/css/colors.css" />
+      <link rel="stylesheet" href="css/color_2.css" />
       <!-- select bootstrap -->
-      <link rel="stylesheet" href="/css/bootstrap-select.css" />
+      <link rel="stylesheet" href="css/bootstrap-select.css" />
       <!-- scrollbar css -->
-      <link rel="stylesheet" href="/css/perfect-scrollbar.css" />
+      <link rel="stylesheet" href="css/perfect-scrollbar.css" />
       <!-- custom css -->
-      <link rel="stylesheet" href="/css/custom.css" />
+      <link rel="stylesheet" href="css/custom.css" />
       <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
       <![endif]-->
-    
-      <!-- <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">  -->
-      
-		<style>
-		  .msg_list_main::-webkit-scrollbar {
-		    width: 10px;
-		  }
-		  .msg_list_main::-webkit-scrollbar-thumb {
-		    background-color: grey;
-		    border-radius: 10px;
-		    background-clip: padding-box;
-		    border: 2px solid transparent;
-		  }
-		  .msg_list_main::-webkit-scrollbar-track {
-		    background-color: white;
-		    border-radius: 10px;
-		    box-shadow: inset 0px 0px 5px white;
-		  }
-		      .msg_list_main {
-		      height: 500px;
-		      overflow: hidden; /* 기본적으로 스크롤바 숨김 */
-		      transition: overflow 1s ease; /* 부드러운 전환 */
-		    }
-
-		    .msg_list_main:hover {
-		      overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
-		    }
-		</style>
    </head>
-   <body class="dashboard dashboard_1">
+   <body class="dashboard dashboard_2">
       <div class="full_container">
          <div class="inner_container">
-            <head th:include="fragments/sidebar :: sidebar"></head>
+            <!-- Sidebar  -->
+            <nav id="sidebar">
+               <div class="sidebar_blog_1">
+                  <div class="sidebar-header">
+                     <div class="logo_section">
+                        <a href="index.html"><img class="logo_icon img-responsive" src="images/logo/logo_icon.png" alt="#" /></a>
+                     </div>
+                  </div>
+                  <div class="sidebar_user_info">
+                     <div class="icon_setting"></div>
+                     <div class="user_profle_side">
+                        <div class="user_img"><img class="img-responsive" src="images/layout_img/user_img.jpg" alt="#" /></div>
+                        <div class="user_info">
+                           <h6>John David</h6>
+                           <p><span class="online_animation"></span> Online</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="sidebar_blog_2">
+                  <h4>General</h4>
+                  <ul class="list-unstyled components">
+                     <li class="active">
+                        <a href="#dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-dashboard yellow_color"></i> <span>Dashboard</span></a>
+                        <ul class="collapse list-unstyled" id="dashboard">
+                           <li>
+                              <a href="dashboard.html">> <span>Default Dashboard</span></a>
+                           </li>
+                           <li>
+                              <a href="dashboard_2.html">> <span>Dashboard style 2</span></a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li><a href="widgets.html"><i class="fa fa-clock-o orange_color"></i> <span>Widgets</span></a></li>
+                     <li>
+                        <a href="#element" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-diamond purple_color"></i> <span>Elements</span></a>
+                        <ul class="collapse list-unstyled" id="element">
+                           <li><a href="general_elements.html">> <span>General Elements</span></a></li>
+                           <li><a href="media_gallery.html">> <span>Media Gallery</span></a></li>
+                           <li><a href="icons.html">> <span>Icons</span></a></li>
+                           <li><a href="invoice.html">> <span>Invoice</span></a></li>
+                        </ul>
+                     </li>
+                     <li><a href="tables.html"><i class="fa fa-table purple_color2"></i> <span>Tables</span></a></li>
+                     <li>
+                        <a href="#apps" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-object-group blue2_color"></i> <span>Apps</span></a>
+                        <ul class="collapse list-unstyled" id="apps">
+                           <li><a href="email.html">> <span>Email</span></a></li>
+                           <li><a href="calendar.html">> <span>Calendar</span></a></li>
+                           <li><a href="media_gallery.html">> <span>Media Gallery</span></a></li>
+                        </ul>
+                     </li>
+                     <li><a href="price.html"><i class="fa fa-briefcase blue1_color"></i> <span>Pricing Tables</span></a></li>
+                     <li>
+                        <a href="contact.html">
+                        <i class="fa fa-paper-plane red_color"></i> <span>Contact</span></a>
+                     </li>
+                     <li class="active">
+                        <a href="#additional_page" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-clone yellow_color"></i> <span>Additional Pages</span></a>
+                        <ul class="collapse list-unstyled" id="additional_page">
+                           <li>
+                              <a href="profile.html">> <span>Profile</span></a>
+                           </li>
+                           <li>
+                              <a href="project.html">> <span>Projects</span></a>
+                           </li>
+                           <li>
+                              <a href="login.html">> <span>Login</span></a>
+                           </li>
+                           <li>
+                              <a href="404_error.html">> <span>404 Error</span></a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li><a href="map.html"><i class="fa fa-map purple_color2"></i> <span>Map</span></a></li>
+                     <li><a href="charts.html"><i class="fa fa-bar-chart-o green_color"></i> <span>Charts</span></a></li>
+                     <li><a href="settings.html"><i class="fa fa-cog yellow_color"></i> <span>Settings</span></a></li>
+                  </ul>
+               </div>
+            </nav>
+            <!-- end sidebar -->
             <!-- right content -->
             <div id="content">
-            	<head th:include="fragments/topbar :: topbar"></head>
-            	
-
-
+               <!-- topbar -->
+               <div class="topbar">
+                  <nav class="navbar navbar-expand-lg navbar-light">
+                     <div class="full">
+                        <button type="button" id="sidebarCollapse" class="sidebar_toggle"><i class="fa fa-bars"></i></button>
+                        <div class="logo_section">
+                           <a href="index.html"><img class="img-responsive" src="images/logo/logo_black.png" alt="#" /></a>
+                        </div>
+                        <div class="right_topbar">
+                           <div class="icon_info">
+                              <ul>
+                                 <li><a href="#"><i class="fa fa-bell-o"></i><span class="badge">2</span></a></li>
+                                 <li><a href="#"><i class="fa fa-question-circle"></i></a></li>
+                                 <li><a href="#"><i class="fa fa-envelope-o"></i><span class="badge">3</span></a></li>
+                              </ul>
+                              <ul class="user_profile_dd">
+                                 <li>
+                                    <a class="dropdown-toggle" data-toggle="dropdown"><img class="img-responsive rounded-circle" src="images/layout_img/user_img.jpg" alt="#" /><span class="name_user">John David</span></a>
+                                    <div class="dropdown-menu">
+                                       <a class="dropdown-item" href="profile.html">My Profile</a>
+                                       <a class="dropdown-item" href="settings.html">Settings</a>
+                                       <a class="dropdown-item" href="help.html">Help</a>
+                                       <a class="dropdown-item" href="#"><span>Log Out</span> <i class="fa fa-sign-out"></i></a>
+                                    </div>
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </nav>
+               </div>
+               <!-- end topbar -->
                <!-- dashboard inner -->
                <div class="midde_cont">
                   <div class="container-fluid">
                      <div class="row column_title">
                         <div class="col-md-12">
                            <div class="page_title">
-                              <h2>Yamily-Mart 메인페이지</h2>
+                              <h2>Dashboard</h2>
                            </div>
                         </div>
                      </div>
-                     
-                     <!-- 발주 상태별 건 수 -->
                      <div class="row column1">
                         <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30 gray_bg" style="background-color: gray;">
+                           <div class="full counter_section margin_bottom_30 yellow_bg">
                               <div class="couter_icon">
                                  <div> 
-                                    <i class="fa fa-spinner"></i>
+                                    <i class="fa fa-user"></i>
                                  </div>
                               </div>
                               <div class="counter_no">
                                  <div>
-                                 	<th::block th:each="str: ${orderStatusList}">
-                                    	<p th:if="${str.order_status == 0}" class="total_no" style="color: white">[[${str.count}]] 건</p>
-                                    </th::block>
-                                    <p class="head_couter" style="color: white">발주대기</p>
+                                    <p class="total_no">2500</p>
+                                    <p class="head_couter">Welcome</p>
                                  </div>
                               </div>
                            </div>
@@ -106,15 +182,13 @@
                            <div class="full counter_section margin_bottom_30 blue1_bg">
                               <div class="couter_icon">
                                  <div> 
-                                    <i class="fa fa-check-circle-o"></i>
+                                    <i class="fa fa-clock-o"></i>
                                  </div>
                               </div>
                               <div class="counter_no">
                                  <div>
-                                 	<th::block th:each="str: ${orderStatusList}">
-                                    	<p th:if="${str.order_status == 1}" class="total_no" style="color: white">[[${str.count}]] 건</p>
-                                    </th::block>
-                                    <p class="head_couter" style="color: white">발주승인</p>
+                                    <p class="total_no">123.50</p>
+                                    <p class="head_couter">Average Time</p>
                                  </div>
                               </div>
                            </div>
@@ -123,171 +197,33 @@
                            <div class="full counter_section margin_bottom_30 green_bg">
                               <div class="couter_icon">
                                  <div> 
-                                    <i class="fa fa-external-link-square"></i>
+                                    <i class="fa fa-cloud-download"></i>
                                  </div>
                               </div>
                               <div class="counter_no">
                                  <div>
-                                 	<th::block th:each="str: ${orderStatusList}">
-                                    	<p th:if="${str.order_status == 2}" class="total_no" style="color: white">[[${str.count}]] 건</p>
-                                    </th::block>                                    
-                                    <p class="head_couter" style="color: white">입고완료</p>
+                                    <p class="total_no">1,805</p>
+                                    <p class="head_couter">Collections</p>
                                  </div>
                               </div>
                            </div>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30" style="background-color: #d34836;">
+                           <div class="full counter_section margin_bottom_30 red_bg">
                               <div class="couter_icon">
                                  <div> 
-                                    <i class="fa fa-times"></i>
+                                    <i class="fa fa-comments-o"></i>
                                  </div>
                               </div>
                               <div class="counter_no">
                                  <div>
-                                 	<th::block th:each="str: ${orderStatusList}">
-                                    	<p th:if="${str.order_status == 3}" class="total_no" style="color: white">[[${str.count}]] 건</p>
-                                    </th::block>                                    
-                                    <p class="head_couter" style="color: white">발주취소</p>
+                                    <p class="total_no">54</p>
+                                    <p class="head_couter">Comments</p>
                                  </div>
                               </div>
                            </div>
                         </div>
                      </div>
-                     
-                     
-                     <!-- 많이 판 제품 목록, 거래처 최근 주문 목록 -->
-                     <div class="row column1">
-                     
-                        <div class="col-lg-6">
-	                           <div class="white_shd full margin_bottom_30">
-	                              <div class="full graph_head">
-	                                 <div class="heading1 margin_0">
-	                                    <h2>제품별 매출현황</h2>
-	                                 </div>
-	                              </div>
-	                              <div class="full progress_bar_inner">
-	                                 <div class="row">
-	                                    <div class="col-md-12">
-	                                       <div class="msg_section">
-	                                          <div class="msg_list_main">
-	                                             <ul class="msg_list">
-	                                             
-	                                                <th::block th:each="str, a: ${productSaleList}">
-		                                                <li>
-		                                                   <span><img style="width: 100px; height: 70px;" th:src="@{/display(filename=${str.product_image})}"></span> 
-		                                                   <span>
-			                                                   <span class="name_user">[[${a.index + 1}]]위 [[${str.product_name}]]</span>
-			                                                   <!-- <span class="msg_user">[[${str.count}]]</span>  -->
-			                                                   <span class="msg_user" data-th-text="${#numbers.formatInteger(str.count * str.product_price, 3, 'COMMA') + '원'}"></span>
-		                                                   </span>
-		                                                </li>
-	                                                </th::block>
-				                                    
-				                                      <!--  
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg2.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">Sed ut perspiciatis unde omnis.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg3.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">On the other hand, we denounce.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg2.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">Sed ut perspiciatis unde omnis.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg3.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">On the other hand, we denounce.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                
-	                                                 -->
-	                                             </ul>
-	                                          </div>
-	                                            <div class="cover-bar"></div>
-	                                          
-	                                       </div>
-	                                    </div>
-	                                 </div>
-	                              </div>
-	                           </div>
-                           </div>
-                           
-                           <div class="col-lg-6">
-	                           <div class="white_shd full margin_bottom_30">
-	                              <div class="full graph_head">
-	                                 <div class="heading1 margin_0">
-	                                    <h2>거래처 주문현황</h2>
-	                                 </div>
-	                              </div>
-	                              <div class="full progress_bar_inner">
-	                                 <div class="row">
-	                                    <div class="col-md-12">
-	                                       <div class="msg_section">
-	                                          <div class="msg_list_main">
-	                                             <ul class="msg_list">
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg2.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">Sed ut perspiciatis unde omnis.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg3.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">On the other hand, we denounce.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg2.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">Sed ut perspiciatis unde omnis.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                                <li>
-	                                                   <span><img src="images/layout_img/msg3.png" class="img-responsive" alt="#"></span>
-	                                                   <span>
-	                                                   <span class="name_user">John Smith</span>
-	                                                   <span class="msg_user">On the other hand, we denounce.</span>
-	                                                   <span class="time_ago">12 min ago</span>
-	                                                   </span>
-	                                                </li>
-	                                             </ul>
-	                                          </div>
-	                                       </div>
-	                                    </div>
-	                                 </div>
-	                              </div>
-	                           </div>
-                           
-                        </div>
-                     </div>
-                     
-                     
-                     <!-- 
                      <div class="row column1 social_media_section">
                         <div class="col-md-6 col-lg-3">
                            <div class="full socile_icons fb margin_bottom_30">
@@ -366,16 +302,13 @@
                            </div>
                         </div>
                      </div>
-                     
-                      -->
-                     
                      <!-- graph -->
                      <div class="row column2 graph margin_bottom_30">
                         <div class="col-md-l2 col-lg-12">
                            <div class="white_shd full">
                               <div class="full graph_head">
                                  <div class="heading1 margin_0">
-                                    <h2>최근 6개월 동안의 월별 매출</h2>
+                                    <h2>Extra Area Chart</h2>
                                  </div>
                               </div>
                               <div class="full graph_revenue">
@@ -383,7 +316,14 @@
                                     <div class="col-md-12">
                                        <div class="content">
                                           <div class="area_chart">
-                                             <canvas height="120" id="myChart"></canvas>
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                   <canvas id="chart-2"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                   <canvas id="chart-1"></canvas>
+                                                </div>
+                                             </div>
                                           </div>
                                        </div>
                                     </div>
@@ -393,11 +333,6 @@
                         </div>
                      </div>
                      <!-- end graph -->
-                     
-                     
-                     
-                     
-                     
                      <div class="row column3">
                         <!-- testimonial -->
                         <div class="col-md-6">
@@ -415,17 +350,17 @@
                                              <!-- Wrapper for carousel items -->
                                              <div class="carousel-inner">
                                                 <div class="item carousel-item active">
-                                                   <div class="img-box"><img src="/images/layout_img/user_img.jpg" alt=""></div>
+                                                   <div class="img-box"><img src="images/layout_img/user_img.jpg" alt=""></div>
                                                    <p class="testimonial">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae..</p>
                                                    <p class="overview"><b>Michael Stuart</b>Seo Founder</p>
                                                 </div>
                                                 <div class="item carousel-item">
-                                                   <div class="img-box"><img src="/images/layout_img/user_img.jpg" alt=""></div>
+                                                   <div class="img-box"><img src="images/layout_img/user_img.jpg" alt=""></div>
                                                    <p class="testimonial">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae..</p>
                                                    <p class="overview"><b>Michael Stuart</b>Seo Founder</p>
                                                 </div>
                                                 <div class="item carousel-item">
-                                                   <div class="img-box"><img src="/images/layout_img/user_img.jpg" alt=""></div>
+                                                   <div class="img-box"><img src="images/layout_img/user_img.jpg" alt=""></div>
                                                    <p class="testimonial">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae..</p>
                                                    <p class="overview"><b>Michael Stuart</b>Seo Founder</p>
                                                 </div>
@@ -528,7 +463,7 @@
                                  <div class="msg_list_main">
                                     <ul class="msg_list">
                                        <li>
-                                          <span><img src="/images/layout_img/msg2.png" class="img-responsive" alt="#" /></span>
+                                          <span><img src="images/layout_img/msg2.png" class="img-responsive" alt="#" /></span>
                                           <span>
                                           <span class="name_user">John Smith</span>
                                           <span class="msg_user">Sed ut perspiciatis unde omnis.</span>
@@ -536,7 +471,7 @@
                                           </span>
                                        </li>
                                        <li>
-                                          <span><img src="/images/layout_img/msg3.png" class="img-responsive" alt="#" /></span>
+                                          <span><img src="images/layout_img/msg3.png" class="img-responsive" alt="#" /></span>
                                           <span>
                                           <span class="name_user">John Smith</span>
                                           <span class="msg_user">On the other hand, we denounce.</span>
@@ -544,7 +479,7 @@
                                           </span>
                                        </li>
                                        <li>
-                                          <span><img src="/images/layout_img/msg2.png" class="img-responsive" alt="#" /></span>
+                                          <span><img src="images/layout_img/msg2.png" class="img-responsive" alt="#" /></span>
                                           <span>
                                           <span class="name_user">John Smith</span>
                                           <span class="msg_user">Sed ut perspiciatis unde omnis.</span>
@@ -552,7 +487,7 @@
                                           </span>
                                        </li>
                                        <li>
-                                          <span><img src="/images/layout_img/msg3.png" class="img-responsive" alt="#" /></span>
+                                          <span><img src="images/layout_img/msg3.png" class="img-responsive" alt="#" /></span>
                                           <span>
                                           <span class="name_user">John Smith</span>
                                           <span class="msg_user">On the other hand, we denounce.</span>
@@ -569,9 +504,6 @@
                         </div>
                      </div>
                   </div>
-                  
-                  
-                  
                   <!-- footer -->
                   <div class="container-fluid">
                      <div class="footer">
@@ -580,68 +512,33 @@
                         </p>
                      </div>
                   </div>
-                  
-                  
-                  
                </div>
                <!-- end dashboard inner -->
             </div>
          </div>
       </div>
-      
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-      
-      <script>
-	      let myCt = document.getElementById('myChart');
-	      
-	      const currentDate = new Date();
-	      
-		  // 현재 달 구하기
-		  const month = currentDate.getMonth() + 1;
-		  
-		  var minus_m = 0;
-		  
-		  if((month-5) < 1) {
-			  minus_m = 12 + (month-5)
-		  }
-	
-	      let myChart = new Chart(myCt, {
-	        type: 'bar',
-	        data: {
-	          labels: [minus_m, minus_m+1, minus_m+2, minus_m+3, minus_m+4, month],
-	          datasets: [
-	            {
-	              label: 'Dataset',
-	              data: [10,20,30,40,50,60],
-	            }
-	          ]
-	        },
-	      });
-
-      </script>
-      
       <!-- jQuery -->
-      <!-- <script src="/js/jquery.min.js"></script> -->
-      <script src="/js/popper.min.js"></script>
-      <script src="/js/bootstrap.min.js"></script>
+      <script src="js/jquery.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.min.js"></script>
       <!-- wow animation -->
-      <script src="/js/animate.js"></script>
+      <script src="js/animate.js"></script>
       <!-- select country -->
-      <script src="/js/bootstrap-select.js"></script>
+      <script src="js/bootstrap-select.js"></script>
       <!-- owl carousel -->
-      <script src="/js/owl.carousel.js"></script> 
+      <script src="js/owl.carousel.js"></script> 
       <!-- chart js -->
-      <script src="/js/Chart.min.js"></script>
-      <script src="/js/Chart.bundle.min.js"></script>
-      <script src="/js/utils.js"></script>
-      <script src="/js/analyser.js"></script>
+      <script src="js/Chart.min.js"></script>
+      <script src="js/Chart.bundle.min.js"></script>
+      <script src="js/utils.js"></script>
+      <script src="js/analyser.js"></script>
       <!-- nice scrollbar -->
-      <script src="/js/perfect-scrollbar.min.js"></script>
+      <script src="js/perfect-scrollbar.min.js"></script>
       <script>
          var ps = new PerfectScrollbar('#sidebar');
       </script>
       <!-- custom js -->
-      <script src="/js/chart_custom_style1.js"></script>
-      <script src="/js/custom.js"></script>
+      <script src="js/custom.js"></script>
+      <script src="js/chart_custom_style2.js"></script>
    </body>
 </html>

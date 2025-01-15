@@ -22,4 +22,6 @@ public class OrderDTO {
 	private String order_memo;
 
 	private String branch_name;
+	
+	private int count;
 }

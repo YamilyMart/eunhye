@@ -17,9 +17,13 @@ public class SaleDTO {
 	private int sale_sum;
 
 	private String branch_name;
-
 	private String product_name;
 	private String partner_name;
+	private int product_price;
+	private int count;
+	private String product_image;
+	
+	private int sale_year;
+	private int sale_month;
 
-	private String product_price;
 }

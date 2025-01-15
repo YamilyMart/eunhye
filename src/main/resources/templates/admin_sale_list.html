@@ -73,6 +73,11 @@
 		#modalContainer.hidden {
 		  display: none;
 		}
+		
+		.table-bordered th {
+			text-align: center; 
+			vertical-align: middle;
+		}
    	  
    	  </style>
    
@@ -95,17 +100,17 @@
 		      <form action="/admin/sale/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
-		               <th>검색어</th>
+		               <th style="text-align: center; vertical-align: middle;">검색어</th>
 		               <td>		               		
-		               		<select><option>지점명</option></select>
-		               		<input type="text" name="keyword" placeholder="검색어 입력">
+		               		<select class="form-select" style="width: 100px; display: inline-block;"><option>지점명</option></select>
+		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		             </tr>
                	  <tr>
-               	   <th>날짜</th>
+               	   <th style="text-align: center; vertical-align: middle;">날짜</th>
 		               <td>
-		                <input type="date" value="0" id="startDate1" name="startDate"> - 
-		                <input type="date" value="0" id="endDate1" name="endDate">
+		                <input type="date" value="0" id="startDate1" class="form-control" style="width: 170px; display: inline-block;" name="startDate"> - 
+		                <input type="date" value="0" id="endDate1" class="form-control" style="width: 170px; display: inline-block;" name="endDate">
 		                  <!-- 
 		                  <div class="date-buttons" style="display: inline-block;">
 		                     <button type="button" onclick="setDate(-1)">1일</button>
@@ -205,16 +210,16 @@
 			  	
 			  	<div style="margin: 10px; text-align: center; float: center;">
 			  		<div>
-				  		<h4 style="text-align: center;">발주 상세 정보</h4>
+				  		<h4 style="text-align: center;">매출 상세 정보</h4>
 			  		</div>
 			  	</div>
 		    
 		    		<table class="table table-bordered">
 			            <tr>
 			               <th>날짜</th>
-   			               <td><input id="sale_date" type="text" readonly/></td>
+   			               <td><input id="sale_date" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
    			               <th>지점명</th>
-   			               <th><input id="sale_branchid" type="text" readonly/></th>
+   			               <td><input id="sale_branchid" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
 			            </tr>
 		            </table>
 
@@ -222,6 +227,7 @@
 					    <table class="table product-list-table">
 					        <thead>
 					            <tr>
+					           		<th class="table-light text-center">판매날짜</th>
 					                <th class="table-light text-center">회사명</th>
 					                <th class="table-light text-center">상품명</th>
 					                <th class="table-light text-center">수량</th>
@@ -294,6 +300,7 @@
 		    	                    const tr = document.createElement('tr');
 		
 		    	                    tr.innerHTML = `
+		    	                        <td style="text-align: center;">${detail.sale_date}</td>
 		    	                        <td style="text-align: center;">${detail.partner_name}</td>
 		    	                        <td style="text-align: center;">${detail.product_name}</td>
 		    	                        <td style="text-align: center;">${detail.sale_amount}</td>
