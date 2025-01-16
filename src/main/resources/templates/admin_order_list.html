@@ -102,15 +102,15 @@
 		            <tr>
 		               <th style="text-align: center; vertical-align: middle;">검색어</th>
 		               <td>		               		
-		               		<select class="form-select" style="width: 100px; display: inline-block;"><option>지점명</option></select>
+		               		<select class="form-select" style="width: 110px; display: inline-block;"><option>지점명</option></select>
 		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
                <tr>
                	   <th style="text-align: center; vertical-align: middle;">발주일자</th>
 		               <td>
-		                <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="startDate1" name="startDate1"> - 
-		                <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="endDate1" name="endDate1">
+		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate1" name="startDate1"> - 
+		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="endDate1" name="endDate1">
 		                  <!-- 
 		                  <div class="date-buttons" style="display: inline-block;">
 		                     <button type="button" onclick="setDate(-1)">1일</button>
@@ -124,8 +124,8 @@
            			 <tr>
 			               <th style="text-align: center; vertical-align: middle;">납기일자</th>
 			               <td>
-			               <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="startDate2" name="startDate2"> - 
-			               <input type="date" class="form-control" style="width: 170px; display: inline-block;" value="0" id="endDate2" name="endDate2">
+			               <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate2" name="startDate2"> - 
+			               <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="endDate2" name="endDate2">
                   <!-- 
                   <div class="date-buttons" style="display: inline-block;">
                      <button type="button" onclick="setDate(-1)">1일</button>
@@ -260,7 +260,6 @@
    			               <!-- <th><input id="order_status" type="text" readonly/></th>  -->
    			               
    			               <th style="text-align: left;" id="order_status_btn">
-  	                         	
   	                       </th>
 
 			            </tr>
@@ -270,7 +269,10 @@
    			               <th>메모</th>
    			               <td><input id="order_memo" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
 			            </tr> 
+			            
 		            </table>
+		            
+		            <input id="hid_order_status" type="hidden">
 
 					<div id="productListContainer2">
 					    <table class="table product-list-table">
@@ -297,7 +299,7 @@
 						
 					<div style="margin: 0 30px 0 0; text-align: center;">
 						<div>
-							<button type="button" class="btn cur-p btn-danger" th:onclick="orderApproval(1)">거절</button>
+							<button type="button" class="btn cur-p btn-danger" th:onclick="orderApproval(1, )">거절</button>
 							<button type="button" class="btn cur-p btn-success" th:onclick="orderApproval(0)">승인</button>
 						</div>
 					</div>
@@ -373,6 +375,8 @@
 				    	            	buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
 				    	            	break;
 		    	                }
+		    	                
+		    	        	    document.getElementById("hid_order_status").value = result.order_status;
 		    	        	    
 		    	        	    const modal = document.getElementById('modalContainer');
 		    			  	    modal.classList.remove('hidden');
@@ -405,7 +409,7 @@
 		    	                        <td style="text-align: center;">${detail.orderDetail_orderid}</td>
 		    	                        <td style="text-align: center;">${detail.product_name}</td>
 		    	                        <td style="text-align: center;">${detail.product_price}</td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_amount}</td>
+		    	                        <td style="text-align: center;">${detail.orderDetail_amount} <span style="color : red;">(남은수량: ${detail.stock_remain}개)</span> </td>
 		    	                        <td style="text-align: center;">${detail.orderDetail_sum}</td>
 		    	                    `;
 		    	                    		    	                    
@@ -447,7 +451,26 @@
       
       <script>
       
-	      function orderApproval(approval_type) {    
+	      function orderApproval(approval_type) {
+      	     const status = document.getElementById("hid_order_status").value;
+
+	    	  if(approval_type == 1){ //거절
+	    		  if(status == 3) { //이미 거절상태인 경우
+	    			  alert("이미 취소된 상태입니다.");
+	    			  return;
+	    		  } else if(status == 1 || status == 2) { //승인이나 입고완료인 경우
+	    			  alert("취소할 수 없는 상태입니다.");
+	    			  return;
+	    		  }
+	    		  alert("발주가 취소되었습니다.");  
+	    	  } else { //승인
+	    		  if(status == 1 || status == 2) { //승인이나 입고완료인 경우
+	    			  alert("승인할 수 없는 상태입니다.");
+	    			  return;
+	    		  } 
+		    	  alert("발주가 승인되었습니다.");  
+	    	  }
+	    	  
 	    	  const order_id = document.getElementById('order_id').value;	    	    
 	    	    $.ajax({
 	    	        url: '/admin/order/approval',
@@ -458,7 +481,6 @@
 	    	            	const modal = document.getElementById('modalContainer');
 	    		    	    modal.classList.add('hidden');
 	    		    	    
-	    		    	    alert("처리되었습니다.");
 	    	            } else {
 	    	                alert("데이터 응답 실패");
 	    	            }

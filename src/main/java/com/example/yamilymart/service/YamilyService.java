@@ -36,16 +36,23 @@ public class YamilyService {
     	List<SaleDTO> productSaleList = yDao.admin_main_prductSale();
         mv.addObject("productSaleList", productSaleList);
         
-        //최근 상품 주문 목록(order)
-//    	List<SaleDTO> monthSaleList = yDao.admin_main_monthSale();
-//        mv.addObject("monthSaleList", monthSaleList);
+        //지점별 매출 순위(sale)
+    	List<SaleDTO> branchSaleList = yDao.admin_main_branchSale();
+        mv.addObject("branchSaleList", branchSaleList);
         
         //달별 판매 순위(sale)
         List<SaleDTO> monthSaleList = yDao.admin_main_monthSale();
-        mv.addObject("monthSaleList", monthSaleList);
+        int count = monthSaleList.size();
+        int[] monthSaleArr = new int[count]; // 배열 크기 초기화
+
+        //달별 매출 배열 저장
+        for(int i=0; i<count; i++) {
+     	   SaleDTO dto = monthSaleList.get(i);
+     	   monthSaleArr[i] = dto.getSale_sum();
+        }
         
-        //전국 지점 수(branch)
-        
+        mv.addObject("monthSaleArr", monthSaleArr);
+              
         mv.setViewName("admin_main");
 
         return mv;

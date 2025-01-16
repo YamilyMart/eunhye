@@ -25,6 +25,7 @@
     	select * from `order`, branch 
     	where `order`.order_sender = branch.branch_id
     	and `order`.order_status = #{status}
+    	and order.order_type = 0
    		<if test="keyword != ''">
    			and branch.branch_name like concat('%',#{keyword},'%')
    		</if>
@@ -63,6 +64,15 @@
    		<if test="searchType == 1">
    			and product.product_id like concat('%',#{keyword},'%')
    		</if>
+    </select>
+    
+    <select id="admin_order_detail">
+		SELECT * 
+		FROM `orderdetail`, `product`, `stock` 
+		WHERE orderDetail_orderid = #{orderDetail_orderid}
+		and orderdetail.orderDetail_productid = product.product_id
+		and stock.stock_productid = orderdetail.orderDetail_productid
+		and stock.stock_type = 1;
     </select>
     
     <select id="admin_sale_list">
@@ -142,6 +152,15 @@
     </select>
     
     <select id="admin_main_monthSale">
+    SELECT 
+		    FLOOR(SUM(sale_sum) / (SELECT COUNT(branch_code) FROM branch)) AS sale_sum,
+		    MONTH(sale_date) AS sale_month,
+		    YEAR(sale_date) AS sale_year
+		FROM sale
+		GROUP BY YEAR(sale_date), MONTH(sale_date)
+		ORDER BY sale_year DESC, sale_month DESC
+		LIMIT 6;
+    <!--  
 	    SELECT 
 		    SUM(sale_sum) AS sale_sum,
 		    MONTH(sale_date) AS sale_month,
@@ -149,7 +168,22 @@
 		FROM sale
 		GROUP BY YEAR(sale_date), MONTH(sale_date)
 		ORDER BY sale_year DESC, sale_month DESC
-		LIMIT 6;
+		LIMIT 6; -->
+    </select>
+    
+        <select id="admin_main_branchSale">
+			SELECT 
+			    SUM(sale_sum) AS sale_sum,
+			    MONTH(sale_date) AS sale_month,
+			    YEAR(sale_date) AS sale_year,
+			    sale.sale_branchid,
+			    branch.branch_name
+			FROM sale
+			JOIN branch ON sale.sale_branchid = branch.branch_id
+			WHERE YEAR(sale_date) = YEAR(NOW())
+			  AND MONTH(sale_date) = MONTH(NOW())
+			GROUP BY YEAR(sale_date), MONTH(sale_date), sale_branchid, branch.branch_name
+			ORDER BY sale_sum DESC
     </select>
     
 

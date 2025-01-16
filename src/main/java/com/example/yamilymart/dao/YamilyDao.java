@@ -18,12 +18,11 @@ import com.example.yamilymart.dto.StockDTO;
 @Mapper
 public interface YamilyDao {
 
-	@Select("select * from `order`, branch where `order`.order_sender = branch.branch_id")
+	@Select("select * from `order`, branch where `order`.order_sender = branch.branch_id and order.order_type = 0")
 	List<OrderDTO> admin_order_list();
 
 	List<OrderDTO> admin_order_list_search(OrderSearchDTO dto);
 
-    @Select("SELECT * FROM `orderdetail`, `product` WHERE orderDetail_orderid = #{orderDetail_orderid} and orderdetail.orderDetail_productid = product.product_id")
     List<OrderDetailDTO> admin_order_detail(String orderDetail_orderid);
 
 	@Select("SELECT * FROM `order`, branch where `order`.order_sender = branch.branch_id and order_id = #{order_id}")
@@ -65,6 +64,9 @@ public interface YamilyDao {
     List<SaleDTO> admin_main_prductSale();
     
     List<SaleDTO> admin_main_monthSale();
+    
+    List<SaleDTO> admin_main_branchSale();
+
 
 
 

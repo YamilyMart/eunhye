@@ -18,5 +18,7 @@ public class OrderDetailDTO {
 
 	private String product_name;
 	private int product_price;
+	
+	private int stock_remain;
 
 }
