@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>로그인</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- site icon -->
+      <link rel="icon" href="/images/fevicon.png" type="image/png" />
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+      <!-- site css -->
+      <link rel="stylesheet" href="/css/style.css" />
+      <!-- responsive css -->
+      <link rel="stylesheet" href="/css/responsive.css" />
+      <!-- color css -->
+      <link rel="stylesheet" href="/css/colors.css" />
+      <!-- select bootstrap -->
+      <link rel="stylesheet" href="/css/bootstrap-select.css" />
+      <!-- scrollbar css -->
+      <link rel="stylesheet" href="/css/perfect-scrollbar.css" />
+      <!-- custom css -->
+      <link rel="stylesheet" href="/css/custom.css" />
+      <!-- calendar file css -->
+      <link rel="stylesheet" href="/js/semantic.min.css" />
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+      
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      
+      <style>
+
+        .button-container {
+            display: flex; /* Flexbox 사용 */
+            justify-content: center; /* 버튼을 가운데 정렬 */
+        }
+
+        .login_btn {
+            padding: 10px 20px;
+            width: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: gray;
+            color: white;
+        }
+        
+       .clicked {
+            background-color: white;
+            color: black;
+      }
+      </style>
+   </head>
+   
+   <body class="inner_page login">
+      <div class="full_container">
+         <div class="container">
+            <div class="center verticle_center full_height">
+               <div class="login_section">
+                  <div class="logo_login">
+                     <div class="center">
+                        <img width="320" height="300" src="/images/yamily_logo.png" alt="#" />
+                     </div>
+                  </div>
+                  
+                  <div class="button-container">
+				        <button class="login_btn" name="btn1" th:value="branch">지점 로그인</button>
+				        <button class="login_btn" name="btn2" th:value="hr">본사 로그인</button>
+				  </div>
+					    
+                  <div class="login_form container">
+                     <form action="/yamily/login" method="post" onsubmit="return login_btn();">
+                        <fieldset>
+                           <div class="field">
+                              <label class="label_field">아이디</label>
+                              <input type="text" name="username" placeholder="username" />
+                           </div>
+                           <div class="field">
+                              <label class="label_field">비밀번호</label>
+                              <input type="password" name="password" placeholder="password" />
+                           </div>
+                           <input type="hidden" name="type" id="login_type"/>
+                           
+                           <!-- 
+                           <div class="field">
+                              <label class="label_field hidden">hidden label</label>
+                              <label class="form-check-label"><input type="checkbox" class="form-check-input"> Remember Me</label>
+                              <a class="forgot" href="">Forgotten Password?</a>
+                           </div> -->
+                           
+                           <div class="field margin_0">
+                              <label class="label_field hidden">hidden label</label>
+                              <button type="submit" class="main_bt">로그인</button>
+                           </div>
+                           
+                        </fieldset>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      
+
+    <script>        
+        var btn = document.getElementsByClassName("login_btn");
+
+        function handleClick(event) {
+          console.log(event.target);
+          console.log(event.target.classList);
+
+          if (event.target.classList[1] === "clicked") {
+            event.target.classList.remove("clicked");
+          } else {
+        	  
+            for (var i = 0; i < btn.length; i++) {
+            	btn[i].classList.remove("clicked");
+            }
+
+            event.target.classList.add("clicked");
+          }
+        }
+
+        function init() {
+          for (var i = 0; i < btn.length; i++) {
+        	  btn[i].addEventListener("click", handleClick);
+          }
+        }
+
+        init();
+        
+        </script>
+        
+		 <script type="text/javascript">
+		 
+			 function login_btn() {
+			     const previousClicked = document.querySelector('.login_btn.clicked');
+			     
+			     if (!previousClicked) {
+			         alert("로그인 유형을 선택해주세요.");
+			         return false;
+			     }
+			
+			     const btnvalue = previousClicked.value;
+			     document.getElementById("login_type").value = btnvalue;
+			     console.log("Selected login_type value:", btnvalue);
+			
+			     return true;
+			 }
+		 
+		 </script>
+
+      <!-- jQuery -->
+      <!-- <script src="/js/jquery.min.js"></script> -->
+      <script src="/js/popper.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <!-- wow animation -->
+      <script src="/js/animate.js"></script>
+      <!-- select country -->
+      <script src="/js/bootstrap-select.js"></script>
+      <!-- nice scrollbar -->
+      <script src="/js/perfect-scrollbar.min.js"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- custom js -->
+      <script src="/js/custom.js"></script>
+   </body>
+</html>
