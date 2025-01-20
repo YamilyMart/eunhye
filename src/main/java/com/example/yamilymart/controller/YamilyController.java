@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
+import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.service.YamilyService;
@@ -64,10 +65,10 @@ public class YamilyController {
         return mv;
     }
 
-//    @GetMapping("/login")
-//    public String login() {
-//        return "login"; // login.html
-//    }
+    @GetMapping("/yamily_login")
+    public String login() {
+        return "yamily_login";
+    }
 
 	//본사 - 발주요청목록 get
 	@GetMapping("/admin/order/list")
@@ -88,7 +89,6 @@ public class YamilyController {
 	@GetMapping("/admin/order/detail")
 	@ResponseBody
 	public List<OrderDetailDTO> adminOrderDetail(@RequestParam("orderDetail_orderid") String orderDetailOrderId) {
-
 	    return yServ.admin_order_detail(orderDetailOrderId);
 	}
 
@@ -152,6 +152,21 @@ public class YamilyController {
         mv = yServ.admin_stock_product_add(pdto);
         return mv;
     }
+	
+	//본사 - 상품 추가 시 상품코드 중복체크
+	@GetMapping("admin/stock/product/check")
+	@ResponseBody
+    public int admin_stock_product_check(@RequestParam("product_id") String product_id){
+		return yServ.admin_stock_product_check(product_id);
+	}
+	
+	//본사 - 거래처 검색
+	@GetMapping("admin/stock/partner")
+	@ResponseBody
+    public List<PartnerDTO> admin_stock_partner(@RequestParam(required = false, defaultValue = "", name = "keyword") String keyword){
+        return yServ.admin_stock_partner(keyword);
+    }
+
 
 	//본사 - 상품수정(GET)
 	@GetMapping("admin/stock/update")

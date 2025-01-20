@@ -10,6 +10,7 @@ import com.example.yamilymart.dao.YamilyDao;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
+import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
@@ -122,6 +123,13 @@ public class YamilyService {
 
     public ModelAndView admin_order_approval(int approval_type, String order_id) {
     	mv = new ModelAndView();
+    	
+    	if(approval_type == 0) { //승인 시에 물류창고 재고 감소
+        	List<OrderDetailDTO> list = yDao.admin_order_detail(order_id);
+        	
+    		int a = yDao.admin_order_approval_decrease(list);
+    	}
+    	
     	int a = yDao.admin_order_approval(approval_type, order_id);
 
         mv.setViewName("redirect:/admin/order/list");
@@ -156,6 +164,17 @@ public class YamilyService {
 
        return mv;
    }
+    
+    public int admin_stock_product_check(String product_id) {
+    	int a = yDao.admin_stock_product_check(product_id);
+
+        return a;
+    }
+    
+    public List<PartnerDTO> admin_stock_partner(String keyword) {
+    	List<PartnerDTO> list = yDao.admin_stock_partner(keyword);
+        return list;
+    }
 
     public ProductDTO admin_stock_update_get(String stock_productid) {
     	ProductDTO dto = yDao.admin_stock_update_get(stock_productid);

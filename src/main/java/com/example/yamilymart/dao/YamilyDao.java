@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
+import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
@@ -29,6 +30,8 @@ public interface YamilyDao {
 	OrderDTO admin_order_detail2(String order_id);
 
 	int admin_order_approval(@Param("approval_type")int approval_type, @Param("order_id")String order_id);
+	
+	int admin_order_approval_decrease(List<OrderDetailDTO> list);
 
 	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1 and stock_del = 0")
 	List<StockDTO> admin_stock_list();
@@ -37,8 +40,13 @@ public interface YamilyDao {
 			@Param("keyword") String keyword);
 
 	int admin_stock_product_add(ProductDTO pdto);
+	
+	List<PartnerDTO> admin_stock_partner(@Param("keyword") String keyword);
 
 	int admin_stock_add(String product_id);
+	
+	@Select("select count(*) from product where product_id = #{product_id}")
+	int admin_stock_product_check(String product_id);
 
 	@Select("SELECT * FROM `product` where product_id = #{stock_productid}")
 	ProductDTO admin_stock_update_get(String stock_productid);

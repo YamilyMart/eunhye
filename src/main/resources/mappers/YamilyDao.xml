@@ -54,6 +54,15 @@
         where order_id = #{order_id}
     </update>
     
+    <update id="admin_order_approval_decrease">
+    	<foreach collection="list" item="item" separator=";">
+	        update stock
+	        set stock_remain = stock_remain - #{item.orderDetail_amount}
+	        where stock_productid = #{item.orderDetail_productid}
+	        and stock_type = 1
+        </foreach>
+    </update>
+    
     <select id="admin_stock_list_search">
     	select * from `stock`, `product` 
     	where stock.stock_productid = product.product_id 
@@ -63,6 +72,15 @@
    		</if>
    		<if test="searchType == 1">
    			and product.product_id like concat('%',#{keyword},'%')
+   		</if>
+    </select>
+    
+    
+    <select id="admin_stock_partner">
+    	select * 
+    	from `partner`
+   		<if test="keyword != ''">
+   			where partner_name like concat('%',#{keyword},'%')
    		</if>
     </select>
     
