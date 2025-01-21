@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Alias("HrDTO")
-public class HrDTO  {
+public class HrDTO {
     private String hr_id;
     private String hr_pwd;
     private int hr_code;

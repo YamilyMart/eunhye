@@ -1,12 +1,15 @@
 package com.example.yamilymart.dao;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.example.yamilymart.dto.HrDTO;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
@@ -14,6 +17,7 @@ import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
+import com.example.yamilymart.dto.User;
 
 
 @Mapper
@@ -48,7 +52,7 @@ public interface YamilyDao {
 	@Select("select count(*) from product where product_id = #{product_id}")
 	int admin_stock_product_check(String product_id);
 
-	@Select("SELECT * FROM `product` where product_id = #{stock_productid}")
+	@Select("SELECT * FROM `product`, partner where product.product_id = #{stock_productid} and product.product_partnerid = partner.partner_id")
 	ProductDTO admin_stock_update_get(String stock_productid);
 
 	int admin_stock_update_post(ProductDTO pdto);
@@ -74,9 +78,22 @@ public interface YamilyDao {
     List<SaleDTO> admin_main_monthSale();
     
     List<SaleDTO> admin_main_branchSale();
+    
+    
+//    @Select("select * FROM hr WHERE hr_id = #{username}")
+//    Optional<HrDTO> findByUsername(String username);
+//
+//    @Insert("insert into hr(hr_id, hr_pwd, hr_authority, hr_grade) "
+//    		+ "values (#{hr_id}, #{hr_pwd}, #{hr_authority}, #{hr_grade})")
+//    int save(HrDTO hrDTO);
 
+    
+    @Select("select * FROM User WHERE username = #{username}")
+    Optional<User> findByUsername(String username);
 
-
+    @Insert("insert into User(username, password, role) "
+    		+ "values (#{username}, #{password}, #{role})")
+    int save(User user);
 
 
 

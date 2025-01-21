@@ -65,9 +65,9 @@
 		#modalContent {
 		  position: absolute;
 		  background-color: #ffffff;
-		  width: 1000px;
-		  height: 730px;
-		  padding: 15px;
+		  width: 900px;
+		  height: 700px;
+		  border-radius: 10px;
 		}
 		
 		#modalContainer.hidden {
@@ -190,7 +190,7 @@
   	                         	<div data-th-text="${#numbers.formatInteger(str.sale_sum, 3, 'COMMA') + '원'}"></div>
   	                         </td>
   	                          
-                         	 <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="saleDetail([[${str.sale_branchid}]], [[${str.sale_date}]], [[${str.sale_sum}]], [[${str.branch_name}]])">상세보기</button></td>
+                         	 <td style="text-align: center;"><button type="button" style="background-color: #8B393B; color: white;"class="btn cur-p" th:onclick="saleDetail([[${str.sale_branchid}]], [[${str.sale_date}]], [[${str.sale_sum}]], [[${str.branch_name}]])">상세보기</button></td>
 	                      </tr>
 				</th:block>
             </tbody>
@@ -203,23 +203,20 @@
 		<!-- 모달 -->
 		 <div id="modalContainer" class="hidden">
 		  	<div id="modalContent">
-		  
-			  	<div style="margin: 10px; text-align: right; float: center;">
-			  		<a id="modalCloseButton" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
+		  	
+		  	    <div style="background-color:#8B393B; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">매출 상세 정보</h4>
+			  		<button type="button" id="modalCloseButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
 			  	</div>
 			  	
-			  	<div style="margin: 10px; text-align: center; float: center;">
-			  		<div>
-				  		<h4 style="text-align: center;">매출 상세 정보</h4>
-			  		</div>
-			  	</div>
+		    	<div style="padding: 30px;">
 		    
 		    		<table class="table table-bordered">
 			            <tr>
 			               <th>날짜</th>
-   			               <td><input id="sale_date" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
+   			               <td><input id="sale_date" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
    			               <th>지점명</th>
-   			               <td><input id="sale_branchid" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
+   			               <td><input id="sale_branchid" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
 			            </tr>
 		            </table>
 
@@ -245,6 +242,8 @@
 						<h5>합계</h5>
 						<h2 id="sale_sum"></h2>
 					</div>
+					
+				</div>
 	
 		  	</div>
 		</div>

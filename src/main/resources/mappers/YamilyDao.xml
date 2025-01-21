@@ -162,7 +162,7 @@
     </select>
     
     <select id="admin_main_prductSale">
-		select sale.sale_productid, count(sale.sale_amount) as count, product.product_name, product.product_image, product.product_price, product.product_image
+		select sale.sale_productid, sum(sale.sale_amount) as count, product.product_name, product.product_image, product.product_price, product.product_image
 		from sale, product
 		where sale.sale_productid = product.product_id
 		group by sale_productid

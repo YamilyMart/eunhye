@@ -3,10 +3,12 @@ package com.example.yamilymart.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.yamilymart.dao.YamilyDao;
+import com.example.yamilymart.dto.HrDTO;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
@@ -14,6 +16,7 @@ import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
+import com.example.yamilymart.dto.User;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,6 +28,29 @@ public class YamilyService {
 
     @Autowired
     private YamilyDao yDao;
+    
+    
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
+//    public String join(HrDTO hrDTO) {
+//    	hrDTO.setHr_pwd(bCryptPasswordEncoder.encode(hrDTO.getHr_pwd()));
+//    	hrDTO.setHr_grade(0);
+//        yDao.save(hrDTO);
+//        return "redirect:/loginForm";
+//    }
+    
+    public String join(User user) {
+    	user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    	user.setRole("ROLE_USER");
+        yDao.save(user);
+        return "redirect:/loginForm";
+    }
+    
+    
+    
+    
 
     public ModelAndView admin_main() {
     	mv = new ModelAndView();

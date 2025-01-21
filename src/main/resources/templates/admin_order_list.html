@@ -59,15 +59,16 @@
 		  display: flex;
 		  justify-content: center;
 		  align-items: center;
-		  background: rgba(0, 0, 0, 0.5);
+		  background: rgba(0, 0, 0, 0.5);		  
 		}
 		
 		#modalContent {
 		  position: absolute;
 		  background-color: #ffffff;
-		  width: 1000px;
-		  height: 730px;
-		  padding: 15px;
+		  width: 900px;
+		  height: 700px;
+		  border-radius: 10px;
+		  
 		}
 		
 		#modalContainer.hidden {
@@ -106,7 +107,7 @@
 		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
-               <tr>
+                 <tr>
                	   <th style="text-align: center; vertical-align: middle;">발주일자</th>
 		               <td>
 		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate1" name="startDate1"> - 
@@ -169,7 +170,7 @@
          
 	         <div style="text-align: right;">
 	            <button type="submit" class="btn btn-primary btn-sm"
-	               style="width: 70px; border-radius: 8px;">검색</button>
+	               style="width: 70px; border-radius: 8px; background-color: #0D6EFD;">검색</button>
 	            <button type="reset" class="btn btn-secondary btn-sm"
 	               style="width: 70px; border-radius: 8px;">초기화</button>
 	         </div>
@@ -215,7 +216,7 @@
 								</th:block>
   	                         </td>
   	                         
-                         	 <td style="text-align: center;"><button type="button" class="btn cur-p btn-outline-primary" th:onclick="orderDetail2([[${str.order_id}]])">상세보기</button></td>
+                         	 <td style="text-align: center;"><button type="button" style="background-color: #8B393B; color: white;"class="btn cur-p" th:onclick="orderDetail2([[${str.order_id}]])">상세보기</button></td>
 	                      </tr> 
 				</th:block>
             </tbody>
@@ -228,81 +229,79 @@
 		<!-- 모달 -->
 		 <div id="modalContainer" class="hidden">
 		  	<div id="modalContent">
-		  
-			  	<div style="margin: 10px; text-align: right; float: center;">
-			  		<a id="modalCloseButton" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
+		  	
+		 		<div style="background-color:#8B393B; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">발주 상세 정보</h4>
+			  		<button type="button" id="modalCloseButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
 			  	</div>
 			  	
-			  	<div style="margin: 10px; text-align: center; float: center;">
-			  		<div>
-				  		<h4 style="text-align: center;">발주 상세 정보</h4>
-			  		</div>
-			  	</div>
-		    
-		    		<table class="table table-bordered">
-			            <tr>
-			               <th>주문ID</th>
-   			               <td><input id="order_id" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-   			               <th>지점명</th>
-   			               <td><input id="order_partnerid" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-			            </tr>
-			            <tr>
-			               <th>발주일자</th>
-   			               <td><input id="order_date" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-   			               <th>납기일자</th>
-   			               <td><input id="order_delivery" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-			            </tr>
-			            <tr>
-			               <th>담당자명</th>
-   			               <td><input id="order_manager" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-   			               <th>발주상태</th>
-   			               
-   			               <!-- <th><input id="order_status" type="text" readonly/></th>  -->
-   			               
-   			               <th style="text-align: left;" id="order_status_btn">
-  	                       </th>
-
-			            </tr>
-			            <tr>
-			               <th>수량</th>
-   			               <td><input id="order_amount" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-   			               <th>메모</th>
-   			               <td><input id="order_memo" type="text" class="form-control" style="width: 170px; display: inline-block;" readonly/></td>
-			            </tr> 
+		    	<div style="padding: 30px;">
+			    	<table class="table table-bordered">
+				            <tr>
+				               <th>주문ID</th>
+	   			               <td><input id="order_id" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+	   			               <th>지점명</th>
+	   			               <td><input id="order_partnerid" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+				            </tr>
+				            <tr>
+				               <th>발주일자</th>
+	   			               <td><input id="order_date" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+	   			               <th>납기일자</th>
+	   			               <td><input id="order_delivery" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+				            </tr>
+				            <tr>
+				               <th>담당자명</th>
+	   			               <td><input id="order_manager" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+	   			               <th>발주상태</th>
+	   			               
+	   			               <!-- <th><input id="order_status" type="text" readonly/></th>  -->
+	   			               
+	   			               <th style="text-align: center;" id="order_status_btn">
+	  	                       </th>
+	
+				            </tr>
+				            <tr>
+				               <th>수량</th>
+	   			               <td><input id="order_amount" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+	   			               <th>메모</th>
+	   			               <td><input id="order_memo" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+				            </tr> 
+				            
+			            </table>
 			            
-		            </table>
-		            
-		            <input id="hid_order_status" type="hidden">
-
-					<div id="productListContainer2">
-					    <table class="table product-list-table">
-					        <thead>
-					            <tr>
-					                <th class="table-light text-center">NO</th>
-					                <th class="table-light text-center">발주코드</th>
-					                <th class="table-light text-center">상품코드</th>
-					                <th class="table-light text-center">가격</th>
-					                <th class="table-light text-center">수량</th>
-					                <th class="table-light text-center">총합</th>
-					            </tr>
-					        </thead>
-					        <tbody id="a">
-					            <!-- 데이터가 여기 추가됩니다 -->
-					        </tbody>
-					    </table>
-					</div>
-				
-					<div style="margin: 0 30px 0 0; text-align: right;">
-						<h5>합계</h5>
-						<h2 id="order_sum"></h2>
-					</div>
-						
-					<div style="margin: 0 30px 0 0; text-align: center;">
-						<div>
-							<button type="button" class="btn cur-p btn-danger" th:onclick="orderApproval(1)">거절</button>
-							<button type="button" class="btn cur-p btn-success" th:onclick="orderApproval(0)">승인</button>
+			            <input id="hid_order_status" type="hidden">
+	
+						<div id="productListContainer2">
+						    <table class="table product-list-table">
+						        <thead>
+						            <tr>
+						                <th class="table-light text-center">NO</th>
+						                <th class="table-light text-center">발주코드</th>
+						                <th class="table-light text-center">상품코드</th>
+						                <th class="table-light text-center">가격</th>
+						                <th class="table-light text-center">수량</th>
+						                <th class="table-light text-center">총합</th>
+						            </tr>
+						        </thead>
+						        <tbody id="a">
+						            <!-- 데이터가 여기 추가됩니다 -->
+						        </tbody>
+						    </table>
 						</div>
-					</div>
+					
+						<div style="margin: 0 30px 0 0; text-align: right;">
+							<h5>합계</h5>
+							<h2 id="order_sum"></h2>
+						</div>
+							
+						<div style="margin: 0 30px 0 0; text-align: center;">
+							<div>
+								<button type="button" class="btn cur-p btn-danger" th:onclick="orderApproval(1)">거절</button>
+								<button type="button" class="btn cur-p btn-success" th:onclick="orderApproval(0)">승인</button>
+							</div>
+						</div>
+		    	  </div>
+		    		
 		  	</div>
 		</div>
 		<!-- 모달 끝 -->

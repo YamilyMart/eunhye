@@ -158,6 +158,21 @@
 			 }
 		 
 		 </script>
+		 
+		 
+		 <script>
+		    function submitLoginForm() {
+		        var formData = {
+		            username: document.getElementById("username").value,
+		            password: document.getElementById("password").value
+		        };
+		
+		        var xhr = new XMLHttpRequest();
+		        xhr.open("POST", "/login", true);
+		        xhr.setRequestHeader("Content-Type", "application/json");
+		        xhr.send(JSON.stringify(formData));
+		    }
+		</script>
 
       <!-- jQuery -->
       <!-- <script src="/js/jquery.min.js"></script> -->

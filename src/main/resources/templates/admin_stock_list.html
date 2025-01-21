@@ -74,9 +74,9 @@
 		#modalContent {
 		  position: absolute;
 		  background-color: #ffffff;
-		  width: 1000px;
+		  width: 900px;
 		  height: 700px;
-		  padding: 30px 50px;
+		  border-radius: 10px;
 		}
 		
 		#modalContainerAdd.hidden, #modalContainerUpdate.hidden, modalContainerPartner.hidden {
@@ -102,7 +102,7 @@
 
 
 			<!-- 메인 내용 -->
-                 <div class="main p-5">
+              <div class="main p-5">
 		      <h6>
 		         <strong>재고 목록</strong>
 		      </h6>
@@ -131,7 +131,7 @@
 
       <div class="wrapper mt-5" id="productListContainer">
 	      	<div style="margin: 10px; text-align: right;">
-	      		<button type="button" class="btn cur-p btn-success" th:onclick="stockAddFirst();">상품등록</button>
+	      		<button type="button" class="btn cur-p" style="background-color: #04AA6D; color: white;" th:onclick="stockAddFirst();">상품등록</button>
 	      	</div>
       
          <table class="table product-list-table">
@@ -171,8 +171,8 @@
 	                         
 	                         </td>
 	                         <td style="text-align: center;">
-		                         <button type="button" class="btn cur-p btn-outline-primary" th:onclick="amountUpdate([[${list.stock_id}]])">재고변경</button>
-		                         <button type="button" class="btn cur-p btn-outline-primary" th:onclick="stockUpdate([[${list.stock_productid}]])">상품수정</button>
+		                         <button type="button" class="btn cur-p" style="background-color: #558bcf; color: white;" th:onclick="amountUpdate([[${list.stock_id}]])">재고변경</button>
+		                         <button type="button" class="btn cur-p" style="background-color: #9D3CC3; color: white;" th:onclick="stockUpdate([[${list.stock_productid}]])">상품수정</button>
 	                         </td>
 	                      </tr>
 				</th:block>
@@ -189,25 +189,26 @@
 		 <div id="modalContainerAdd" class="hidden">
 		  	<div id="modalContent">
 		  
-				  	<div style="margin: 10px; text-align: right; float: center;">
-				  		<a id="modalCloseButtonAdd" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
-				  	</div>
-				  	
-				  	<div style="margin: 10px; text-align: center; float: center;">
-				  		<div>
-					  		<h4 style="text-align: center;">상품등록</h4>
-				  		</div>
-				  	</div>
+				<div style="background-color: #04AA6D; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">상품 등록</h4>
+			  		<button type="button" id="modalCloseButtonAdd" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+			  	
+		    	<div style="padding: 30px;">
 		    		
-		    		<form action="/admin/stock/product/add" method="post" enctype="multipart/form-data" name="product_add_form">
+		    		<form action="/admin/stock/product/add" method="post" enctype="multipart/form-data" name="product_add_form" id="product_add_form" th:onsubmit="return check();">
 			    		<table class="table table-bordered">
 				            <tr>
 				               <th>거래처 명</th>
 	   			               <td>
-		   			               <input id="product_partner_name" style="width: 80%; display: inline-block;" class="form-control" type="text" readonly/>
+		   			               <input id="product_partner_name" style="width: 90%; display: inline-block;" class="form-control" type="text" readonly required/>
 		   			               <input id="product_partnerid" style="display: inline-block;" name="product_partnerid" class="form-control" type="hidden"/>
-		   			               <button type="button" class="btn cur-p btn-success" th:onclick="partnerSearch();">거래처검색</button>
-	   			               </td>
+		   			                <button type="button" class="btn btn-secondary" th:onclick="partnerSearch();">
+									   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+										  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+									   </svg>
+									</button>	   			               
+							   </td>
 				            </tr>
 				            <tr>
 				               <th>상품명</th>
@@ -220,9 +221,9 @@
 				            <tr>
 				               <th>상품코드 <span style="color: red;">*영문자/숫자포함</span></th>
 	   			               <td>
-	   			               <input id="product_id" style="width: 80%; display: inline-block;" name="product_id" class="form-control" type="text" required/>
+	   			               <input id="product_id" style="width: 83%; display: inline-block;" name="product_id" class="form-control" type="text" required/>
 	   			               <input type="hidden" id="reid" name="reid" value="false">
-	   			               <button type="button" class="btn cur-p btn-success" th:onclick="productCheck();">중복체크</button>
+	   			               <button type="button" class="btn cur-p btn-outline-primary" th:onclick="productCheck();">중복체크</button>
 	   			               </td>
 				            </tr>
 				            <tr>
@@ -239,8 +240,8 @@
 								<button type="submit" class="btn cur-p btn-success">저장</button>
 							</div>
 						</div>
-		    		
 		    		</form>
+		        </div>
 		    
 		  	</div>
 		</div>
@@ -249,16 +250,13 @@
 	     <!-- 상품수정 모달 -->
 		 <div id="modalContainerUpdate" class="hidden">
 		  	<div id="modalContent">
-		  
-				  	<div style="margin: 10px; text-align: right; float: center;">
-				  		<a id="modalCloseButtonUpdate" style="text-align: right; margin: 0 0 0 0;"><img style="width: 20px; height: 20px;" src="/images/close.png" alt=""></a>
-				  	</div>
-				  	
-				  	<div style="margin: 10px; text-align: center; float: center;">
-				  		<div>
-					  		<h4 style="text-align: center;">상품수정</h4>
-				  		</div>
-				  	</div>
+		  	
+		  		<div style="background-color: #9D3CC3; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">상품 수정</h4>
+			  		<button type="button" id="modalCloseButtonUpdate" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+			  	
+		    	<div style="padding: 30px;">
 				  	
 				  	<div style="margin: 10px; text-align: right; float: right;">
 				  		<div>
@@ -269,11 +267,14 @@
 				  		</div>
 				  	</div>
 		    
-		    		<form action="/admin/stock/update" method="post" enctype="multipart/form-data">
+		    		<form action="/admin/stock/update" method="post" enctype="multipart/form-data" id="update" th:onsubmit="return upCheck();">
 			    		<table class="table table-bordered">
 				            <tr>
 				               <th>거래처 명</th>
-	   			               <td><input id="up_product_partnerid" name="product_partnerid" class="form-control" type="text" readonly/></td>
+	   			               <td>
+	   			               	   <input id="up_product_partner_name" style="width: 100%; display: inline-block;" class="form-control" type="text" readonly required/>
+		   			               <input id="up_product_partnerid" style="display: inline-block;" name="product_partnerid" class="form-control" type="hidden"/>
+	   			               </td>
 				            </tr>
 				            <tr>
 				               <th>상품명</th>
@@ -290,7 +291,7 @@
 				            <tr>
 				            	<th>기존 이미지</th>
 				            	<td>
-				            		<input style="height: 35px; padding-left: 12px; margin: 0 0 10px 0;" class="form-control" type="text" id="up_product_image1">
+				            		<input style="height: 35px; padding-left: 12px; margin: 0 0 10px 0;" class="form-control" type="text" id="up_product_image1" readonly>
 									<div id="image_box"></div>
 				            	</td>
 				            </tr>
@@ -305,10 +306,11 @@
 						<div style="margin: 0 30px 0 0; text-align: center;">
 							<div>
 								<button type="reset" class="btn cur-p btn-danger">초기화</button>
-								<button type="submit" class="btn cur-p btn-success" th:onsubmit="return check();">저장</button>
+								<button type="submit" class="btn cur-p btn-success">저장</button>
 							</div>
 						</div>
 		    		</form>
+		         </div>
 		  	</div>
 		</div>
 		<!-- 모달 끝 -->
@@ -316,16 +318,13 @@
 		<!-- 거래처 검색 모달 -->
 		 <div id="modalContainerPartner" class="hidden">
 		  	<div id="modalContent">
-		  
-				  	<div style="margin: 10px; text-align: left;">
-				  		<a id="modalCloseButtonPartner" style="text-align: left; margin: 0 0 0 0;"><img style="width: 25px; height: 25px;" src="/images/prev.png" alt=""></a>
-				  	</div>
-				  	
-				  	<div style="margin: 10px; text-align: center; float: center;">
-				  		<div>
-					  		<h4 style="text-align: center;">거래처 검색</h4>
-				  		</div>
-				  	</div>
+		  	
+		  		<div style="background-color: #0D6EFD; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">거래처 검색</h4>
+			  		<button type="button" id="modalCloseButtonPartner" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+			  	
+		    	<div style="padding: 30px;">
 				  	
 				         <table class="table table-bordered">
 				            <tr>
@@ -340,25 +339,27 @@
 				               style="width: 70px; border-radius: 8px;" th:onclick="partnerSearch()">검색</button>
 				         </div>
       
-      				<hr style="color: black">
+      					<hr style="color: black">
 
-				      <div class="wrapper mt-5" id="partnerListContainer">
-				
-				         <table class="table product-list-table">
-				            <thead>
-				               <tr>
-				                  <th class="table-light text-center">거래처ID</th>
-				                  <th class="table-light text-center">회사명</th>
-				                  <th class="table-light text-center">담당자</th>
-				                  <th class="table-light text-center">연락처</th>
-				                  <th class="table-light text-center">사업자등록번호</th>
-				                  <th class="table-light text-center"></th>
-				               </tr>
-				            </thead>
-				            <tbody id="partnerList">
-
-				            </tbody>
-				         </table>
+					      <div class="wrapper mt-5" id="partnerListContainer">
+					
+					         <table class="table product-list-table">
+					            <thead>
+					               <tr>
+					                  <th class="table-light text-center">거래처ID</th>
+					                  <th class="table-light text-center">회사명</th>
+					                  <th class="table-light text-center">담당자</th>
+					                  <th class="table-light text-center">연락처</th>
+					                  <th class="table-light text-center">사업자등록번호</th>
+					                  <th class="table-light text-center"></th>
+					               </tr>
+					            </thead>
+					            <tbody id="partnerList">
+	
+					            </tbody>
+					         </table>
+					      </div>
+				      
 				      </div>
       
       
@@ -409,6 +410,7 @@
 		    	            if (result) {
 		    	        	    document.getElementById("up_product_id").value = result.product_id;
 		    	        	    document.getElementById("up_product_partnerid").value = result.product_partnerid;
+		    	        	    document.getElementById("up_product_partner_name").value = result.partner_name;
 		    	        	    document.getElementById("up_product_name").value = result.product_name;
 		    	        	    document.getElementById("up_product_price").value = result.product_price;
 		    	        	    document.getElementById("up_product_image1").value = result.product_image;
@@ -457,8 +459,8 @@
 		    	                        <td style="text-align: center; vertical-align: middle;">${detail.partner_manager}</td>
 		    	                        <td style="text-align: center; vertical-align: middle;">${detail.partner_no}</td>
 		    	                        <td style="text-align: center; vertical-align: middle;">${detail.partner_phone}</td>
-		    	                        <td style="text-align: center; vertical-align: middle;"><button class="btn cur-p btn-danger"
-		    					               style="width: 70px; border-radius: 8px; color: white;" onclick="stockAdd('${detail.partner_id}', '${detail.partner_name}');">선택</button></td>
+		    	                        <td style="text-align: center; vertical-align: middle;"><button class="btn cur-p"
+		    					               style="width: 70px; border-radius: 8px; color: white; background-color: #04AA6D;" onclick="stockAdd('${detail.partner_id}', '${detail.partner_name}');">선택</button></td>
 		    	                    `;
 		    	                    		    	                    
 		    	                    tbody.appendChild(tr);
@@ -487,16 +489,13 @@
 	    	  modal.classList.remove('hidden');
 	      }
       
-	      //본사 상품 등록
+	      //본사 상품 등록 (거래처 선택 후)
 	      function stockAdd(partner_id, partner_name) {
 	    	  const modal1 = document.getElementById('modalContainerPartner');
 	    	  modal1.classList.add('hidden');
 	    	  
 	    	  document.getElementById("product_partner_name").value = partner_name;
       	      document.getElementById("product_partnerid").value = partner_id;
-	    	  
-	    	  const modal = document.getElementById('modalContainerAdd');
-	    	  modal.classList.remove('hidden');
 	      }
       </script>
      
@@ -536,28 +535,34 @@
       
       
      <script>
-     		//상품 등록,수정 시 유효성 검사
+     		//상품 등록시 유효성 검사
 			function check() {
-				var idReg = /^[a-zA-Z0-9]{4,12}$/;
+				var idReg = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{4,12}$/;
 				const numberRegex = /^\d+$/;
 				
 				var product_id = document.getElementById("product_id");
-				var product_price = document.getElementById("product_price");	
-		
-				if (!idReg.test(product_id.value)) {
-					alert("상품코드 형식을 확인하세요");
+				var product_price = document.getElementById("product_price");
+				var reid = document.getElementById("reid").value;	
+				var product_partner_name = document.getElementById("product_partner_name").value;	
+				
+				if (product_partner_name == '') {
+					alert("거래처를 선택해주세요");
 					return false;
 				}
 				
 				if (!numberRegex.test(product_price.value)) {
-					alert("비밀번호 형식을 확인하세요");
+					alert("상품가격은 숫자만 적어주세요.");
+					return false;
+				}
+		
+				if (!idReg.test(product_id.value)) {
+					alert("상품코드 형식을 확인하세요.");
 					return false;
 				}
 
-				if(document.product_add_form.reid.value == "false") {
+				if (reid == "false") {
 					alert("중복 체크를 하지 않았습니다.");
-					join_form.user_id.focus();
-					return false;
+				    return false;
 				}
 					
 				return true;
@@ -592,6 +597,19 @@
 				
 				}
 			}
+     		
+			//상품 수정 시 유효성 검사
+			function upCheck() {
+				const numberRegex = /^\d+$/;
+				var product_price = document.getElementById("up_product_price");
+				
+				if (!numberRegex.test(product_price.value)) {
+					alert("상품가격은 숫자만 적어주세요.");
+					return false;
+				}
+					
+				return true;
+			}
 	
 	</script>
       
@@ -602,6 +620,7 @@
 	      const modalAdd = document.getElementById('modalContainerAdd');
 	
 	      modalCloseButtonAdd.addEventListener('click', () => {
+	    	  document.getElementById("product_add_form").reset();
 	    	  modalAdd.classList.add('hidden');
 	      });
 	      
@@ -609,6 +628,7 @@
 	      const modalUpdate = document.getElementById('modalContainerUpdate');
 	      
 	      modalCloseButtonUpdate.addEventListener('click', () => {
+	    	  document.getElementById("product_add_form").reset();
 	    	  modalUpdate.classList.add('hidden');
 	      });
 	      
@@ -621,6 +641,7 @@
 	      
 	       window.addEventListener('click', (event) => {
 	           if (event.target === modalAdd) { // 클릭된 요소가 모달 배경인지 확인
+	        	   document.getElementById("product_add_form").reset();
 	           		modalAdd.classList.add('hidden');
 	           } else if (event.target === modalUpdate) {
 	           		modalUpdate.classList.add('hidden');

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>로그인 페이지</title>
+</head>
+<body>
+<h1>로그인 페이지</h1>
+<hr/>
+<form id="login">
+    <input type="text" id="username" name="username" placeholder="username"/> <br/>
+    <input type="password" id="password" name="password" placeholder="password"/> <br/>
+    <button type="button" onclick="submitLoginForm()">로그인</button>
+</form>
+
+<a href="joinForm">회원가입 하기</a>
+
+<script>
+    function submitLoginForm() {
+        var formData = {
+        		username: document.getElementById("username").value,
+        		password: document.getElementById("password").value
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/login", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(formData));
+    }
+</script>
+
+</body>
+</html>

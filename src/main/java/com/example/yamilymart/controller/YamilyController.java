@@ -25,17 +25,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.example.yamilymart.dto.HrDTO;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
 import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
+import com.example.yamilymart.dto.User;
 import com.example.yamilymart.service.YamilyService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -65,10 +68,44 @@ public class YamilyController {
         return mv;
     }
 
-    @GetMapping("/yamily_login")
-    public String login() {
-        return "yamily_login";
-    }
+//    @GetMapping("/yamily_login")
+//    public String login() {
+//        return "yamily_login";
+//    }
+    
+	@GetMapping("/loginForm")
+	public String loginForm() {
+		return "login222";
+	}
+
+	@GetMapping("/joinForm")
+	public String join() {
+		return "join";
+	}
+	
+//	@PostMapping("/joinForm")
+//	public String join(@RequestBody HrDTO hrDTO) {
+//		yServ.join(hrDTO);
+//		return "redirect:/loginForm";
+//	}
+	
+	@PostMapping("/joinForm")
+	public String join(@RequestBody User user) {
+		yServ.join(user);
+		return "redirect:/loginForm";
+	}
+	
+//	@PostMapping("/join")
+//	public @ResponseBody String join(HrDTO hrDTO) {
+//		hrDTO.setHr_grade(0);
+//		yServ.join(hrDTO);
+//		return "join";
+//	}
+	
+	
+	
+	
+	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
 	//본사 - 발주요청목록 get
 	@GetMapping("/admin/order/list")

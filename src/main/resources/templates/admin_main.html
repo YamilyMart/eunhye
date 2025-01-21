@@ -163,7 +163,7 @@
 	                           <div class="white_shd full margin_bottom_30">
 	                              <div class="full graph_head">
 	                                 <div class="heading1 margin_0">
-	                                    <h2>제품별 매출순위</h2>
+	                                    <h2>제품별 판매순위</h2>
 	                                 </div>
 	                              </div>
 	                              <div class="full progress_bar_inner">
@@ -179,6 +179,7 @@
 		                                                   <span>
 			                                                   <span class="name_user">[[${a.index + 1}]]위 [[${str.product_name}]]</span>
 			                                                   <!-- <span class="msg_user">[[${str.count}]]</span>  -->
+			                                                   <span>매출: </span>
 			                                                   <span class="msg_user" data-th-text="${#numbers.formatInteger(str.count * str.product_price, 3, 'COMMA') + '원'}"></span>
 		                                                   </span>
 		                                                </li>
@@ -393,8 +394,9 @@
 			            {
 			              label: '평균 월 매출 (원)',
 			              data: chartData,
-			              borderColor: "rgba(255, 99, 132, 1)",
-			              backgroundColor: "rgba(255, 99, 132, 0.2)"
+			              borderColor: ["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)","rgb(75, 192, 192)","rgb(54, 162, 235)","rgb(153, 102, 255)"],
+			              backgroundColor: ["rgba(255, 99, 132, 0.2)","rgba(255, 159, 64, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)","rgba(54, 162, 235, 0.2)","rgba(153, 102, 255, 0.2)"],
+			              borderWidth: 1
 			            },
 			            {
 			                label: "매출 변화율 (%)",
