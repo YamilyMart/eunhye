@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +17,7 @@ import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
+//import com.example.yamilymart.dto.User;
 import com.example.yamilymart.dto.User;
 
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +71,7 @@ public class YamilyService {
         
         //달별 판매 순위(sale)
         List<SaleDTO> monthSaleList = yDao.admin_main_monthSale();
+        
         int count = monthSaleList.size();
         int[] monthSaleArr = new int[count]; // 배열 크기 초기화
 

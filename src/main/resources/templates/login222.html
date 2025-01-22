@@ -17,15 +17,48 @@
 
 <script>
     function submitLoginForm() {
-        var formData = {
+    	
+    	 var username = document.getElementById("username").value;
+    	    var password = document.getElementById("password").value;
+
+    	    if (!username || !password) {
+    	        alert("Username 또는 Password를 입력해주세요.");
+    	        return; // 입력값이 없으면 요청 중단
+    	    }
+
+    	    var formData = { username: username, password: password };
+
+    	    console.log(formData); // 데이터 확인
+    	    alert(`Username: ${username}, Password: ${password}`); // 값 확인
+
+    	    var xhr = new XMLHttpRequest();
+    	    xhr.open("POST", "/loginForm", true);
+    	    xhr.setRequestHeader("Content-Type", "application/json");
+    	    xhr.onload = function () {
+    	        if (xhr.status === 200) {
+    	            alert("로그인 성공");
+    	            window.location.href = "/";
+    	        } else {
+    	            alert("로그인 실패: " + xhr.responseText);
+    	        }
+    	    };
+    	    xhr.send(JSON.stringify(formData));
+    	
+/*         var formData = {
         		username: document.getElementById("username").value,
         		password: document.getElementById("password").value
         };
+        
+        alert(document.getElementById("username").value);
+        alert(formData);
+        alert(username);
+        
+        
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/login", true);
+        xhr.open("POST", "/yamilylogin", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(formData));
+        xhr.send(JSON.stringify(formData)); */
     }
 </script>
 

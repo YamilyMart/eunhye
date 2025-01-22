@@ -27,17 +27,34 @@ public class PrincipalDetailsService implements UserDetailsService {
 	 public PrincipalDetailsService(YamilyDao yDao) {
 	     this.yDao = yDao;
 	 }
+	 
+     @Autowired
+     private UserRepository userRepository;
 
-	 @Override
-	 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	
-	     Optional<User> userEntity = yDao.findByUsername(username);
-	     if (userEntity.isPresent()) {
-	    	 User user = userEntity.get();
-	            return new PrincipalDetails(user.getUsername(),user.getPassword(), user.getRole());
-	     }
-	     throw new UsernameNotFoundException("User not found with username: " + username);
-	 }
+//	 @Override
+//	 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//	
+//	     Optional<User> userEntity = userRepository.findByUsername(username);
+//	     if (userEntity.isPresent()) {
+//	    	 User user = userEntity.get();
+//	            return new PrincipalDetails(user.getUsername(),user.getPassword(), user.getRole());
+//	     }
+//	     throw new UsernameNotFoundException("User not found with username: " + username);
+//	 }
+     
+     @Override
+     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+         if (username == null || username.isEmpty()) {
+             throw new UsernameNotFoundException("Username is empty");
+         }
+         
+         Optional<User> userEntity = userRepository.findByUsername(username.trim());
+         if (userEntity.isPresent()) {
+             User user = userEntity.get();
+             return new PrincipalDetails(user.getUsername(), user.getPassword(), user.getRole());
+         }
+         throw new UsernameNotFoundException("User not found with username: " + username);
+     }
 	 
 	 
 	 

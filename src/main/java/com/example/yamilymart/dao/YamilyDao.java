@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.example.yamilymart.dto.HrDTO;
 import com.example.yamilymart.dto.OrderDTO;
 import com.example.yamilymart.dto.OrderDetailDTO;
 import com.example.yamilymart.dto.OrderSearchDTO;
@@ -17,6 +16,7 @@ import com.example.yamilymart.dto.PartnerDTO;
 import com.example.yamilymart.dto.ProductDTO;
 import com.example.yamilymart.dto.SaleDTO;
 import com.example.yamilymart.dto.StockDTO;
+//import com.example.yamilymart.dto.User;
 import com.example.yamilymart.dto.User;
 
 

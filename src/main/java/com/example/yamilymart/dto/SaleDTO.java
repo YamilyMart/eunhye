@@ -1,4 +1,4 @@
-package com.example.yamilymart.dto;
+ package com.example.yamilymart.dto;
 
 import org.apache.ibatis.type.Alias;
 
