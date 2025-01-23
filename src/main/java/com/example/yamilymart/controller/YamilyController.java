@@ -63,7 +63,7 @@ public class YamilyController {
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
 	//메인 페이지
-	@GetMapping("/")
+	@GetMapping("/admin/main")
     public ModelAndView admin_main(){
         mv = yServ.admin_main();
         return mv;
@@ -76,7 +76,7 @@ public class YamilyController {
     
 	@GetMapping("/loginForm")
 	public String loginForm() {
-		return "login222";
+		return "login_form";
 	}
 
 	@GetMapping("/joinForm")

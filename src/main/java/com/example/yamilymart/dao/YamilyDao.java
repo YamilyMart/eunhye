@@ -94,6 +94,9 @@ public interface YamilyDao {
     @Insert("insert into User(username, password, role) "
     		+ "values (#{username}, #{password}, #{role})")
     int save(User user);
+    
+    @Select("select hr_name from hr where hr_id = #{username}")
+    String hrNameSelect(String username);
 
 
 

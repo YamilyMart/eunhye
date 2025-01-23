@@ -1,5 +1,6 @@
 package com.example.yamilymart.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,48 +20,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 //@ComponentScan("controllers")
 public class SecurityConfig {
+	
+    private final PrincipalDetailsService principalDetailsService;
+    private final CustomAuthenticationSuccessHandler successHandler;
 
-//    @Bean
+    @Autowired
+    public SecurityConfig(PrincipalDetailsService principalDetailsService, CustomAuthenticationSuccessHandler successHandler) {
+        this.principalDetailsService = principalDetailsService;
+        this.successHandler = successHandler;
+    }
+	
+//	@Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        http
-//            .csrf(csrf -> csrf.disable()) // CSRF 비활성화 // 폼 로그인 비활성화
+//            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
 //            .authorizeHttpRequests(authorizeRequests -> authorizeRequests
 //                .requestMatchers("/admin/**", "/reissue").authenticated() // 인증된 사용자만 접근
 //                .anyRequest().permitAll() // 나머지 요청은 허용
-//
 //            )
-//            .formLogin((formLogin) -> formLogin
-//                    .loginPage("/loginForm")
-//                    //.defaultSuccessUrl("/")
-//                    .defaultSuccessUrl("/", true)
-//                    .failureUrl("/loginForm?error=true")
-//                    .permitAll()
-//                    .successHandler((request, response, authentication) -> {
-//                        response.sendRedirect("/");  // 로그인 성공 후 메인 페이지로 이동
-//                    })
-//            		);
+//            .formLogin(formLogin -> formLogin
+//                .loginPage("/loginForm") // 커스텀 로그인 페이지
+//                .successHandler(authenticationSuccessHandler()) // 성공 핸들러
+//                //.successHandler(successHandler)
+//                .failureHandler(authenticationFailureHandler()) // 실패 핸들러
+//                .permitAll()
+//            );
 //
 //        return http.build();
 //    }
-	
-	
-	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-            .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers("/admin/**", "/reissue").authenticated() // 인증된 사용자만 접근
-                .anyRequest().permitAll() // 나머지 요청은 허용
-            )
-            .formLogin(formLogin -> formLogin
-                .loginPage("/loginForm") // 커스텀 로그인 페이지
-                .successHandler(authenticationSuccessHandler()) // 성공 핸들러
-                .failureHandler(authenticationFailureHandler()) // 실패 핸들러
-                .permitAll()
-            );
-
-        return http.build();
-    }
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
@@ -68,6 +55,32 @@ public class SecurityConfig {
             // 로그인 성공 시 "/"로 리다이렉트
             response.sendRedirect("/");
         };
+    }
+    
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/user/**").hasRole("BRANCH") // 지점 점장
+                .requestMatchers("/admin/**").hasAnyRole("MANAGER", "STAFF") // 본사 직원
+                .requestMatchers("/admin/hr/manage").hasRole("MANAGER") //인사관리는 매니저만 접근 가능
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스 허용
+                .anyRequest().authenticated() // 그 외 요청은 인증 필요
+            )
+            .formLogin(form -> form
+                .loginPage("/loginForm") // 커스텀 로그인 페이지
+                .successHandler(successHandler) // 성공 핸들러
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/loginForm")
+                .permitAll()
+            )
+            .userDetailsService(principalDetailsService);
+
+        return http.build();
     }
 
     @Bean
@@ -87,14 +100,5 @@ public class SecurityConfig {
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-	
-//    @Bean
-//    public BCryptPasswordEncoder encodePwd() {
-//        return new BCryptPasswordEncoder();
-//    }
-//    
-//    @Bean
-//    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-//        return authenticationConfiguration.getAuthenticationManager();
-//    }
+
 }

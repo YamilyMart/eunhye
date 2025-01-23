@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <!-- site metas -->
-<title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
+<title>사이드바</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 <meta name="author" content="">
@@ -47,19 +47,18 @@
 			<div class="sidebar_blog_1">
 				<div class="sidebar-header">
 					<div class="logo_section">
-						<a href="/index.html"><img class="logo_icon img-responsive"
-							src="/images/logo/logo_icon.png" alt="#" /></a>
+						<a href="#"><img class="logo_icon img-responsive"
+							src="/images/yamily_logo.png" alt="#" /></a>
 					</div>
 				</div>
 				<div class="sidebar_user_info">
 					<div class="icon_setting"></div>
 					<div class="user_profle_side">
 						<div class="user_img">
-							<img class="img-responsive" src="/images/layout_img/user_img.jpg"
-								alt="#" />
+							<img class="img-responsive" style="" src="/images/yamily_logo.png" alt="#" />
 						</div>
 						<div class="user_info">
-							<h6>John David</h6>
+							<h6>[[${username}]]님</h6>
 							<p>
 								<span class="online_animation"></span> Online
 							</p>
@@ -68,8 +67,14 @@
 				</div>
 			</div>
 			<div class="sidebar_blog_2">
-				<h4>General</h4>
+				<h4>메뉴</h4>
 				<ul class="list-unstyled components">
+				
+					<li><a href="/admin/order/list"><i class="fa fa-clock-o orange_color"></i> <span>메인페이지</span></a></li>
+					
+					
+					
+					
 					<li><a href="/admin/order/list"><i class="fa fa-clock-o orange_color"></i> <span>발주관리</span></a></li>
 					<li><a href="/admin/stock/list"><i class="fa fa-clock-o orange_color"></i> <span>재고관리</span></a></li>
 					<li><a href="/admin/sale/list"><i class="fa fa-clock-o orange_color"></i> <span>매출관리</span></a></li>

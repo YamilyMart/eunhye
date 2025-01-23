@@ -3,6 +3,8 @@ package com.example.yamilymart.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,6 +84,14 @@ public class YamilyService {
         }
         
         mv.addObject("monthSaleArr", monthSaleArr);
+        
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // 로그인된 사용자 이름
+        String role = authentication.getAuthorities().iterator().next().getAuthority();
+        String hr_name = yDao.hrNameSelect(username);
+
+        mv.addObject("username", hr_name); // 모델에 사용자 이름 추가
               
         mv.setViewName("admin_main");
 

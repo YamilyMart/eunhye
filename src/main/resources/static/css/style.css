@@ -730,7 +730,7 @@ a:focus {
     border: none;
     padding: 14px 26px 14px;
     font-size: 21px;
-    background: #ff5722;
+    background: #15283c;
     margin-right: 0;
     cursor: pointer;
     float: left;
@@ -1029,9 +1029,9 @@ a[data-toggle="collapse"] {
 }
 
 .logo_section img {
-    height: 42px;
+    height: 60px;
     padding: 0;
-    margin: 8px 15px 0;
+    margin: 0px 15px 0;
 }
 
 #sidebar.active .logo_section a {
