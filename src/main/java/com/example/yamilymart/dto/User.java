@@ -13,8 +13,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Alias("User")
-@Data
 @Entity
 public class User {
 	
@@ -23,6 +21,7 @@ public class User {
     private String username;
     
     private String password;
+    
     private String role;
 
 }
