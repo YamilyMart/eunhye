@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ko">
+<th:block th:fragment="setContent(content)">
+<head>
+<meta charset="UTF-8">
+<title>Staff Dashboard</title>
+<div th:replace="~{fragments/css :: css}"></div>
+<style>
+  #calendar {
+    width: 100%; /* Adjust the width percentage as needed */
+    height: 450px; /* Adjust the height as needed */
+    margin: 0 auto; /* Centers the calendar */
+  }
+</style>
+</head>
+<body>
+ <body class="dashboard dashboard_1">
+      <div class="full_container">
+         <div class="inner_container">
+            <head th:include="fragments/sidebar :: sidebar"></head>
+            <!-- right content -->
+            <div id="content">
+            	<head th:include="fragments/topbar :: topbar"></head>
+            	
+            	<!--main-->
+            	<div class="midde_cont">
+                  <div class="container-fluid">
+                     <div class="row column_title">
+                        <div class="col-md-12">
+                           <div class="page_title">
+                              <h2>결재관리</h2>
+                           </div>
+                        </div>
+                     </div>
+            			<div class="row column1">
+                        <div class="col-md-6 col-lg-4">
+                           <div class="full white_shd margin_bottom_30">
+                              <div class="info_people">
+                                 <div class="p_info_img">
+                                    <img style="width: 130px; height: 100%; object-fit: cover" th:src="'/uploads/' + ${staff.hr_sybname}" alt="Staff Image" class="image">
+                                 </div>
+                                 <div class="user_info_cont"	>
+                                    <h4 th:text="${staff.hr_name}"></h4>
+                                    <p th:text="'ID: ' + ${staff.hr_id}"></p>
+                                    <p th:if = "${staff.hr_authority == 1}" th:text = "'staff'"></p> 
+				                    <p th:if = "${staff.hr_authority == 2}" th:text = "'assistant manager'"></p>
+				                    <p th:if = "${staff.hr_authority == 3}" th:text = "'manager'"></p>
+				                    <p th:if = "${staff.hr_authority == 4	}" th:text = "'team leader'"></p>
+				                    <p th:if = "${staff.hr_authority == 5	}" th:text = "'executive'"></p>
+				                    <p th:if = "${staff.hr_authority == 6	}" th:text = "'vice president'"></p>
+				                    <p th:if = "${staff.hr_authority == 7	}" th:text = "'president'"></p>
+				                    <span>남은 휴가 일수:</span> &nbsp;  &nbsp; <p id="pdo" style="display:inline-block" th:text="${staff.hr_pdo}"></p>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        
+            			<div class="col-md-8">
+                           <div class="white_shd full margin_bottom_30">
+                              <div class="full progress_bar_inner">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="full" >
+                                          <div id="calendar"></div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+						
+				<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+			    <script>
+			
+			      document.addEventListener('DOMContentLoaded', function() {
+			        var calendarEl = document.getElementById('calendar');
+			        var calendar = new FullCalendar.Calendar(calendarEl, {
+			          initialView: 'dayGridMonth',
+			          events: function(info, successCallback, failureCallback) {
+			        	  fetch('calendar')
+			        	  	.then(response => response.json())
+			        	  	.then(events => {
+			        	  		const mappedEvents = events.map(event => ({
+			        	  			title: event.app_title + '(' + event.staffDTO.hr_name + ')',
+			        	  			start: event.app_datestart,
+			        	  			end: event.app_dateend,
+			        	  			allDay:true
+			        	  		}));
+			        	  		successCallback(mappedEvents);
+			        	  	})
+			        	  .catch(error => {
+			        		  console.error('Error fetching events:', error);
+			        		  failureCallback(error);
+			        	  })
+			          }
+			        });
+			        calendar.render();
+			      });
+			
+			    </script>
+
+						
+						
+						
+            	
+            	
+				<div class="col-md-12">
+                           <div class="white_shd full margin_bottom_30">
+                              <div class="full graph_head">
+                                 <div class="heading1 margin_0">
+                                    <h2>내결재관리</h2>
+                                 </div>
+                              </div>
+                              <div class="full inner_elements">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="tab_style1">
+                                          <div class="tabbar padding_infor_info">
+                                             <nav>
+                                                <div class="nav nav-tabs" id="tab" role="tablist">
+                                                   <a class="nav-item nav-link active" id="all" data-toggle="tab" href="#allContent" role="tab" aria-controls="nav-home" aria-selected="true">전체</a>
+                                                   <a class="nav-item nav-link" id="ing" data-toggle="tab" href="#ingContent" role="tab" aria-controls="nav-profile" aria-selected="false">진행중</a>
+                                                   <a class="nav-item nav-link" id="rejected" data-toggle="tab" href="#rejectedContent" role="tab" aria-controls="nav-contact" aria-selected="false">반려</a>
+                                                   <a class="nav-item nav-link" id="approved" data-toggle="tab" href="#approvedContent" role="tab" aria-controls="nav-aboutUs" aria-selected="false">결재</a>
+                                                   <a class="nav-item nav-link" id="ing" data-toggle="tab" href="#bossContent" role="tab" aria-controls="nav-profile" aria-selected="false">결재대기중</a>
+                                                </div>
+                                             </nav>
+                                             <div class="tab-content" id="nav-tabContent">
+                                                <div class="tab-pane fade show active" id="allContent" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                  <!--table 1 start -->
+                                                  
+                                                  <div class="col-md-12">
+							                           <div class="white_shd full margin_bottom_30">
+							                              <div class="full graph_head">
+							                                 <div class="heading1 margin_0">
+							                                    <h2>전체조회</h2>
+							                                 </div>
+							                              </div>
+							                              <div class="table_section padding_infor_info">
+							                                 <div class="table-responsive-sm">
+							                                    <table class="table table-hover">
+							                                       <thead>
+							                                          <tr>
+							                                             <th>기안일자</th>
+							                                             <th>제목</th>
+							                                             <th>구분</th>
+							                                             <th>기안자</th>
+							                                             <th>결재자</th>
+							                                             <th>진행상태</th>
+							                                             <th>조회</th>
+							                                          </tr>
+							                                       </thead>
+							                                          <tr th:each="al : ${appList}" th:onclick="appDetail([[${al.app_id}]], [[${hr_code}]])">
+							                                          <input type="hidden" name="hr_code" value="${hr_code}">
+							                                             <td th:text = "${al.app_date}"></td>
+							                                             <td th:text = "${al.app_title}"></td>
+							                                             <td th:if = "${al.app_cat == 0}" th:text = "'휴가'"></td> 
+							                                             <td th:if = "${al.app_cat == 1}" th:text = "'근로시간단축신청서'"></td>
+							                                             <td th:if = "${al.app_cat == 2}" th:text = "'사직서'"></td>
+							                                             <td th:if = "${al.app_cat == 3}" th:text = "'출장보고서'"></td>
+							                                      		 <td th:text = "${al.writer}"></td>
+							                                      		 <td th:text = "${al.boss}"></td>
+							                                             <td th:if = "${al.app_status == 0}" th:text = "'진행중'"></td>
+							                                             <td th:if = "${al.app_status == 1}" th:text = "'반려'"></td>
+							                                             <td th:if = "${al.app_status == 2}" th:text = "'1차 결재완료'"></td>
+							                                             <td th:if = "${al.app_status == 3}" th:text = "'결재완료'"></td>
+							                                             <td class="p_status" th:if = "${al.app_view == 0}" th:text = "'미확인'"></td>
+							                                             <td th:if = "${al.app_view == 1}" th:text = "'확인'"></td>
+							                                          </tr>
+							                                       </tbody>
+							                                    </table>
+							                                 </div>
+							                              </div>
+							                           </div>
+							                        </div>
+                                                  <!-- table 1 end -->
+                                                </div>
+                                                <div class="tab-pane fade" id="bossContent" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                                   <!-- table 2 start -->
+                                                   
+                                                   <div class="col-md-12">
+							                           <div class="white_shd full margin_bottom_30">
+							                              <div class="full graph_head">
+							                                 <div class="heading1 margin_0">
+							                                    <h2>결재대기중</h2>
+							                                 </div>
+							                              </div>
+							                              <div class="table_section padding_infor_info">
+							                                 <div class="table-responsive-sm">
+							                                    <table class="table table-hover">
+							                                       <thead>
+							                                          <tr>
+							                                             <th>기안일자</th>
+							                                             <th>제목</th>
+							                                             <th>구분</th>
+							                                             <th>기안자</th>
+							                                             <th>결재자</th>
+							                                             <th>진행상태</th>
+							                                             <th>조회</th>
+							                                          </tr>
+							                                       </thead>
+							                                       		<input type="hidden" name="app_status" value="0">
+							                                         	 <input type="hidden" name="hr_code" value="${hr_code}">
+							                                          <tr th:each="boss : ${bossList}"
+    																	th:onclick="appDetail([[${boss.app_id}]], [[${hr_code}]])">
+							                                         	 
+ 							                                             <td th:text = "${boss.app_date}"></td>
+							                                             <td th:text = "${boss.app_title}"></td>
+							                                             <td th:if = "${boss.app_cat == 0}" th:text = "'휴가'"></td> 
+							                                             <td th:if = "${boss.app_cat == 1}" th:text = "'근로시간단축신청서'"></td>
+							                                             <td th:if = "${boss.app_cat == 2}" th:text = "'사직서'"></td>
+							                                             <td th:if = "${boss.app_cat == 3}" th:text = "'출장보고서'"></td>
+							                                      		 <td th:text = "${boss.writer}"></td>
+							                                      		 <td th:text = "${boss.boss}"></td>
+							                                             <td th:if = "${boss.app_status == 0}" th:text = "'진행중'"></td>
+							                                             <td th:if = "${boss.app_status == 1}" th:text = "'반려'"></td>
+							                                             <td th:if = "${boss.app_status == 2}" th:text = "'1차 결재완료'"></td>
+							                                             <td th:if = "${boss.app_status == 3}" th:text = "'결재완료'"></td>
+							                                             <td th:if = "${boss.app_view == 0}" th:text = "'미확인'"></td>
+							                                             <td th:if = "${boss.app_view == 1}" th:text = "'확인'"></td>
+							                                          </tr>
+							                                       </tbody>
+							                                    </table>
+							                                 </div>
+							                              </div>
+							                           </div>
+							                        </div>
+                                                   <!-- table 2 end -->
+                                                </div> 
+                                                <div class="tab-pane fade" id="ingContent" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                                   <!-- table 2 start -->
+                                                   
+                                                   <div class="col-md-12">
+							                           <div class="white_shd full margin_bottom_30">
+							                              <div class="full graph_head">
+							                                 <div class="heading1 margin_0">
+							                                    <h2>진행중</h2>
+							                                 </div>
+							                              </div>
+							                              <div class="table_section padding_infor_info">
+							                                 <div class="table-responsive-sm">
+							                                    <table class="table table-hover">
+							                                       <thead>
+							                                          <tr>
+							                                             <th>기안일자</th>
+							                                             <th>제목</th>
+							                                             <th>구분</th>
+							                                             <th>기안자</th>
+							                                             <th>결재자</th>
+							                                             <th>진행상태</th>
+							                                             <th>조회</th>
+							                                          </tr>
+							                                       </thead>
+							                                          <tr th:each="ial : ${appList}" th:if="${ial.app_status == 0 || ial.app_status == 2}" th:onclick="appDetail([[${ial.app_id}]], [[${hr_code}]])">
+							                                         	 <input type="text" name="app_status" value="0" hidden>
+							                                             <td th:text = "${ial.app_date}"></td>
+							                                             <td th:text = "${ial.app_title}"></td>
+							                                             <td th:if = "${ial.app_cat == 0}" th:text = "'휴가'"></td> 
+							                                             <td th:if = "${ial.app_cat == 1}" th:text = "'근로시간단축신청서'"></td>
+							                                             <td th:if = "${ial.app_cat == 2}" th:text = "'사직서'"></td>
+							                                             <td th:if = "${ial.app_cat == 3}" th:text = "'출장보고서'"></td>
+							                                      		 <td th:text = "${ial.writer}"></td>
+							                                      		 <td th:text = "${ial.boss}"></td>
+							                                             <td th:if = "${ial.app_status == 0}" th:text = "'진행중'"></td>
+							                                             <td th:if = "${ial.app_status == 1}" th:text = "'반려'"></td>
+							                                             <td th:if = "${ial.app_status == 2}" th:text = "'1차 결재완료'"></td>
+							                                             <td th:if = "${ial.app_status == 3}" th:text = "'결재완료'"></td>
+							                                             <td th:if = "${ial.app_view == 0}" th:text = "'미확인'"></td>
+							                                             <td th:if = "${ial.app_view == 1}" th:text = "'확인'"></td>
+							                                          </tr>
+							                                       </tbody>
+							                                    </table>
+							                                 </div>
+							                              </div>
+							                           </div>
+							                        </div>
+                                                   <!-- table 2 end -->
+                                                </div>
+                                                <div class="tab-pane fade" id="rejectedContent" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                                   <!-- table 3 start -->
+                                                   
+                                                   <div class="col-md-12">
+							                           <div class="white_shd full margin_bottom_30">
+							                              <div class="full graph_head">
+							                                 <div class="heading1 margin_0">
+							                                    <h2>반려</h2>
+							                                 </div>
+							                              </div>
+							                              <div class="table_section padding_infor_info">
+							                                 <div class="table-responsive-sm">
+							                                    <table class="table table-hover">
+							                                       <thead>
+							                                          <tr>
+							                                             <th>기안일자</th>
+							                                             <th>제목</th>
+							                                             <th>구분</th>
+							                                             <th>기안자</th>
+							                                             <th>결재자</th>
+							                                             <th>진행상태</th>
+							                                             <th>조회</th>
+							                                          </tr>
+							                                       </thead>
+							                                          <tr th:each="ral : ${appList}" th:if="${ral.app_status == 1}" th:onclick="appDetail([[${ral.app_id}]], [[${hr_code}]])">
+							                                             <td th:text = "${ral.app_date}"></td>
+							                                             <td th:text = "${ral.app_title}"></td>
+							                                             <td th:if = "${ral.app_cat == 0}" th:text = "'휴가'"></td> 
+							                                             <td th:if = "${ral.app_cat == 1}" th:text = "'근로시간단축신청서'"></td>
+							                                             <td th:if = "${ral.app_cat == 2}" th:text = "'사직서'"></td>
+							                                             <td th:if = "${ral.app_cat == 3}" th:text = "'출장보고서'"></td>
+							                                      		 <td th:text = "${ral.writer}"></td>
+							                                      		 <td th:text = "${ral.boss}"></td>
+							                                             <td th:if = "${ral.app_status == 0}" th:text = "'진행중'"></td>
+							                                             <td th:if = "${ral.app_status == 1}" th:text = "'반려'"></td>
+							                                             <td th:if = "${ral.app_status == 2}" th:text = "'1차 결재완료'"></td>
+							                                             <td th:if = "${ral.app_status == 3}" th:text = "'결재완료'"></td>
+							                                             <td th:if = "${ral.app_view == 0}" th:text = "'미확인'"></td>
+							                                             <td th:if = "${ral.app_view == 1}" th:text = "'확인'"></td>
+							                                          </tr>
+							                                       </tbody>
+							                                    </table>
+							                                 </div>
+							                              </div>
+							                           </div>
+							                        </div>
+                                                   <!-- table 3 end -->
+                                                </div>
+                                                 <div class="tab-pane fade" id="approvedContent" role="tabpanel" aria-labelledby="nav-aboutUs-tab">
+                                                   <!-- table 4 start -->
+                                                   
+                                                   <div class="col-md-12">
+							                           <div class="white_shd full margin_bottom_30">
+							                              <div class="full graph_head">
+							                                 <div class="heading1 margin_0">
+							                                    <h2>결재완료</h2>
+							                                 </div>
+							                              </div>
+							                              <div class="table_section padding_infor_info">
+							                                 <div class="table-responsive-sm">
+							                                    <table class="table table-hover">
+							                                       <thead>
+							                                          <tr>
+							                                             <th>기안일자</th>
+							                                             <th>제목</th>
+							                                             <th>구분</th>
+							                                             <th>기안자</th>
+							                                             <th>결재자</th>
+							                                             <th>진행상태</th>
+							                                             <th>조회</th>
+							                                          </tr>
+							                                       </thead>
+							                                          <tr th:each="ed : ${appList}" th:if="${ed.app_status == 2}" th:onclick="appDetail([[${ed.app_id}]], [[${hr_code}]])">
+							                                             <td th:text = "${ed.app_date}"></td>
+							                                             <td th:text = "${ed.app_title}"></td>
+							                                             <td th:if = "${ed.app_cat == 0}" th:text = "'휴가'"></td> 
+							                                             <td th:if = "${ed.app_cat == 1}" th:text = "'근로시간단축신청서'"></td>
+							                                             <td th:if = "${ed.app_cat == 2}" th:text = "'사직서'"></td>
+							                                             <td th:if = "${ed.app_cat == 3}" th:text = "'출장보고서'"></td>
+							                                      		 <td th:text = "${ed.writer}"></td>
+							                                      		 <td th:text = "${ed.boss}"></td>
+							                                             <td th:if = "${ed.app_status == 0}" th:text = "'진행중'"></td>
+							                                             <td th:if = "${ed.app_status == 1}" th:text = "'반려'"></td>
+							                                             <td th:if = "${ed.app_status == 2}" th:text = "'1차 결재완료'"></td>
+							                                             <td th:if = "${ed.app_status == 3}" th:text = "'결재완료'"></td>
+							                                             <td th:if = "${ed.app_view == 0}" th:text = "'미확인'"></td>
+							                                             <td th:if = "${ed.app_view == 1}" th:text = "'확인'"></td>
+							                                          </tr>
+							                                       </tbody>
+							                                    </table>
+							                                 </div>
+							                              </div>
+							                           </div>
+							                        </div>
+                                                   <!-- table 4 end -->
+                                                </div>
+                                             </div>
+                                             		<!-- button start -->					                        
+							                        <div class="button_block" style="width: 100px">
+                										<button  type="button" class="model_bt btn btn-primary" data-toggle="modal" data-target="#myModal" style="border-color: #04AA6D; color: white; background-color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';"
+                                             onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">신규</button>
+                									</div>
+                                                   <!-- button end -->
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+            	
+            	
+            			<!-- documentation modal start -->
+            			<div class="modal fade" id="myModal">
+				            <div class="modal-dialog" style="max-width: 900px">
+				               <div class="modal-content">
+				                  <!-- Modal Header -->
+				                  <div class="modal-header">
+				                     <h4 class="modal-title">기안서</h4>
+				                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+				                  </div>
+				                  <!-- Modal body -->
+				                  <div class="modal-body">
+				                     <div class="col-md-6">
+				                           <div class="white_shd full margin_bottom_30" style="width:800px">	
+				                              <div class="table_section padding_infor_info">
+				                                 <div class="table-responsive-sm">
+				                                	<form action="addApproval" method="post" onsubmit="return pdoCheck()" enctype="multipart/form-data">
+				                                    <table class="table table-bordered">
+				                                       <tbody>
+				                                          <tr>
+				                                            <td>양식</td>
+				                                             <td>
+				                                             <input type="hidden" name="hr_code" th:value="${staff.hr_code}" readonly />
+				                                             <input type="hidden" id="selected_hr_code" name="selected_hr_code" value="" />
+				                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="app_cat" id="app_cat" 
+				                                             style="border-color: #04AA6D; color: white; background-color: #04AA6D"
+                                             					onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';"
+                                             					onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">
+				                                             	<option value="">선택</option>
+				                                           		<option value="0">휴가</option>
+				                                           		<option value="1">근로시간단축신청서</option>
+				                                           		<option value="2">사직서</option>
+				                                           		<option value="3">출장보고서</option>
+				                                             </select>
+				                                             </td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>결재자</td>
+				                                             <td><input type="text" id="boss_hr_name" name="hr_name" readonly>
+				                                             <button id="btnPop" type="button" class="btn cur-p btn-outline-primary" onclick="$('#bossCheck').modal('show')"
+				                                            	 style="border-color: #04AA6D; color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"	
+				                                             >🔍</button>
+				                                             </td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>직급</td>
+				                                             <td th:if = "${staff.hr_authority == 1}" th:text = "'staff'"></td> 
+				                                             <td th:if = "${staff.hr_authority == 2}" th:text = "'assistant manager'"></td>
+				                                             <td th:if = "${staff.hr_authority == 3}" th:text = "'manager'"></td>
+				                                             <td th:if = "${staff.hr_authority == 4	}" th:text = "'team leader'"></td>
+				                                             <td th:if = "${staff.hr_authority == 5	}" th:text = "'executive'"></td>
+				                                             <td th:if = "${staff.hr_authority == 6	}" th:text = "'vice president'"></td>
+				                                             <td th:if = "${staff.hr_authority == 7	}" th:text = "'president'"></td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>신청일</td>
+				                                             <td>
+				                                             <input type="date" id="app_startdate" name="app_datestart">&nbsp --- &nbsp<input type="date" id="app_enddate" name="app_dateend">
+				                                             </td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>제목</td>
+				                                             <td><input type="text" id="app_title" name="app_title">	
+				                                             </td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>사유</td>
+				                                             <td><textarea id="app_info" name="app_info" cols="50"></textarea></td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>파일 업로드</td>
+				                                             <td>
+				                                             <div class="filebox">
+																	<label for="approvalFile">파일 업로드</label>
+																	<input type="file" id="approvalFile" name="approvalFile" accept="application/pdf, image/*, .docx, .doc, .txt" />
+						                                 	</div>
+				                                             
+				                                             </td>
+				                                          </tr>
+				                                       </tbody>
+				                                    </table>
+				                                    <button type="reset" class="btn cur-p btn-outline-primary" style="width: 200px; border-color: #6c757d; color: #6c757d"
+				                                         			onmouseover="this.style.backgroundColor='#6c757d'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#6c757d';"	>초기화</button>
+				                                    <button type="submit" class="btn cur-p btn-outline-primary" style="width: 200px; border-color: #04AA6D; color: white; background-color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
+				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">저장</button>
+				                                    </form>
+				                                 </div>
+				                              </div>
+				                           </div>
+				                        </div>
+				                  </div>
+				                  <!-- Modal footer -->
+				               </div>
+				            </div>
+				         </div>
+            			<!-- documentation modal end -->
+            			
+            			<!-- documentation modal start -->
+            			<div class="modal fade" id="specs" >
+				            <div class="modal-dialog" style="max-width: 900px;">
+				               <div class="modal-content">
+				                  <!-- Modal Header -->
+				                  <div class="modal-header">
+				                     <h4 class="modal-title">기안서 상세조회</h4>
+				                     <button type="button" class="close" onclick="$('#specs').modal('hide');">&times;</button>
+				                  </div>
+				                  <!-- Modal body -->
+				                  <div class="modal-body">
+				                     <div class="col-md-6">
+				                           <div class="white_shd full margin_bottom_30" style="width:800px">	
+				                              <div class="table_section padding_infor_info">
+				                                 <div class="table-responsive-sm">
+				                                 <form id = "process" action="approveApproval" method="post">
+				                                    <table class="table table-bordered">
+				                                       <tbody>
+				                                       <input type="number" id="hr_code" name="hr_code" th:value="${staff.hr_code}" hidden>
+				                                       <input type="number" id="specs_id" name="app_id" hidden>
+				                                          <tr>
+				                                            <td>양식</td>
+				                                             <td id="specs_cat"></td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>작성 일자</td>
+				                                             <td id="specs_date"></td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>결재자</td>
+				                                             <td id="specs_boss"></td>
+				                                             <td id="secondCheck" style="display: none">
+				                                             	<input type="text" id="second_boss" name="hr_name" readonly>
+				                                             	<input type="number" id="boss_code_second" name="boss_code_second" hidden/>
+				                                             	<button id="btnPop" type="button" class="btn cur-p btn-outline-primary" onclick="$('#bossCheck').modal('show')" style="border-color: #04AA6D; color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"	>🔍</button>
+				                                             </td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>직급</td>
+				                                             <td id="specs_auth"></td>
+				                                             
+				                                          </tr>
+				                                          <tr>
+				                                             <td>신청일</td>
+				                                             <td>
+				                                             <p id="specs_startdate"></p>&nbsp --- &nbsp<p id="specs_enddate"></p>
+				                                             </td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>제목</td>
+				                                             <td id="specs_title"></td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>사유</td>
+				                                             <td id="specs_info"></td>
+				                                          </tr>
+				                                          <tr>
+				                                             <td>파일 업로드</td>
+				                                             <td><a class="btn cur-p btn-outline-primary" id="downloadFileBtn" href="#" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
+				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">다운로드</a></td>
+				                                          </tr>
+				                                          <tr id="specs_rejection_row">
+				                                             <td>반려 사유</td>
+				                                             <td id="specs_rejection"></td>
+				                                          </tr>
+				                                          <tr id="app_rejection_row">
+				                                          	<td>반려사유</td>
+				                                          	<td><textarea id="app_rejection" name="app_rejection" cols="50"></textarea>
+				                                       </tbody>
+				                                    </table>
+				                                    <div class="modal-footer" id="staffArea">
+				                                    <button type="button" class="btn cur-p btn-outline-primary" onclick="setAction('reject')" style="width: 100px; border-color: #AA041A; color: #AA041A"
+				                                         			onmouseover="this.style.backgroundColor='#AA041A'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#AA041A';">결재 취소</button>
+				                                    <button type="button" class="btn btn-danger" onclick="$('#specs').modal('hide');" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
+				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">확인</button>
+				                                    </div>
+				                                    <div class="modal-footer" id="close">
+				                                    <button type="button" class="btn btn-danger" onclick="$('#specs').modal('hide');" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
+				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">확인</button>
+				                                    </div>
+				                                    <div class="modal-footer" id="no">
+				                    				<button type="submit" class="btn btn-danger" id="no" onclick="setAction('reject')" style="width: 100px; border-color: #AA041A; color: #AA041A"
+				                                         			onmouseover="this.style.backgroundColor='#AA041A'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor='white'; this.style.color='#AA041A';">부결</button>
+				                  					</div>
+				                                    <div class="modal-footer" id="submitApproval">
+				                    				<button type="submit" class="btn btn-danger" id="finalAnswer" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
+				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">결재</button>
+				                  					</div>
+				                                    </form>
+				                                 </div>
+				                              </div>
+				                           </div>
+				                        </div>
+				                  </div>
+				                  <!-- Modal footer -->
+				                  <div class="modal-footer" id="bossArea">
+				                     <button type="button" class="btn btn-danger" id="reject" style="width: 100px; border-color: #AA041A; color: white"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#AA041A';" 
+				                         							onmouseout="this.style.backgroundColor='#AA041A'; this.style.color='white';">부결</button>
+				                     <button type="button" class="btn btn-danger" id="approve" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
+				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">결재</button>
+				                  </div>
+				               </div>
+				            </div>
+				         </div>
+            			<!-- documentation modal end -->
+            			
+            			
+            			
+            			
+            			<!-- Find boss modal start -->
+            			
+            			<div class="modal fade" id="bossCheck">
+				            <div class="modal-dialog">
+				               <div class="modal-content">
+				                  <!-- Modal Header -->
+				                  <div class="modal-header">
+				                     <h4 class="modal-title">결재자 검색</h4>
+				                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+				                  </div>
+				                  <!-- Modal body -->
+				                  <div class="modal-body">
+				                     <div class="col-md-6">
+				                           <div class="white_shd full margin_bottom_30" style="width:400px">	
+				                              <div class="table_section padding_infor_info">
+				                                 <div class="table-responsive-sm">
+				                                	<form id="bossSearch" action="bossSearch" method="post" onsubmit="bossCheck(event)">
+				                                    <table class="table table-bordered">
+				                                       <tbody>
+				                                          <tr>
+				                                             <td>결재자 이름 검색</td>
+				                                             <td><input type="text" id="boss" name="hr_name"></td>
+				                                             <input type="text" id="hr_code" name="hr_code" th:value="${staff.hr_code}" hidden>
+				                                          </tr>
+				                                    </table>
+				                                    <div id="msg"></div>
+				                                    
+				                                    <div id="defaultBossList">
+													    <table class="table table-hover">
+													        <thead>
+													            <tr>
+													                <th>NO.</th>
+													                <th>이름</th>
+													                <th>직급</th>
+													                <th>입사날짜</th>
+													            </tr>
+													        </thead>
+													        <tbody>
+													            <!-- Loop through the sangsa list -->
+													            <tr th:each="boss : ${sangsa}">
+													                <td th:text="${boss.hr_code}"></td>
+													                <td th:text="${boss.hr_name}"></td>
+													                <td th:text="${boss.hr_authority == 2 ? 'assistant manager' : 
+													                               boss.hr_authority == 3 ? 'manager' : 
+													                               boss.hr_authority == 4 ? 'team leader' : 
+													                               boss.hr_authority == 5 ? 'executive' : 
+													                               boss.hr_authority == 6 ? 'vice president' : 
+													                               boss.hr_authority == 7 ? 'president' : '알 수 없음'}"></td>
+													                <td th:text="${boss.hr_joindate}"></td>
+													            </tr>
+													        </tbody>
+													    </table>
+													</div>
+													<div id="result" style="display:none;">
+													<table class="table table-hover">
+				                                       <thead>
+				                                          <tr>
+				                                             <th>NO.</th>
+				                                             <th>이름</th>
+				                                             <th>직급</th>
+				                                             <th>입사날짜</th>
+				                                          </tr>
+				                                          </thead>
+				                                          <tbody id="bossRow"></tbody>
+				                                        </table>
+													</div>
+				                                    <button type="submit" class="btn cur-p btn-outline-primary" style="width: 200px; border-color: #04AA6D; color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"	>검색</button>
+				                                    </form>
+				                                 </div>
+				                              </div>
+				                           </div>
+				                        </div>
+				                  </div>
+				                  <!-- Modal footer -->
+				                  <div class="modal-footer">
+				                  	 <button class="btn btn-danger" type="button" id= "selectButton" onclick="sendToParent()" disabled style="width: 200px; border-color: #04AA6D; color: #04AA6D;background-color: white"
+				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';"	>선택하기</button>
+				                  </div>
+				               </div>
+				            </div>
+				         </div>
+            			
+            			<!-- Find boss modal end -->     
+
+            			
+				<!-- main end -->
+
+
+	<script>
+	function pdoCheck() {
+		const pdo = $('#pdo').text();
+		const cat = $('#app_cat').val();
+		var start = document.getElementById('app_startdate').value;
+		var end = document.getElementById('app_enddate').value;
+		var title = document.getElementById('app_title').value;
+		var info = document.getElementById('app_info').value;
+		var file = document.getElementById('approvalFile');
+		var selectedHrCode = document.getElementById('selected_hr_code').value;
+		console.log(selectedHrCode);
+		if (selectedHrCode === "") {
+			alert('결재자를 검색하여 입력해주세요.');
+			return false;
+		}
+		if (cat == '') {
+			alert('양식을 선택해주세요.');
+			return false;
+		}
+		console.log(pdo);
+		if (start == '' || end == '') {
+			alert('신청일을 입력해주세요.');
+			return false;
+		}
+		if (title == '') {
+			alert('제목을 입력해주세요.');
+			return false;
+		}
+		if (info == '') {
+			alert('내용을 입력해주세요.');
+			return false;
+		}
+		if (file.files.length === 0) {
+			alert('파일을 첨부해주세요.');
+			return false;
+		}
+		if (pdo == 0) {
+			if (pdo == 0 && cat == 1 || pdo == 0 && cat == 0) {
+				alert("휴가 일수가 부족합니다.")
+				return false;
+			}
+			else {
+				return true;
+			}
+		} else {
+			return true;
+		}
+		return true;
+	}
+	
+	function setAction(action) {
+		let form = document.getElementById('process')
+		
+		if (action == 'reject') {
+			form.action = 'cancelApproval';
+		}
+		form.submit(); 
+	}
+	
+
+	
+	function bossCheck(event){
+		event.preventDefault();
+		
+		const hr_name = $('#boss').val();
+		const hr_code = $('#hr_code').val();
+
+		console.log("boss: " + hr_name);
+		console.log("hr_code: "+hr_code);
+		
+		if (hr_name.trim()==="") {
+			$('#msg').text('이름을 입력해주세요.');
+			return;
+		}
+		$('#msg').empty();
+		$('#bossRow').empty();
+		$.ajax({
+			url: 'bossSearch',
+			method: 'POST',
+			data:{hr_name: hr_name,
+				hr_code: hr_code},
+			success: function(result) {
+				
+				console.log(result);
+				
+				if(result&& result.boss && result.boss.length>0) {
+					
+					$('#result').show();
+					const boss = result.boss;
+					
+					$('#bossRow').empty();
+					
+					$('#defaultBossList').hide();
+					
+					result.boss.forEach(function(boss) {
+						$('#bossRow').append(`
+								<tr>
+								<td>${boss.hr_code}</td>
+								<td>${boss.hr_name}</td>
+								<td>
+								${boss.hr_authority === 2 ? "assistant manager" : 
+									boss.hr_authority === 3 ? "manager" : 
+									boss.hr_authority === 4 ? "team leader" : 
+									boss.hr_authority === 5 ? "executive" : 
+									boss.hr_authority === 6 ? "vice president" : 
+									boss.hr_authority === 7 ? "president" : "알 수 없음"}
+								</td>
+								<td>${boss.hr_joindate || 'N/A'}</td>
+								</tr>
+							`);
+					});
+					
+					
+					$('#selectButton').prop('disabled', false);
+					
+					$('#bossRow').on('click', 'tr', function() {
+						const selectedUser = {
+								selected_hr_code:$(this).find('td').eq(0).text(),
+								selected_hr_name:$(this).find('td').eq(1).text(),
+								selected_hr_authority:$(this).find('td').eq(2).text(),
+								selected_hr_joindate:$(this).find('td').eq(3).text()
+						};
+						
+						// Example AJAX POST request to send the `selectedUser` data
+						$.ajax({
+						    url: 'addApproval', 
+						    method: 'POST',
+						    data: selectedUser,  // Send the selectedUser data as request parameters
+						    success: function(response) {
+						        // Handle the response after the data is successfully sent
+						        console.log('Data successfully sent to the server', response);
+						    },
+						    error: function(error) {
+						        // Handle the error if the request fails
+						        console.log('Error sending data', error);
+						    }
+						});
+						
+						
+						sendToParent(selectedUser);
+					})
+				}else {
+					$('#msg').text('존재하지 않는 staff입니다.')
+				}
+			},
+			error: function(xhr, status, error) {
+				console.error("Error fetching user details: ", error);
+				$('#msg').text("검색 중 오류가 발생했습니다.");
+			}
+		});
+	}
+	
+	function sendToParent(selectedUser) {
+		console.log("selectedUser = "+ selectedUser)
+		$('#boss_hr_name').val(selectedUser.selected_hr_name);
+		$('#second_boss').val(selectedUser.selected_hr_name);
+		$('#selected_hr_code').val(selectedUser.selected_hr_code);
+		$('#boss_code_second').val(selectedUser.selected_hr_code);
+		$('#bossCheck').modal('hide');
+	}
+	
+	
+	function appDetail(app_id, hr_code){
+		console.log("Tldldlqkf");
+		
+		$.ajax({
+			url: 'appDetail',	
+			method: 'GET',
+			data: {app_id: app_id,
+				hr_code:hr_code},
+			success: function(result) {
+				if (result && result.appDetail) {
+					
+					
+					const ra = result.appDetail;
+					console.log("이거 뭔데요: " + ra.app_id);
+					console.log("뭐에 대한 건데요: "+ hr_code);
+					console.log("first boss" + ra.boss_code);
+					console.log("second boss"+ra.boss_code_second);
+					
+
+					$('#specs_id').val(ra.app_id);	
+					switch(ra.app_cat) {
+					case 0: $('#specs_cat').text('휴가');
+					break;
+					case 1: $('#specs_cat').text('근로시간단축신청서');
+					break;
+					case 2: $('#specs_cat').text('사직서');
+					break;
+					case 3: $('#specs_cat').text('출장보고서');
+					break;
+					}
+					$('#specs_date').text(ra.app_date);
+					$('#specs_boss').text(ra.boss);
+				
+					const ras = ra.staffDTO;
+					switch(ras.hr_authority) {
+					case 1: $('#specs_auth').text('staff');
+					break;
+					case 2: $('#specs_auth').text('assistant manager');
+					break;
+					case 3: $('#specs_auth').text('manager');
+					break;
+					case 4: $('#specs_auth').text('team leader');
+					break;
+					case 5: $('#specs_auth').text('executive');
+					break;
+					case 6: $('#specs_auth').text('vice president');
+					break;
+					case 7: $('#specs_auth').text('president');
+					break;
+					}
+					$('#specs_startdate').text(ra.app_datestart);
+					$('#specs_enddate').text(ra.app_dateend);
+					$('#specs_title').text(ra.app_title);
+					$('#specs_info').text(ra.app_info);
+					$('#boss_code_second').val(ra.boss_code_second);
+					
+					var filePath = ra.app_file ? '/uploadDoc/' + ra.app_file : '';
+					console.log(filePath);
+					console.log(ra.app_file);
+					$('#downloadFileBtn').attr('href', filePath).attr('download', ra.app_file);
+					
+					$('#specs_rejection_row').hide();
+					$('#close').hide();
+					$('#submitApproval').hide();
+					$('#specs_rejection_row').hide();
+					$('#app_rejection_row').hide();
+					$('#no').hide();
+					
+					if (ra.hr_code == hr_code) {
+						$('#staffArea').show();
+						$('#bossArea').hide();
+						if(ra.app_status == 1 || ra.app_status == 3) {
+							$('#close').show();
+							$('#staffArea').hide();
+							$('#bossArea').hide();
+						}
+					}
+
+					if(hr_code == ra.boss_code || hr_code == ra.boss_code_second) {
+						$('#close').hide();
+						$('#staffArea').hide();
+						if(ra.app_status == 1 || ra.app_status == 3) {
+							$('#close').show();
+							$('#staffArea').hide();
+							$('#bossArea').hide();
+						}
+					}
+					
+					console.log(ra.app_cat);
+					console.log(ra.app_status);
+					if (ra.app_status == 1) {
+						$('#specs_rejection').text(ra.app_rejection);
+						$('#specs_rejection_row').show();
+					} else {
+						$('#specs_rejection_row').hide();
+					}
+					
+					$('#specs').modal('show');
+					
+					$('#approve').click(function() {
+						$('#bossArea').hide();
+						if (hr_code != ra.boss_code_second) {
+							$('#secondCheck').show();
+						}
+				        $('#specs_boss').hide();
+				        $('#submitApproval').show();
+				    });
+					
+					$('#reject').click(function() {
+						$('#app_rejection_row').show();
+						$('#no').show();
+						$('#bossArea').hide();
+					})
+					
+				}
+				else{
+					console.log("No info found");
+				}
+			},
+			error: function(xhr, status, error) {
+				console.error("Error fetching details:", error);
+			}
+		});
+		}
+	
+	
+	</script>
+	
+    <!-- jQuery -->
+      <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="/js/popper.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <!-- wow animation -->
+      <script src="/js/animate.js"></script>
+      <!-- select country -->
+      <script src="/js/bootstrap-select.js"></script>
+      <!-- owl carousel -->
+      <script src="/js/owl.carousel.js"></script> 
+      <!-- chart js -->
+      <script src="/js/Chart.min.js"></script>
+      <script src="/js/Chart.bundle.min.js"></script>
+      <script src="/js/utils.js"></script>
+      <script src="/js/analyser.js"></script>
+      <!-- nice scrollbar -->
+      <script src="/js/perfect-scrollbar.min.js"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- custom js -->
+      <script src="/js/chart_custom_style1.js"></script>
+      <script src="/js/custom.js"></script>
+   </body>
+</body>
+</html>

@@ -66,6 +66,10 @@
 		    .msg_list_main:hover {
 		      overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
 		    }
+		    
+		    .counter_section:hover {
+		    	  cursor : pointer;
+		    }
 		</style>
    </head>
    <body class="dashboard dashboard_1">
@@ -92,7 +96,7 @@
                      <!-- 발주 상태별 건 수 -->
                      <div class="row column1">
                         <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30 gray_bg" style="background-color: gray;">
+                           <div class="full counter_section margin_bottom_30 gray_bg" th:onclick='mainOrderList(0)' style="background-color: gray;">
                               <div class="couter_icon">
                                  <div> 
                                     <i class="fa fa-spinner"></i>
@@ -109,7 +113,7 @@
                            </div>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30 blue1_bg">
+                           <div class="full counter_section margin_bottom_30 blue1_bg" th:onclick='mainOrderList(1)'>
                               <div class="couter_icon">
                                  <div> 
                                     <i class="fa fa-check-circle-o"></i>
@@ -126,7 +130,7 @@
                            </div>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30 green_bg">
+                           <div class="full counter_section margin_bottom_30 green_bg" th:onclick='mainOrderList(2)'>
                               <div class="couter_icon">
                                  <div> 
                                     <i class="fa fa-external-link-square"></i>
@@ -143,7 +147,7 @@
                            </div>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                           <div class="full counter_section margin_bottom_30" style="background-color: #d34836;">
+                           <div class="full counter_section margin_bottom_30" th:onclick='mainOrderList(3)' style="background-color: #d34836;">
                               <div class="couter_icon">
                                  <div> 
                                     <i class="fa fa-times"></i>
@@ -343,6 +347,20 @@
 
 			      });
 
+      </script>
+      
+      <script>
+      	function mainOrderList(type) {
+      		if(type == 0) {
+      			location.href = "/admin/order/list";
+      		} else if (type == 1) {
+      			location.href = "/admin/order/list";
+      		} else if (type == 2) {
+      			location.href = "/admin/order/list";
+      		} else {
+      			location.href = "/admin/order/list";
+      		}
+      	}
       </script>
       
       

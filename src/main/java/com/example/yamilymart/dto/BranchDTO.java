@@ -19,8 +19,8 @@ public class BranchDTO {
 	private String branch_regdate;
 	private String branch_enddate;
 	private int branch_status;
+	private int branch_income;
 	private String branch_contact;
-
 
 
 

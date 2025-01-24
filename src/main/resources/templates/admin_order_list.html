@@ -209,10 +209,10 @@
   	                         </td>    
   	                         <td style="text-align: center;">
   	                         	<th:block th:switch="${str.order_status}">
-									<span th:case="0"><button type="button" class="btn cur-p btn-secondary">발주대기</button></span>
-									<span th:case="1"><button type="button" class="btn cur-p btn-primary">발주승인</button></span>
-									<span th:case="2"><button type="button" class="btn cur-p btn-success">입고완료</button></span>
-									<span th:case="3"><button type="button" class="btn cur-p btn-danger">발주취소</button></span>
+									<span th:case="0"><button type="button" class="btn cur-p btn-secondary" disabled>발주대기</button></span>
+									<span th:case="1"><button type="button" class="btn cur-p btn-primary" disabled>발주승인</button></span>
+									<span th:case="2"><button type="button" class="btn cur-p btn-success" disabled>입고완료</button></span>
+									<span th:case="3"><button type="button" class="btn cur-p btn-danger" disabled>발주취소</button></span>
 								</th:block>
   	                         </td>
   	                         
@@ -279,7 +279,7 @@
 						                <th class="table-light text-center">발주코드</th>
 						                <th class="table-light text-center">상품코드</th>
 						                <th class="table-light text-center">가격</th>
-						                <th class="table-light text-center">수량</th>
+						                <th class="table-light text-center">발주수량</th>
 						                <th class="table-light text-center">총합</th>
 						            </tr>
 						        </thead>
@@ -290,7 +290,7 @@
 						</div>
 					
 						<div style="margin: 0 30px 0 0; text-align: right;">
-							<h5>합계</h5>
+							<button type="button" class="btn cur-p btn-secondary" style="margin: 10px 0 5px 0;" disabled>합계</button>
 							<h2 id="order_sum"></h2>
 						</div>
 							
@@ -353,25 +353,27 @@
 		    	        	    document.getElementById("order_memo").value = result.order_memo;
 		    	        	    
 		    	        	    const heading = document.getElementById('order_sum');
-		    	                heading.textContent = result.order_sum;
+		    	        	    
+	    	                	const formattedSum = parseFloat(result.order_sum).toLocaleString();
+		    	                heading.textContent = formattedSum + "원";
 		    	                
 		    	                const buttonsContainer = document.getElementById('order_status_btn');
 		    	                buttonsContainer.innerHTML = '';
 		    	                switch (result.order_status) {
 		    	                	case 0:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary" disabled>발주대기</button>';
 		    	                		break;
 		    	                	case 1:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-primary">발주승인</button>';
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-primary" disabled>발주승인</button>';
 				    	                break;
 		    	                	case 2:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-success">입고완료</button>';
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-success" disabled>입고완료</button>';
 				    	                break;
 		    	                	case 3:
-				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-danger">발주취소</button>';
+				    	                buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-danger" disabled>발주취소</button>';
 				    	                break;
 				    	            default:
-				    	            	buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary">발주대기</button>';
+				    	            	buttonsContainer.innerHTML = '<button type="button" class="btn cur-p btn-secondary" disabled>발주대기</button>';
 				    	            	break;
 		    	                }
 		    	                
@@ -401,15 +403,19 @@
 
 		    	                // 리스트를 순회하며 테이블 행 생성
 		    	                result.forEach((detail) => {
+		    	                	
+		    	                	const formattedPrice = parseFloat(detail.product_price).toLocaleString();
+		    	                    const formattedSum = parseFloat(detail.orderDetail_sum).toLocaleString();
+		    	                	
 		    	                    const tr = document.createElement('tr');
 		
 		    	                    tr.innerHTML = `
 		    	                        <td style="text-align: center;">${detail.orderDetail_id}</td>
 		    	                        <td style="text-align: center;">${detail.orderDetail_orderid}</td>
 		    	                        <td style="text-align: center;">${detail.product_name}</td>
-		    	                        <td style="text-align: center;">${detail.product_price}</td>
+		    	                        <td style="text-align: center;">${formattedPrice}원</td>
 		    	                        <td style="text-align: center;"> <span class="amount">${detail.orderDetail_amount}</span> <span class="remain" style="color : red;">(남은수량: ${detail.stock_remain}개)</span> </td>
-		    	                        <td style="text-align: center;">${detail.orderDetail_sum}</td>
+		    	                        <td style="text-align: center;">${formattedSum}원</td>
 		    	                    `;
 		    	                    		    	                    
 		    	                    tbody.appendChild(tr);

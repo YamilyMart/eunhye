@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>거래처 관리 목록</title>
+<style type="text/css">
+body {
+   display: flex;
+   min-height: 100vh;
+   margin: 0;
+   -webkit-user-select:none;
+   -moz-user-select:none;
+   -ms-user-select:none;
+   user-select:none
+}
+
+.date-buttons button {
+   border: 1px solid #bbb;
+   background-color: white;
+   padding: 3.5px 8px;
+   margin-right: 5px;
+   font-size: 14px;
+   cursor: pointer;
+   outline: none;
+   color: #696767;
+}
+
+.date-buttons button:hover {
+   background-color: #e6e6e6;
+}
+
+.date-buttons button:focus {
+   border-color: #888;
+   background-color: #ddd;
+}
+
+input[type="text"] {
+   height: 30px;
+   width: 350px;
+   box-sizing: border-box;
+}
+
+th {
+    text-align: center;
+}
+
+td {
+   vertical-align: middle;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pagination {
+    display: flex;
+    gap: 15px; 
+    margin: 0 auto;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+}
+
+.pagination a.active {
+    color: #ff6600; 
+    font-weight: bold; 
+}
+
+/* 테이블 스타일 */
+.styled-table {
+    width: 100%;	
+    border-collapse: collapse; /* 테두리 겹침 방지 */
+}
+
+/* 행 간격 추가 */
+.styled-table tr {
+    margin-bottom: 15px; /* 행 간격 */
+    display: table-row; /* IE에서 간격 유지 */
+}
+
+/* 셀 간격 추가 */
+.styled-table td {
+	padding: 10px; /* 셀 안쪽 여백 */
+    vertical-align: middle; /* 텍스트 가운데 정렬 */
+	font-weight: bold;
+	width: 100px;
+}
+
+.styled-table td input{
+	background-color: none;
+	border: none;
+	width: 350px;
+}
+
+.styled-table td:first-child {
+	border-right: 1px solid black;
+}
+
+#addPartnerModal .modal-body input {
+    border: 1px solid #ccc; /* 원하는 스타일 */
+    border-radius: 4px; /* 테두리 둥글게 */
+    padding: 5px; /* 입력 필드 안쪽 여백 */
+}
+
+#modifyPartnerModal .modal-body input {
+    border: 1px solid #ccc; /* 원하는 스타일 */
+    border-radius: 4px; /* 테두리 둥글게 */
+    padding: 5px; /* 입력 필드 안쪽 여백 */
+}
+</style>
+</head>
+<head th:insert="~{fragments/links :: head}"></head>
+<head th:include="fragments/sidebar :: sidebar"></head>
+<body class="dashboard dashboard_1">
+     <div class="full_container">
+        <div class="inner_container">
+           <!-- right content -->
+           <div id="content">
+           <head th:include="fragments/topbar :: topbar"></head>
+			<div th:if="${message}" style="display: none;" id="deleteMessageDiv">
+                <span th:text="${message}"></span>
+            </div>
+              <!-- dashboard inner -->
+              <div class="midde_cont">
+                 <div class="container-fluid">
+				   <div class="main">
+				      <h6>
+				         <strong>거래처 관리</strong>
+				      </h6>
+				      <form th:action="@{/admin/partner/filter}" method="post">
+				         <table class="table table-bordered">
+				            <tr>
+				               <th style="width: 120px;">회사명</th>
+				               <td>
+				                  <input type="text" name="partner_name" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;회사명 입력">
+				               </td>
+				            </tr>
+				            <tr>
+				               <th>담당자</th>
+				               <td> 
+			                    	<input type="text" name="partner_manager" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;담당자 입력">
+				               </td>
+				            </tr>
+							<tr>
+				               <th>이메일</th>
+				               <td>
+			                    	<input type="text" name="partner_email" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;이메일 입력">
+				               </td>
+				            </tr>
+							<tr>
+				               <th>연락처</th>
+				               <td>
+			                    	<input type="text" name="partner_phone" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;연락처 입력">
+				               </td>
+				            </tr>
+				         </table>
+				         <div style="text-align: right;">
+				            <button type="submit" class="btn btn-primary btn-sm" style="width: 70px; border-radius: 8px;">검색</button>
+				            <button type="reset" class="btn btn-secondary btn-sm" style="width: 70px; border-radius: 8px;">초기화</button>
+				         </div>
+				      </form>
+				      <hr style="color: black">
+				      <div style="display: flex; justify-content: space-between;">
+				         <div>
+				            <form id="deleteForm" th:action="@{/admin/partner/delete}" method="post">
+				               <input type="hidden" name="selectedIds" id="hiddenSelectedIds">
+				               <button type="button" class="btn btn-sm" style="width: 120px; border-radius: 8px; background-color: #AA041A; color:white" onclick="submitDeleteForm()">거래처 삭제</button>
+				            </form>
+				         </div>
+				         <div>
+				            <button type="button" class="btn btn-sm" style="width: 120px; border-radius: 8px; background-color: #04AA6D; color: white; " onclick="addPartner()">거래처 등록</button>
+				         </div>
+				      </div>
+				      <div class="wrapper mt-5" id="productListContainer">
+				         <table class="table product-list-table">
+				            <thead>
+				               <tr>
+				                  <th class="table-light text-center">
+				                     <input type="checkbox" id="selectAll">
+				                  </th>
+				                  <th class="table-light text-center">거래처 ID</th>
+				                  <th class="table-light text-center">회사명</th>
+				                  <th class="table-light text-center">담당자</th>
+				                  <th class="table-light text-center">연락처</th>
+				                  <th class="table-light text-center">이메일</th>
+				                  <th class="table-light text-center">사업자 번호</th>
+								  <th class="table-light text-center">관리</th>
+								  <th class="table-light text-center">보기</th>
+				               </tr>
+				            </thead>
+				            <tbody>
+				               <tr th:each="p:${pList}">
+				                  <td><input type="checkbox" name="selectedCheckbox" th:value="${p.partner_id}"></td>
+								  <td style="text-align: left;" th:text="${p.partner_id}"></td>
+								  <td style="text-align: left;" th:text="${p.partner_name}"></td>
+								  <td style="text-align: left;" th:text="${p.partner_manager}"></td>
+								  <td style="text-align: center;" th:text="${p.partner_phone}"></td>
+								  <td style="text-align: left;" th:text="${p.partner_email}"></td>
+								  <td style="text-align: center;" th:text="${p.partner_no}"></td>
+								  <td style="text-align: center;">
+									<button type="button" class="btn btn-sm" style="border-radius: 8px; color: white; background-color: #9D3CC3;" th:onclick="modifyPartnerModal([[${p.partner_id}]])">
+										수정
+									</button>
+		                           </td>
+								   <td style="text-align: center;">
+	   								<button type="button" class="btn btn-sm" style="border-radius: 8px; color: white; background-color: #8B393B;" th:onclick="partnerDetail([[${p.partner_id}]])">
+	   								    상세보기
+	   								</button>
+	   							   </td>								  
+  				               </tr>
+				            </tbody>
+				         </table>
+				      </div>
+				      <!--<div class="pagination-container">
+				         <div class="pagination">
+				            <a th:if="${startPage > 1}" th:href="@{${basePath}(pageNum=${startPage - 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&lt;</a>
+				            <a th:each="page : ${#numbers.sequence(startPage, endPage)}" th:href="@{${basePath}(pageNum=${page}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}" th:classappend="${currentPage == page} ? 'active' : ''" th:text="${page}"></a>
+				            <a th:if="${endPage < totalPage}" th:href="@{${basePath}(pageNum=${endPage + 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&gt;</a>
+				         </div>
+				      </div>-->
+				   </div>
+                 </div>
+				 
+              </div>
+			  <!--상세보기 모달-->
+	  		  <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  		    <div class="modal-dialog modal-lg modal-dialog-centered">
+	  		      <div class="modal-content" style="width:65%; margin:0 auto">
+	  		        <div class="modal-header" style="background-color: #8B393B;">
+	  		          <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">거래처 상세보기</h5>
+	  		          <button type="button" id="modalConfirmButton" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
+	  		        </div>
+	  		        <div class="modal-body">
+	  		          <table class="row styled-table">
+	  						<tr>
+	  			              <td for="partner_id" >거래처 ID</td>
+	  			              <td>
+	  							<input id="partner_id" style="display: inline-block" type="text" readonly>
+	  						  </td>
+	  					    </tr>
+	  		            	<tr>
+	  						  <td for="partner_name" style="margin-bottom: 10px;">회사명</td>
+	  						  <td style="margin-bottom: 10px;">
+    							<input id="partner_name" style="display: inline-block" type="text" readonly>
+    						  </td>
+	  						</tr>
+	  						<tr>
+	  						  <td for="partner_manager">담당자</td>
+	  							<td>
+	  								<input id="partner_manager" style="display: inline-block" type="text" readonly>	
+	  							</td>
+	  						</tr>
+	  						<tr>
+	  						  <td for="partner_phone">연락처</td>
+	  							<td>
+	  								<input id="partner_phone" style="display: inline-block" type="text" readonly>	
+	  							</td>
+	  						</tr>
+	  						<tr >
+	  						    <td for="partner_email">이메일</td>
+	  						    <td>
+	  						        <input id="partner_email" style="display: inline-block" type="text" readonly>
+	  						    </td>
+	  						</tr>
+	  						<tr>
+	  							<td for="partner_no">사업자 번호</label>
+	  							<td>
+	  								<input id="partner_no" style="display: inline-block" type="text" readonly>	
+	  							</td>
+	  						</tr>
+	  						<tr>
+	  							<td for="partner_address">주소</td>
+	  							<td>
+	  								<input id="partner_address" style="display: inline-block" type="text"  readonly>		
+	  							</td>
+	  						</tr>
+	  					</table>
+	  		            </div>
+	  		          </div>
+	  		        </div>
+	  		      </div>
+				  <!--등록 모달-->
+				  <div class="modal fade" id="addPartnerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  		    <div class="modal-dialog modal-lg modal-dialog-centered">
+		  		      <div class="modal-content" style="width:70%; margin:0 auto">
+		  		        <div class="modal-header" style="background-color: #04AA6D;">
+		  		          <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">거래처 등록</h5>
+		  		          <button type="button" id="closeAddModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
+		  		        </div>
+		  		        <div class="modal-body">
+		  					<form method="post" action="/admin/partner/add" name="addPartner-frm">
+		  			          <table class="row styled-table">
+		  							<tr>
+		  							    <td for="add_partnerId">거래처 ID</td>
+		  							    <td>
+		  							        <input
+		  							            id="add_partner_id"
+		  							            name="partner_id"
+		  							            style="display: inline-block"
+		  							            type="text"
+		  							            onblur="checkDuplicateId('add_partner_id', 'add_partner_id_check_label')"
+		  							        />
+		  							        <label id="add_partner_id_check_label" style="margin-left: 10px; color: red; display: inline;"></label>
+		  							    </td>
+		  							</tr>
+		  							<tr>
+		  							    <td for="partner_name" style="margin-bottom: 10px;">회사명</td>
+		  							    <td style="margin-bottom: 10px;">
+		  							        <input
+		  							            id="add_partner_name"
+		  							            name="partner_name"
+		  							            style="display: inline-block"
+		  							            type="text"
+		  							        />
+		  							    </td>
+		  							</tr>
+		  							<tr>
+		  							  <td for="add_partner_manager">담당자</td>
+		  								<td>
+		  	  								<input id="add_partner_manager" name="partner_manager" style="display: inline-block" type="text" >
+		  	  						  	</td>
+		  							</tr>
+		  							<tr>
+		  							  <td for="add_partner_phone">연락처</td>
+		  								<td>
+		  	  								<input id="add_partner_phone" name="partner_phone" style="display: inline-block" type="text" >
+		  	  						  	</td>
+		  							</tr>
+		  							<tr>
+		  							  <td for="add_partner_eamil">이메일</td>
+		  								<td>
+		  									<input id="add_partner_eamil" name="partner_email" style="display: inline-block" type="text" >	
+		  								</td>
+		  							</tr>
+									<tr>
+		  							  <td for="add_partner_no">사업자 번호</td>
+		  								<td>
+		  									<input id="add_partner_no" name="partner_no" style="display: inline-block" type="text" >	
+		  								</td>
+		  							</tr>
+		  							<tr>
+		  								<td for="add_partner_address">사업장 주소</label>
+		  								<td>
+		  									<input id="add_partner_address" name="partner_address" style="display: inline-block" type="text">	
+		  								</td>
+		  							</tr>
+		  						</table>
+		  						<div style="text-align: center; margin-top:20px;">
+		  						  <button type="submit" class="btn btn-md" style="border-radius: 8px; color: white; background-color: #04AA6D;">등록</button>
+		  	                  	</div>
+		  						</form>
+		  		            </div>
+		  		          </div>
+		  		        </div>
+		  		      </div>
+					  <!--수정 모달-->
+					  <div class="modal fade" id="modifyPartnerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  			  		    <div class="modal-dialog modal-lg modal-dialog-centered">
+	  			  		      <div class="modal-content" style="width:67%; margin:0 auto">
+	  			  		        <div class="modal-header" style="background-color: #9D3CC3;">
+	  			  		          <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">거래처 수정</h5>
+	  			  		          <button type="button" id="closePartnerModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
+	  			  		        </div>
+	  			              <div class="modal-body">
+	  							<form method="post" action="/admin/partner/modified">
+	  			                  <table class="row styled-table">
+	  								<tr>
+	  								    <td for="partner_id">거래처 ID</td>
+	  								    <td>
+	  								        <input
+	  								            id="modify_partner_id"
+	  								            name="partner_id"
+	  								            style="display: inline-block; background-color: #C8C2C2;"
+	  								            type="text"
+												readonly
+	  								        />
+	  								    </td>
+	  								</tr>
+									<tr>
+	  			                          <td>회사명</td>
+	  			                          <td><input id="modify_partner_name" name="partner_name" type="text"></td>
+	  			                      </tr>
+	  			                      <tr>
+	  			                          <td>담당자</td>
+	  			                          <td><input id="modify_partner_manager" name="partner_manager" type="text"></td>
+	  			                      </tr>
+	  			                      <tr>
+	  			                          <td>연락처</td>
+	  			                          <td><input id="modify_partner_phone" name="partner_phone" type="text"></td>
+	  			                      </tr>
+									  <tr>
+  	  			                          <td>이메일</td>
+  	  			                          <td><input id="modify_partner_email" name="partner_email" type="text"></td>
+  	  			                      </tr>
+									  <tr>
+  	  			                          <td>사업자 번호</td>
+  	  			                          <td><input id="modify_partner_no" name="partner_no" type="text"></td>
+  	  			                      </tr>
+	  			                      <tr>
+	  			                          <td>주소</td>
+	  			                          <td><input id="modify_partner_address" name="partner_address" type="text"></td>
+	  			                      </tr>
+	  			                  </table>
+	  			                  <div style="text-align: center; margin-top:20px;">
+	  								  <button type="submit" class="btn btn-md" style="border-radius: 8px; color: white; background-color: #9D3CC3;">수정</button>
+	  			                  </div>
+	  						  	</form>
+	  			              </div>
+	  			          </div>
+	  			      </div>
+	  			  </div>
+	  		    </div>
+	  		  </div>
+           </div>
+        </div>
+     </div>
+	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	 <script type="text/javascript">
+			const deleteMessageDiv = document.getElementById('deleteMessageDiv');
+		    if (deleteMessageDiv && deleteMessageDiv.textContent.trim() !== '') {
+		        alert(deleteMessageDiv.textContent.trim());
+		    }
+		
+	      document.getElementById('selectAll').addEventListener('click', function () {
+	         const checkboxes = document.querySelectorAll('input[name="selectedCheckbox"]');
+	         checkboxes.forEach(cb => cb.checked = this.checked);
+	      });
+
+	      function submitDeleteForm() {	         
+	         const selectedCheckboxes = document.querySelectorAll('input[name="selectedCheckbox"]:checked');
+	         const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value).join(',');
+	         if (!selectedIds) {
+	            alert('삭제할 항목을 선택하세요.');
+	            return;
+	         }
+			 if (!confirm('거래처를 삭제 하시겠습니까?')) return;
+			 
+	         document.getElementById('hiddenSelectedIds').value = selectedIds;
+	         document.getElementById('deleteForm').submit();
+	      }
+		  
+		  // 상세보기 모달
+		  	  // 버튼 클릭 이벤트에 연결
+		  		function partnerDetail(partner_id) {
+		  		  $.ajax({
+		  		    url: '/admin/partner/detail',
+		  		    method: 'GET',
+		  		    data: { partner_id : partner_id },
+		  		    success: function (detail) {
+		  		      if (detail) {
+		  		        $('#partner_id').val(detail.partner_id);
+		  		        $('#partner_name').val(detail.partner_name);
+		  		        $('#partner_manager').val(detail.partner_manager);
+		  		        $('#partner_phone').val(detail.partner_phone);
+		  		        $('#partner_email').val(detail.partner_email);
+		  		        $('#partner_no').val(detail.partner_no);
+						$('#partner_address').val(detail.partner_address);
+		  				
+		  		        const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+		  		        modal.show();
+		  				document.getElementById('modalConfirmButton').addEventListener('click', function () {
+		                      modal.hide(); // 모달 닫기
+		                  });
+		  		      } else {
+		  		        alert('데이터를 찾을 수 없습니다.');
+		  		      }
+		  		    },
+		  		    error: function (xhr, status, error) {
+		  		      console.log('Ajax 요청 실패:', error);
+		  		      alert('Ajax 요청 실패.');
+		  		    }
+		  		  });
+		  		}
+				
+		// 지점 등록 모달
+		  // 버튼 클릭 이벤트에 연결
+		  function addPartner() {
+		      const modal = new bootstrap.Modal(document.getElementById('addPartnerModal'));
+	
+		      // 모달 열기
+		      modal.show();
+	
+		      // 모달 닫기 버튼 클릭 시 처리
+		      document.getElementById('closeAddModal').addEventListener('click', function () {
+		          modal.hide(); // 모달 닫기
+		          console.log('모달이 닫혔습니다.');
+		          resetModalFields(); // 모달 필드 초기화
+		      });
+	
+		      // 모달이 숨겨질 때 발생하는 이벤트에 초기화 로직 연결
+		      document.getElementById('addPartnerModal').addEventListener('hidden.bs.modal', resetModalFields);
+		  }
+		  
+	  		// 입력 필드를 초기화하는 함수
+	  		function resetModalFields() {
+	  		    // 모든 input 요소를 초기화
+	  		    const inputs = document.querySelectorAll('#addPartnerModal input');
+	  		    inputs.forEach(input => {
+	  		        input.value = ''; // 값을 초기화
+	  		    });
+				
+				// 에러 메시지 초기화
+			    const idCheckLabel = document.getElementById('add_partner_id_check_label');
+			    if (idCheckLabel) {
+			        idCheckLabel.textContent = '';
+			    }
+	  		}
+			
+			let originalBranchId = ''; // 초기 아이디를 저장할 변수
+			
+			function checkIfIdChanged() {
+			    const inputField = document.getElementById('add_partner_id');
+			    const partnerIdCheckLabel = document.getElementById('add_partner_id_check_label');
+			    
+			    // 기존 아이디와 입력값 비교
+			    if (inputField.value === originalBranchId) {
+			        partnerIdCheckLabel.textContent = ''; // 기존 아이디와 같으면 메시지 초기화
+			        return; // 유효성 검사 실행하지 않음
+			    }
+
+			    // 기존 아이디와 다르면 중복 체크 실행
+			    checkDuplicateId('add_partner_id', 'add_partner_id_check_label');
+			}
+					
+			// 아이디 중복 체크
+			function checkDuplicateId(inputFieldId, labelId) {
+			    const partnerIdCheckLabel = document.getElementById(labelId);
+			    const partnerIdValue = document.getElementById(inputFieldId).value;
+
+			    // 입력값이 비어 있는 경우 처리
+			    if (!partnerIdValue) {
+			        partnerIdCheckLabel.textContent = "아이디를 입력해주세요.";
+			        partnerIdCheckLabel.style.color = "red";
+			        return;
+			    }
+
+			    // AJAX 요청
+			    $.ajax({
+			        url: "/admin/partner/idCheck",
+			        type: "POST",
+			        dataType: "JSON",
+			        data: { partner_id: partnerIdValue }, // partner_id 값을 전송
+			        success: function (data) {
+			            if (data === 1) { // 중복된 아이디
+			                partnerIdCheckLabel.textContent = "중복된 아이디입니다.";
+			                partnerIdCheckLabel.style.color = "red";
+			            } else if (data === 0) { // 사용 가능한 아이디
+			                partnerIdCheckLabel.textContent = "사용 가능한 아이디입니다.";
+			                partnerIdCheckLabel.style.color = "green";
+			            } else {
+			                console.error("Unexpected response:", data); // 예외 처리
+			            }
+			        },
+			        error: function () {
+			            alert("요청 처리 중 에러가 발생했습니다.");
+			        }
+			    });
+			}
+			
+			// 수정 모달
+			  function modifyPartnerModal(partner_id) {
+			      $.ajax({
+			          url: '/admin/partner/detail',
+			          method: 'GET',
+			          data: { partner_id: partner_id },
+			          success: function (modify) {
+			              if (modify) {
+			                  $('#modifyPartnerModal #modify_partner_id').val(modify.partner_id);
+			                  $('#modifyPartnerModal #modify_partner_name').val(modify.partner_name);
+			                  $('#modifyPartnerModal #modify_partner_manager').val(modify.partner_manager);
+			                  $('#modifyPartnerModal #modify_partner_phone').val(modify.partner_phone);
+			                  $('#modifyPartnerModal #modify_partner_email').val(modify.partner_email);
+			                  $('#modifyPartnerModal #modify_partner_no').val(modify.partner_no);
+			                  $('#modifyPartnerModal #modify_partner_address').val(modify.partner_address);
+	
+							  const modal = new bootstrap.Modal(document.getElementById('modifyPartnerModal'));
+			  	  		      modal.show();
+			  	  			  document.getElementById('closePartnerModal').addEventListener('click', function () {
+				  	              modal.hide(); // 모달 닫기
+						  	});
+			              } else {
+			                  alert('데이터를 찾을 수 없습니다.');
+			              }
+			          },
+			          error: function (xhr, status, error) {
+			              console.log('Ajax 요청 실패:', error);
+			              alert('Ajax 요청 실패.');
+			          }
+			      });
+			  }
+	   </script>
+  </body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<th:block th:fragment="setContent(content)">
+<head>
+<meta charset="UTF-8">
+<title>Staff Dashboard</title>
+<div th:replace="~{fragments/css :: css}"></div>
+<style>
+button:hover {
+background-color: #04AA6D;
+}
+.table-responsive-sm {
+    margin-top: 20px;  /* Optional: Adds spacing between the image and the table */
+}
+</style>
+</head>
+<body>
+ <body class="dashboard dashboard_1">
+      <div class="full_container">
+         <div class="inner_container">
+            <head th:include="fragments/sidebar :: sidebar"></head>
+            <!-- right content -->
+            <div id="content">
+            	<head th:include="fragments/topbar :: topbar"></head>
+            	
+            	<!--main-->
+            	<div class="col-md-12" style="margin-top: 30px">
+                           <div class="white_shd full margin_bottom_30" >
+                              <div class="full graph_head">
+                                 <div class="heading1 margin_0">
+                                    <h2>인사 관리</h2>
+                                 </div>
+                              </div>
+                              <div class="table_section padding_infor_info">
+                                 <div class="table-responsive-sm">
+                                 <form action="/admin/staff/search" method="POST">
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                       <input type="text" value="0" name="del" hidden>
+                                          <tr>
+                                             <td>이름</td>
+                                             <td><input type="text" id="staff_search" name="staff_search"></td>
+                                          </tr>
+                                          <tr>
+                                             <td>권한</td>
+                                             <td>
+                                             <input type="radio" id="master" name="grade" value="0">
+                                             <label for="master">마스터</label>
+                                             &emsp;
+                                             <input type="radio" id="admin" name="grade" value="1">
+                                             <label for="admin">관리자</label>
+                                             &emsp;
+                                             <input type="radio" id="staff" name="grade" value="2">
+                                             <label for="staff">일반 staff</label>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>입사 날짜</td>
+                                             <td>
+                                             <input type="date" id="start" name="start">
+                                             &emsp;
+                                             ~
+                                             &emsp;
+                                             <input type="date" id="end" name="end">
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>직급</td>
+                                             <td>
+                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="auth" id="auth" style="border-color: #04AA6D; color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';"
+                                             onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';"
+                                             >
+                                             	<option value="">선택</option>
+                                           		<option value="1">staff</option>
+                                           		<option value="2">assistant manager</option>
+                                           		<option value="3">manager</option>
+                                           		<option value="4">team leader</option>
+                                           		<option value="5">executive</option>
+                                           		<option value="6">vice president</option>
+                                             	<option value="7">president</option>
+                                             </select>
+                                             </td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                    <div style="text-align: right">
+                        			<button type="reset" class="btn cur-p btn-primary" style="width: 200px; background-color: #6c757d; border-color: #6c757d">초기화</button>
+                        			<button type="submit" class="btn cur-p btn-outline-primary" style="width: 200px; border-color: #04AA6D; color: #04AA6D"
+                        			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+        							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"
+                        			>검색</button>
+                        			</div>
+                        			</form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        
+                        
+                <!-- first table end -->
+                
+                <!-- staff addition -->
+                <div class="col-md-12">
+                <div class="full margin_bottom_30">
+                <div class="button_block" style="text-align: right;">
+                <button type="button" class="model_bt btn btn-primary" style="background-color: #04AA6D; border-color: #04AA6D" data-toggle="modal" data-target="#myModal">직원 추가</button>
+                </div>
+                </div>
+                </div>
+                <!-- staff addition end  -->
+                
+                <!-- second table -->
+            	<div class="col-md-12">
+                           <div class="white_shd full margin_bottom_30">
+                              <div class="full graph_head">
+                                 <div class="heading1 margin_0">
+                                    <h2>직원</h2>
+                                 </div>
+                              </div>
+                              <div class="table_section padding_infor_info">
+                                 <div class="table-responsive-sm">
+                                    <table class="table table-hover">
+                                       <thead>
+                                          <tr>
+                                             <th>NO.</th>
+                                             <th>이름</th>
+                                             <th>직급</th>
+                                             <th>입사날짜</th>
+                                             <th>권한</th>
+                                          </tr>
+                                       </thead>
+                                          <tr th:each="s : ${staffList}" th:onclick="staffDetail([[${s.hr_code}]])">
+                                             <td th:text = "${s.hr_code}"></td>
+                                             <td th:text = "${s.hr_name}"></td>
+                                             <td th:if = "${s.hr_authority == 1}" th:text = "'staff'"></td> 
+                                             <td th:if = "${s.hr_authority == 2}" th:text = "'assistant manager'"></td>
+                                             <td th:if = "${s.hr_authority == 3}" th:text = "'manager'"></td>
+                                             <td th:if = "${s.hr_authority == 4	}" th:text = "'team leader'"></td>
+                                             <td th:if = "${s.hr_authority == 5	}" th:text = "'executive'"></td>
+                                             <td th:if = "${s.hr_authority == 6	}" th:text = "'vice president'"></td>
+                                             <td th:if = "${s.hr_authority == 7	}" th:text = "'president'"></td>
+                                      		 <td th:text = "${s.hr_joindate}"></td>
+                                             <td th:if = "${s.hr_grade == 1	}" th:text = "'관리자'"></td>
+                                             <td th:if = "${s.hr_grade == 2	}" th:text = "'일반 staff'"></td>
+                                          </tr>
+                                          </th:block> 
+                                       </tbody>
+                                    </table>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- second table end -->
+                  <!-- model popup -->
+         <!-- The Modal -->
+         <div class="modal fade" id="myModal">
+            <div class="modal-dialog" style="max-width: 900px">
+               <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                     <h4 class="modal-title">직원 추가</h4>
+                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                     <div class="col-md-6">
+                           <div class="white_shd full margin_bottom_30" style="width:800px">	
+                              <div class="table_section padding_infor_info">
+                                 <div class="table-responsive-sm">
+                                	<form action="/admin/staff/add" method="post" enctype="multipart/form-data" onsubmit="return valForm()">
+                                	<div class="filebox">
+											<label for="file">이미지 업로드</label>
+											<input type="file" name="files" id="file" multiple>
+                                 	</div>
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                          <tr>
+                                             <td>이름</td>
+                                             <td><input type="text" id="hr_name" name="hr_name"></td>
+                                          </tr>
+                                          <tr>
+                                            <td>직급</td>
+                                             <td>
+                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="hr_authority" id="hr_authority" style="border-color: #04AA6D; color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+                                             onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';">
+                                           		<option value="1">staff</option>
+                                           		<option value="2">assistant manager</option>
+                                           		<option value="3">manager</option>
+                                           		<option value="4">team leader</option>
+                                           		<option value="5">executive</option>
+                                           		<option value="6">vice president</option>
+                                             	<option value="7">president</option>
+                                             </select>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>입사 날짜</td>
+                                             <td>
+                                             <input type="date" id="hr_joindate" name="hr_joindate">
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>권한</td>
+                                             <td>
+                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="hr_grade" id="hr_grade" style="border-color: #04AA6D; color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';"
+                                             onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';">
+                                           		<option value="1">관리자</option>
+                                           		<option value="2">일반 staff</option>
+                                             </select>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>아이디</td>
+                                             <td><input type="text" id="hr_id_input" name="hr_id" readonly>
+                                             <button id="btnPop" type="button" class="btn cur-p btn-outline-primary" style="border-color: #04AA6D; color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" onmouseout="this.style.backgroundColor=''; this.style.color='';"
+                                             onclick="$('#idCheck').modal('show')">🔍</button>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>비밀번호</td>
+                                             <td><input type="text" id="hr_pwd_input" name="hr_pwd"></td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                    <button type="submit" class="btn cur-p btn-outline-primary" style="width: 200px; border-color:#04AA6D; color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';">추가</button>
+                                    </form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                  </div>
+                  <!-- Modal footer -->
+               </div>
+            </div>
+         </div>
+         <!-- end modal popup --
+         <!-- modal popup for id-->
+          <div class="modal fade" id="idCheck">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                     <h4 class="modal-title">아이디 검색</h4>
+                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                     <div class="col-md-6">
+                           <div class="white_shd full margin_bottom_30" style="width:400px">	
+                              <div class="table_section padding_infor_info">
+                                 <div class="table-responsive-sm">
+                                	<form id="idSearchForm" action="/admin/staff/idSearch" method="post" onsubmit="idCheck(event)">
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                          <tr>
+                                             <td>아이디 검색</td>
+                                             <td><input type="text" id="id_hr_id" name="hr_id"></td>
+                                          </tr>
+                                    </table>
+                                    <div id="msg"></div>
+									<div id="searchResults" style="display:none;">
+									<table class="table table-hover">
+                                       <thead>
+                                          <tr>
+                                             <th>NO.</th>
+                                             <th>이름</th>
+                                             <th>직급</th>
+                                             <th>입사날짜</th>
+                                             <th>권한</th>
+                                          </tr>
+                                          <tr id="userRow">
+                                          </tr>
+                                         </thead>
+                                        </table>
+									</div>
+                                    <button type="submit" class="btn cur-p btn-outline-primary" style="width: 200px; color: #04AA6D; border-color:#04AA6D;"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';">검색</button>
+                                    </form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                  	 <button class="btn btn-danger" type="button" id= "selectButton" onclick="sendToParent()" disabled style="width: 200px; color: white; background-color: #04AA6D; border-color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">선택하기</button>
+                  </div>
+               </div>
+            </div>
+         </div>       
+         <!-- modal popup -->
+         <!-- The Modal -->  
+         <div class="modal fade" id="staffDetail" aria-labelledby="staffDetailLabel">
+            <div class="modal-dialog" style="max-width: 800px; margin: auto;">
+               <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                     <h4 class="modal-title">인사 정보</h4>
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-footer" style="text-align: center">
+                    <button type="button" class="btn cur-p btn-primary" data-toggle="modal" style="background-color: #9D3CC3; border-color: #9D3CC3"data-target="#staffEdit" id="editButton" onclick="staffEdit($(this).data('hr-code'))">수정</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                     <div class="col-md-6">
+                           <div class="white_shd full margin_bottom_30"  style="width: 700px">
+                              <div class="table_section padding_infor_info">
+
+                                 <div class="row">
+                                 <div class="col-md-6 col-sm-12">
+                                 	<div style="text-align: center">
+                                 	<img style="width: 100%; height: 300px; object-fit: cover" id="dstaffImage" src="/images/no_image.jpg" alt="Staff Image" class="image">
+									</div>
+									<p></p>
+                                 	<div style="text-align: center"><h4 id="d_hr_name"></h4></div>
+                                 </div>
+                                 <div class="col-md-6 col-sm-12">
+                                 <div class="table-responsive-sm">
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                          <tr>
+                                             <td>NO.</td>
+                                             <td id="d_hr_code"></td>
+                                          </tr>
+                                          <tr>
+                                            <td>입사날짜</td>
+                                            <td id="d_hr_joindate"></td>
+                                          </tr>
+                                          <tr>
+                                             <td>권한</td>
+                                             <td id="d_hr_grade"></td>
+                                          </tr>
+                                           <tr>
+                                             <td>휴가 일수</td>
+                                             <td id="d_hr_pdo"></td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                          <tr>
+                                             <td>아이디</td>
+                                             <td id="d_hr_id"></td>
+                                          </tr>
+                                          <tr>
+                                            <td>비밀번호</td>
+                                            <td id="d_hr_pwd"></td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                 </div>
+                                 </div>
+                              </div>
+                              </div>
+                           </div>
+                        </div>
+                  </div>
+                  <!-- Modal footer -->
+                  
+               </div>
+            </div>
+         </div>
+         <!-- end model popup -->
+         <!-- edit Modal open -->
+         <div class="modal fade" id="staffEdit" aria-labelledby="staffEditLabel">
+            <div class="modal-dialog" style="max-width: 800px; margin: auto;">
+               <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                     <h4 class="modal-title">인사 정보 수정</h4>
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                     <div class="col-md-6">
+                           <div class="white_shd full margin_bottom_30"  style="width: 700px">
+                           <form action="/admin/staff/edit" method="post" enctype="multipart/form-data">
+                              <div class="table_section padding_infor_info">
+                                 <div class="row">
+                                 <div class="col-md-6 col-sm-12">
+                                 	<div style="text-align: center">
+                                 	<img style="width: 100%; height: 300px; object-fit: cover" id="staffImage" src="/images/no_image.jpg" alt="Staff Image" class="image">
+                                 	<div class="filebox">
+											<label for="file">이미지 업로드</label>
+											<input type="file" name="files" id="file" multiple>
+                                 	</div>
+									</div>
+									<p></p>
+                                 	<div style="text-align: center"><h4 id="e_hr_name"></h4></div>
+                                 </div>
+                                 <div class="col-md-6 col-sm-12">
+                                 <div class="table-responsive-sm">
+                                 <input type="hidden" id="e_hr_code_input" name="hr_code" value="" />
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                          <tr>
+                                             <td>NO.</td>
+                                             <td id="e_hr_code"></td>
+                                          </tr>
+                                          <tr>
+                                            <td>입사날짜</td>
+                                            <td id="e_hr_joindate"></td>
+                                          </tr>
+                                          <tr>
+                                             <td>권한</td>
+                                             <td>
+                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="hr_grade" id="e_hr_grade" style="border-color: #04AA6D; color: #04AA6D"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';">
+                                           		<option value="1">관리자</option>
+                                           		<option value="2">일반 staff</option>
+                                             </select>
+                                             </td>
+                                          </tr>
+                                           <tr>
+                                             <td>휴가 일수</td>
+                                             <td>
+                                             <input type="number" name="hr_pdo" id="e_hr_pdo_input" placeholder=""/>
+                                             </td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                    <table class="table table-bordered">
+                                       <tbody>
+                                          <tr>
+                                             <td>아이디</td>
+                                             <td>
+                                             <input type="text" name="hr_id" id="e_hr_id_input" placeholder=""/>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                            <td>비밀번호</td>
+                                            <td>
+                                            <input type="text" name="hr_pwd" id="e_hr_pwd_input" placeholder=""/>
+                                            </td>
+                                          </tr>
+                                       </tbody>
+                                    </table>
+                                    <div class="button_block">
+                					<button type="submit" id="submit" class="model_bt btn btn-primary" style="width: 200px; color: #04AA6D; border-color:#04AA6D; background-color: white"
+                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';">저장</button>
+                					</div>
+                                 </div>
+                                 </div>
+                              </div>
+                              </div>
+                              </form>
+                              </div>
+                           </div>
+                        </div>
+                  </div>
+                  <!-- Modal footer -->
+               </div>
+            </div>
+         </div>
+         
+         
+         
+         
+         <!-- edit Modal end -->
+	</div>
+	<!-- main end -->
+	<script>
+	function valForm() {
+		var name = document.getElementById('hr_name').value;
+		if (name == '') {
+			alert('이름을 입력해주세요.')
+			return false;
+		}
+		var date = document.getElementById('hr_joindate').value;
+		if (date == '') {
+			alert('입사 날짜를 입력해주세요.');
+			return false;
+		}
+		var id = document.getElementById('hr_id_input').value;
+		if (id == '') {
+			alert('아이디 중복확인을 통해 아이디를 입력해주세요.');
+			return false;
+		}
+		var pwd = document.getElementById('hr_pwd_input').value;
+		if (pwd == '') {
+			alert('비밀번호는 반드시 입력해야합니다.');
+			return false;
+		}
+		return true;
+	}
+	
+	function idCheck(event){
+		event.preventDefault();
+		const hr_id = $('#id_hr_id').val();
+		
+		if (hr_id.trim()==="") {
+			$('#msg').text('아이디를 입력해주세요.');
+			return;
+		}
+		$('#msg').empty();
+		$('#userRow').empty();
+		$.ajax({
+			//url: 'idSearch',
+			url: '/admin/staff/idSearch',
+			method: 'POST',
+			data:{hr_id: hr_id},
+			success: function(result) {
+				if(result&& result.idSearch) {
+					console.log(result.idSearch.hr_id);
+					
+					$('#searchResults').show();
+					const user = result.idSearch;
+					
+					$('#userRow').empty();
+					
+					$('#userRow').append(`
+						<td>${user.hr_code}</td>
+						<td>${user.hr_name}</td>
+						<td>${user.hr_grade === 1?"관리자":"일반staff"}</td>
+						<td>${user.hr_joindate}</td>
+					`);
+					
+					$('#selectButton').prop('disabled', true);
+				}else {
+					$('#msg').text('사용 가능한 아이디입니다.')
+					$('#selectButton').prop('disabled', false);
+				}
+			},
+			error: function(xhr, status, error) {
+				console.error("Error fetching user details: ", error);
+				$('#msg').text("검색 중 오류가 발생했습니다.");
+			}
+		});
+	}
+	
+	function sendToParent() {
+		const hr_id = $('#id_hr_id').val();
+		$('#hr_id_input').val(hr_id);
+		$('#idCheck').modal('hide');
+	}
+	
+	function staffDetail(hr_code){
+		$.ajax({
+/* 			url: 'staffDetail',	
+ */			
+ 			url: '/admin/staff/detail',
+ 			method: 'GET',
+			data: {hr_code: hr_code},
+			success: function(result) {
+				if (result && result.detail) {
+					$('#staffDetail').modal('show');
+					
+					console.log(result.detail.hr_name);
+					$('#d_hr_name').text(result.detail.hr_name);
+					$('#d_hr_code').text(result.detail.hr_code);
+					$('#d_hr_joindate').text(result.detail.hr_joindate);
+					var grade = (result.detail.hr_grade == 1)? "관리자" : "일반 staff";
+					$('#d_hr_grade').text(grade);
+					$('#d_hr_pdo').text(result.detail.hr_pdo);
+					$('#d_hr_id').text(result.detail.hr_id);
+					$('#d_hr_pwd').text(result.detail.hr_pwd);
+					
+					var imagePath = result.detail.hr_sybname ? '/uploads/' + result.detail.hr_sybname : '/images/no_image.jpg';
+					console.log(imagePath);
+					$('#dstaffImage').attr('src', imagePath);
+					
+					$('#editButton').attr('data-hr-code', result.detail.hr_code);
+				}
+				else{
+					console.log("No staff info found");
+				}
+			},
+			error: function(xhr, status, error) {
+				console.error("Error fetching staff details:", error);
+			}
+		});
+		}
+	
+	function staffEdit(hr_code){
+		console.log("hr_code is: " + hr_code);
+		
+		$.ajax({
+			//url: 'staffDetail',	
+			url: '/admin/staff/detail',
+			method: 'GET',
+			data: {hr_code: hr_code},
+			success: function(result) {
+				if (result && result.detail) {
+					$('#staffEdit').modal('show');
+					
+					console.log(result.detail.hr_name);
+					$('#e_hr_name').text(result.detail.hr_name);
+					console.log(result.detail.hr_code);
+					$('#e_hr_code').text(result.detail.hr_code);
+					console.log(result.detail.hr_joindate);
+					$('#e_hr_joindate').text(result.detail.hr_joindate);
+					
+					console.log(result.detail.hr_pdo);
+					$('#e_hr_pdo_input').val(result.detail.hr_pdo);
+										
+					console.log(result.detail.hr_id);
+					$('#e_hr_id_input').val(result.detail.hr_id);
+					
+					console.log(result.detail.hr_pwd);
+					$('#e_hr_pwd_input').val(result.detail.hr_pwd);
+					
+					$('#submit').attr('data-hr-code', result.detail.hr_code);
+					
+					$('#e_hr_code_input').val(result.detail.hr_code);
+					
+					var imagePath = result.detail.hr_sybname ? '/uploads/' + result.detail.hr_sybname : '/images/no_image.jpg';
+					console.log(imagePath);
+					$('#staffImage').attr('src', imagePath);
+				}
+				else{
+					console.log("No staff info found");
+				}
+			},
+			error: function(xhr, status, error) {
+				console.error("Error fetching staff details:", error);
+			}
+		});
+		}
+
+	</script>
+	
+	
+	
+    <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="/js/popper.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <!-- wow animation -->
+      <script src="/js/animate.js"></script>
+      <!-- select country -->
+      <script src="/js/bootstrap-select.js"></script>
+      <!-- owl carousel -->
+      <script src="/js/owl.carousel.js"></script> 
+      <!-- chart js -->
+      <script src="/js/Chart.min.js"></script>
+      <script src="/js/Chart.bundle.min.js"></script>
+      <script src="/js/utils.js"></script>
+      <script src="/js/analyser.js"></script>
+      <!-- nice scrollbar -->
+      <script src="/js/perfect-scrollbar.min.js"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- custom js -->
+      <script src="/js/chart_custom_style1.js"></script>
+      <script src="/js/custom.js"></script>
+   </body>
+</body>
+</html>

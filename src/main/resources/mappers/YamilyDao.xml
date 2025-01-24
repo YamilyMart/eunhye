@@ -24,8 +24,7 @@
     <select id="admin_order_list_search" parameterType="OrderSearchDTO">
     	select * from `order`, branch 
     	where `order`.order_sender = branch.branch_id
-    	and `order`.order_status = #{status}
-    	and order.order_type = 0
+    	and `order`.order_type = 0
    		<if test="keyword != ''">
    			and branch.branch_name like concat('%',#{keyword},'%')
    		</if>
@@ -40,6 +39,9 @@
    		</if>
    		<if test="endDate2 != ''">
    			and `order`.order_delivery &lt;= #{endDate2}
+   		</if>
+   		<if test="status != ''">
+   			and `order`.order_status = #{status}
    		</if>
     </select>
     
@@ -203,6 +205,223 @@
 			GROUP BY YEAR(sale_date), MONTH(sale_date), sale_branchid, branch.branch_name
 			ORDER BY sale_sum DESC
     </select>
+    
+    
+    
+    
+    <!-- 
+    //우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+  	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+  	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+     -->
+    
+	    <!--본사 지점 목록 검색 필터-->
+	<select id="bList" parameterType="map" resultType="BranchDTO">
+	    SELECT * 
+	    FROM branch
+	    WHERE 1=1
+	  	<if test = "branch_name != ''">
+	  		AND branch_name LIKE CONCAT('%', #{branch_name}, '%')
+		</if>
+	  	<if test = "branch_owner != ''">
+			AND branch_owner LIKE CONCAT('%', #{branch_owner}, '%')
+		</if>
+	  	<if test = "startDate != ''">
+			 AND DATE(branch_regdate) &gt;= #{startDate}
+		</if>
+	  	<if test = "endDate != ''">
+			 AND DATE(branch_regdate) &lt;= #{endDate}
+		</if>
+		<if test = "branch_region != ''">
+			AND branch_region LIKE CONCAT('%', #{branch_region}, '%')
+		</if>
+	</select>
+	
+	<!--본사 거래처 목록 검색 필터-->
+	<select id="pList" parameterType="map" resultType="PartnerDTO">
+	    SELECT * 
+	    FROM partner
+	    WHERE 1=1
+	  	<if test = "partner_name != ''">
+	  		AND partner_name LIKE CONCAT('%', #{partner_name}, '%')
+		</if>
+	  	<if test = "partner_manager != ''">
+			AND partner_manager LIKE CONCAT('%', #{partner_manager}, '%')
+		</if>
+		<if test = "partner_email != ''">
+			AND partner_email LIKE CONCAT('%', #{partner_email}, '%')
+		</if>
+		<if test = "partner_phone != ''">
+			AND partner_phone LIKE CONCAT('%', #{partner_phone}, '%')
+		</if>
+	</select>
+	
+	<select id="qList" parameterType="map" resultType="QuotationDTO">
+	    SELECT * 
+	    FROM quotation
+	    WHERE 1=1
+	    <if test="quotation_id != null and quotation_id != ''">
+	        AND quotation_id LIKE CONCAT('%', #{quotation_id}, '%')
+	    </if>
+	    <if test="quotation_partnername != null and quotation_partnername != ''">
+	        AND quotation_partnername LIKE CONCAT('%', #{quotation_partnername}, '%')
+	    </if>
+	    <if test="quotation_hqmanager != null and quotation_hqmanager != ''">
+	        AND quotation_hqmanager LIKE CONCAT('%', #{quotation_hqmanager}, '%')
+	    </if>
+	    <if test="startDate != null and startDate != ''">
+	        AND DATE(quotation_date) &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	        AND DATE(quotation_date) &lt;= #{endDate}
+	    </if>
+	    <if test="searchType != null and searchType != ''">
+	        AND quotation_status = 
+	        <choose>
+	            <when test="searchType == 'considering'">0</when>
+	            <when test="searchType == 'holding'">1</when>
+	            <when test="searchType == 'completed'">2</when>
+	        </choose>
+	    </if>
+	    ORDER BY quotation_date DESC
+	</select>
+	
+	
+	<!-- 
+	//현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 
+    -->
+	
+	<insert id="addStaff" parameterType="StaffDTO">
+    	insert into hr
+    	(hr_id, hr_authority, hr_name, hr_joindate, hr_grade, hr_pdo, hr_sybname, hr_oriname)
+    	values
+    	(#{hr_id}, #{hr_authority}, #{hr_name}, #{hr_joindate}, #{hr_grade}, 15, #{hr_sybname}, #{hr_oriname})
+    </insert>
+
+	<update id="staffEdit" parameterType="StaffDTO">
+		update hr set hr_grade = #{hr_grade}, hr_id = #{hr_id}, hr_pdo = #{hr_pdo},
+		hr_sybname = #{hr_sybname}, hr_oriname = #{hr_oriname} where hr_code = #{hr_code}
+	</update>
+	
+	<select id="staffSearch" resultType="StaffDTO">
+		select * from hr
+		<where>
+		<if test="staff_search !='' and staff_search != null">
+			 hr_name like concat('%',#{staff_search},'%')
+		</if>
+		<if test="grade != null">
+			 and hr_grade = #{grade}
+		</if>
+		<if test="start !='' and end != ''">
+			 and hr_joindate between #{start} and #{end}
+		</if>
+		<if test="auth != null">
+			 and hr_authority = #{auth}
+		</if>
+		<if test="del != null">
+			 and hr_del = 0
+		</if>
+		</where>
+	</select>
+	
+	<!-- temporary login -->
+	<select id="login" parameterType="java.util.Map" resultType="StaffDTO">
+    	select * from hr where hr_id=#{hr_id} and hr_pwd=#{hr_pwd}
+	</select>
+	
+	<insert id="addApproval" parameterType="ApprovalDTO">
+		insert into approval (hr_code, app_title, app_cat, app_info, app_file, boss_code, app_datestart, app_dateend) 
+		values (#{hr_code}, #{app_title}, #{app_cat}, #{app_info}, #{app_file}, #{boss_code}, #{app_datestart}, #{app_dateend})
+	</insert>
+	
+	<select id="bossList" parameterType = "java.lang.Integer"  resultType="StaffDTO">
+	SELECT * 
+	FROM hr 
+	WHERE hr_authority = #{hr_authority} + 1
+	OR (#{hr_authority} = 7 AND hr_authority in (6,7));
+	</select>	
+	
+	<select id="bossSearch" resultType="StaffDTO">
+	SELECT * 
+	FROM hr 
+	WHERE hr_name like concat('%',#{hr_name},'%')
+	AND hr_authority = #{hr_authority} + 1
+	OR (#{hr_authority} = 7 AND hr_authority in (6,7));
+	</select>
+	
+	<select id="appList" parameterType="java.lang.Integer" resultType="ApprovalDTO">
+		select * from approval left join hr on hr.hr_code = approval.hr_code where approval.hr_code = #{hr_code}
+	</select>
+	
+	<select id="appDetail" parameterType="java.lang.Integer" resultType="ApprovalDTO">
+		select * from approval left join hr on hr.hr_code = approval.hr_code where approval.app_id = #{app_id}
+	</select>
+	
+	<select id="appListBoss" parameterType="java.lang.Integer" resultType="ApprovalDTO">
+	SELECT * 
+	FROM approval
+	LEFT JOIN hr ON hr.hr_code = approval.boss_code
+	WHERE 
+    (approval.boss_code = #{hr_code} AND approval.boss_code_second = 0)
+    OR (approval.boss_code = #{hr_code} OR approval.boss_code_second = #{hr_code})
+	ORDER BY 
+    CASE 
+        WHEN approval.app_status = 2 THEN 0
+        ELSE 1
+    END,
+    approval.app_status;
+	</select>
+	
+	<update id="bossView" parameterType="java.lang.Integer">
+		update approval set app_view = 1 where app_id = #{app_id}
+	</update>
+	
+	<update id="cancelApproval" parameterType="java.util.Map">
+		update approval set app_status = 1, app_rejection=#{app_rejection} where app_id = #{app_id}
+	</update>
+	
+	<update id="approveApproval" parameterType = "java.util.Map">
+		UPDATE approval
+		SET 
+    	app_status = CASE 
+        	WHEN boss_code_second != 0 AND app_id = #{app_id} THEN 3
+        	WHEN boss_code_second = 0 AND app_id = #{app_id} THEN 2
+            ELSE app_status
+            END,
+    	boss_code_second = CASE 
+            WHEN boss_code_second = 0 AND app_id = #{app_id} THEN #{boss_code_second}
+            ELSE boss_code_second
+            END,
+        app_view = CASE
+        	WHEN app_status != 3 THEN 0
+        	WHEN app_status = 3 THEN 1
+        	END
+		WHERE app_id = #{app_id};
+	</update>
+	
+	<update id="pdoApproval" parameterType="java.lang.Integer">
+		UPDATE hr 
+		JOIN approval ON hr.hr_code = approval.hr_code
+		SET
+		    hr_pdo = CASE
+		        WHEN approval.app_cat = 0 THEN hr.hr_pdo - DATEDIFF(approval.app_dateend, approval.app_datestart)
+		        WHEN approval.app_cat = 1 THEN hr.hr_pdo - DATEDIFF(approval.app_dateend, approval.app_datestart)
+		        WHEN approval.app_cat = 2 THEN 0
+		        WHEN approval.app_cat = 3 THEN hr.hr_pdo
+		        ELSE hr.hr_pdo
+		    END,
+		    hr_del = CASE
+		        WHEN approval.app_cat = 2 THEN 1
+		        ELSE hr_del
+		    END
+		WHERE hr.hr_code = (SELECT hr_code FROM approval WHERE app_id = #{app_id});
+	</update>
+	
+	<select id="calendar" resultType="ApprovalDTO">
+		select app_id, hr_code, app_title, app_datestart, app_dateend from approval where app_status = 3
+	</select>
     
 
 </mapper>

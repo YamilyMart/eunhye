@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>서류 관리</title>
+	<style type="text/css">
+		body {
+			display: flex;
+			min-height: 100vh;
+			margin: 0;
+		}
+
+
+		.date-buttons button {
+			border: 1px solid #bbb;
+			background-color: white;
+			padding: 3.5px 8px;
+			margin-right: 5px;
+			font-size: 14px;
+			cursor: pointer;
+			outline: none;
+			color: #696767;
+		}
+
+		.date-buttons button:hover {
+			background-color: #e6e6e6;
+		}
+
+		.date-buttons button:focus {
+			border-color: #888;
+			background-color: #ddd;
+		}
+
+		select,
+		input[type="text"] {
+			height: 30px;
+			width: 350px;
+			box-sizing: border-box;
+		}
+
+		input[type="date"] {
+			height: 30px;
+			width: 150px;
+			box-sizing: border-box;
+			text-align: center;
+		}
+
+		th {
+			text-align: center;
+		}
+
+		td {
+			vertical-align: middle;
+		}
+
+		.pagination-container {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin: 20px 0;
+		}
+
+		.pagination {
+			display: flex;
+			gap: 15px;
+			margin: 0 auto;
+		}
+
+		.pagination a {
+			text-decoration: none;
+			color: #333;
+			font-size: 12px;
+		}
+
+		.pagination a.active {
+			color: #ff6600;
+			font-weight: bold;
+		}
+		
+		.table {
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			max-width: 140px;
+		}
+
+		/* 테이블 스타일 */
+		.styled-table {
+			width: 100%;
+			border-collapse: collapse;
+			/* 테두리 겹침 방지 */
+		}
+
+		/* 행 간격 추가 */
+		.styled-table tr {
+			margin-bottom: 15px;
+			/* 행 간격 */
+			display: table-row;
+			/* IE에서 간격 유지 */
+		}
+
+		/* 셀 간격 추가 */
+		.styled-table td {
+			padding: 10px;
+			/* 셀 안쪽 여백 */
+			vertical-align: middle;
+			/* 텍스트 가운데 정렬 */
+			font-weight: bold;
+			
+		}
+
+		.styled-table td input {
+			background-color: none;
+			border: none;
+		}
+
+		.styled-table td:first-child {
+			border-right: 1px solid black;
+			width: 120px;
+		}
+
+		#addQuotationModal .modal-body input {
+			border: 1px solid #ccc;
+			/* 원하는 스타일 */
+			border-radius: 4px;
+			/* 테두리 둥글게 */
+			padding: 5px;
+			/* 입력 필드 안쪽 여백 */
+			width: 100%;
+			/* 입력 필드 너비 조정 (필요 시) */
+		}
+		
+		.ellipsis-text {
+		    text-overflow: ellipsis;
+		    white-space: nowrap;
+		    overflow: hidden;
+		    max-width: 140px;
+		    text-align: left;
+		}
+		
+		[type="radio"] {
+	        accent-color: #04AA6D;
+	    }
+		
+		.radio-container label,input{
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<head th:insert="~{fragments/links :: head}"></head>
+
+<head th:include="fragments/sidebar :: sidebar"></head>
+
+<body class="dashboard dashboard_1">
+	<div class="full_container">
+		<div class="inner_container">
+			<!-- right content -->
+			<div id="content">
+			<head th:include="fragments/topbar :: topbar"></head>
+				<div th:if="${alertMessage}" class="alert alert-danger" style="margin-bottom: 20px;">
+                    <span th:text="${alertMessage}"></span>
+                </div>
+				<div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 20px;">
+                    <span th:text="${successMessage}"></span>
+                </div>
+				<div th:if="${errorMessage}" class="alert alert-warning" style="margin-bottom: 20px;">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+				<!-- dashboard inner -->
+				<div class="midde_cont">
+					<div class="container-fluid">
+						<div class="main">
+							<h6>
+								<strong>서류 관리</strong>
+							</h6>
+							<form th:action="@{/admin/quotation/filter}" method="post">
+								<table class="table table-bordered">
+									<tr>
+										<th style="width: 120px;">코드</th>
+										<td>
+											<input type="text" name="quotation_id" placeholder="&nbsp; 아이디 입력">
+										</td>
+									</tr>
+									<tr>
+										<th style="width: 120px;">거래처</th>
+										<td>
+											<input type="text" name="quotation_partnername" placeholder="&nbsp; 거래처 입력">
+										</td>
+									</tr>
+									<tr>
+										<th style="width: 120px;">담당자</th>
+										<td>
+											<input type="text" name="quotation_hqmanager" placeholder="&nbsp; 담당자 입력">
+										</td>
+									</tr>
+									<tr>
+										<th>기간</th>
+										<td>
+											<input type="date" name="startDate" id="startDate"> -
+											<input type="date" name="endDate" id="endDate">
+											<div class="date-buttons" style="display: inline-block;">
+												<button type="button" onclick="setDate(-1)">1일</button>
+												<button type="button" onclick="setDate(-3)">3일</button>
+												<button type="button" onclick="setDate(-7)">일주일</button>
+												<button type="button" onclick="setDate(-30)">한달</button>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>상태</th>
+										<td>
+											<select name="searchType">
+												<option value="considering">검토중</option>
+												<option value="holding">보류</option>
+												<option value="completed">완료</option>
+											</select>
+										</td>
+									</tr>
+								</table>
+								<div style="text-align: right;">
+									<button type="submit" class="btn btn-primary btn-sm"
+										style="width: 70px;">검색</button>
+									<button type="reset" class="btn btn-secondary btn-sm"
+										style="width: 70px;">초기화</button>
+								</div>
+							</form>
+							<hr style="color: black">
+							<div style="display: flex; justify-content: space-between;">
+								<div>
+								</div>
+								<div>
+									<button type="button" class="btn btn-sm"
+										style="width: 120px; border-radius: 8px; background-color: #04AA6D; color: white;"
+										onclick="addQuotationModal()">서류 등록</button>
+								</div>
+							</div>
+							<div class="wrapper mt-5" id="productListContainer">
+								<table class="table product-list-table">
+								    <thead>
+								        <tr>
+								            <th class="table-light text-center">코드</th>
+								            <th class="table-light text-center">종류</th>
+								            <th class="table-light text-center">거래처</th>
+								            <th class="table-light text-center">담당자</th>
+								            <th class="table-light text-center">등록일</th>
+								            <th class="table-light text-center">정보</th>
+								            <th class="table-light text-center">상태</th>
+								            <th class="table-light text-center">첨부파일</th>
+								        </tr>
+								    </thead>
+								    <tbody>
+								        <tr th:each="q : ${qList}">
+								            <td style="text-align: center;" th:text="${q.quotation_id}"></td>
+								            <td style="text-align: left;" 
+								                th:text="${q.quotation_type == 0 ? '견적서' : (q.quotation_type == 1 ? '계약서' : '알 수 없음')}">
+											</td>
+								            <td style="text-align: left;" th:text="${q.quotation_partnername}"></td>
+								            <td style="text-align: left;" th:text="${q.quotation_hqmanager}"></td>
+								            <td style="text-align: center;" th:text="${q.quotation_date}"></td>
+											<td class="ellipsis-text" 
+											    th:text="${q.quotation_description}" 
+											    data-bs-toggle="tooltip" 
+											    th:attr="title=${q.quotation_description}"
+												style="cursor: pointer;"
+												>
+											</td>
+											<td style="text-align: center;">
+									            <select class="form-select update-status" 
+									                    th:value="${q.quotation_status}" 
+									                    th:attr="data-id=${q.quotation_id}">
+									                <option value="0" th:selected="${q.quotation_status == 0}">검토중</option>
+									                <option value="1" th:selected="${q.quotation_status == 1}">보류</option>
+									                <option value="2" th:selected="${q.quotation_status == 2}">완료</option>
+									            </select>
+									        </td>
+											<td style="text-align: center;">
+											    <a th:href="@{/admin/download-file/{fileName}(fileName=${q.quotation_file_name})}" 
+											       th:attr="download=${q.quotation_file_name}">
+											        <img th:src="${#strings.endsWith(q.quotation_file_name, '.xlsx') ? '/images/images/excel.svg' 
+											                  : (#strings.endsWith(q.quotation_file_name, '.docx') ? '/images/images/word.svg' 
+											                  : '/images/images/default.svg')}" 
+											             alt="file icon" style="width: 32px; height: 32px;">
+											    </a>
+											</td>
+								        </tr>
+								    </tbody>
+								</table>
+							</div>
+							<!--<div class="pagination-container">
+			         <div class="pagination">
+			            <a th:if="${startPage > 1}" th:href="@{${basePath}(pageNum=${startPage - 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&lt;</a>
+			            <a th:each="page : ${#numbers.sequence(startPage, endPage)}" th:href="@{${basePath}(pageNum=${page}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}" th:classappend="${currentPage == page} ? 'active' : ''" th:text="${page}"></a>
+			            <a th:if="${endPage < totalPage}" th:href="@{${basePath}(pageNum=${endPage + 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&gt;</a>
+			         </div>
+			      </div>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--등록 모달-->
+		<div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		    <div class="modal-dialog modal-lg modal-dialog-centered">
+		        <div class="modal-content" style="width:67%; margin:0 auto">
+		            <div class="modal-header" style="background-color: #04AA6D;">
+		                <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">서류 등록</h5>
+						<button type="button" id="closeAddModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+								                    style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
+		            </div>
+		            <div class="modal-body">
+		                <form method="post" action="/admin/quotation/add" name="addQuotationModal-frm" enctype="multipart/form-data">
+		                    <table class="styled-table" style="width: 100%; border-collapse: collapse;">
+		                        <tr>
+		                            <td style="text-align: left; vertical-align: middle;">서류 종류</td>
+		                            <td class="radio-container" style="text-align: left; vertical-align: middle;">
+										<input type="radio" id="quotation_estimate" name="quotation_type" value="0" style="width: 10px;" checked/>
+		                                <label for="quotation_estimate" style="margin-right: 15px; display: inline;">견적서</label>
+										<input type="radio" id="quotation_contract" name="quotation_type" value="1" style="width: 10px;" />
+	                                	<label for="quotation_contract">계약서</label>
+		                            </td>
+		                        </tr>
+		                        <tr>
+		                            <td style="text-align: left; vertical-align: middle;">거래처 아이디</td>
+		                            <td>
+		                                <input id="add_quotation_id" name="quotation_id" type="text" style="width: 100%;" onblur="checkDuplicateId('add_quotation_id', 'add_quotation_id_check_label')" required/>
+										<label id="add_quotation_id_check_label" style="margin-left: 10px; color: red; display: inline;"></label>
+		                            </td>
+		                        </tr>
+		                        <tr>
+		                            <td style="text-align: left; vertical-align: middle;">회사명</td>
+		                            <td>
+		                                <input id="companyName" name="quotation_partnername" type="text" style="width: 100%;" required/>
+		                            </td>
+		                        </tr>
+		                        <tr>
+		                            <td style="text-align: left; vertical-align: middle;">담당자</td>
+		                            <td>
+		                                <input id="manager" name="quotation_hqmanager" type="text" style="width: 100%;" required/>
+		                            </td>
+		                        </tr>
+								<tr>
+								    <td style="text-align: left; vertical-align: middle;">첨부파일</td>
+								    <td>
+								        <input id="imageUpload" name="file" type="file" style="display: inline;" required />
+								    </td>
+								</tr>
+		                        <tr>
+		                            <td style="text-align: left; vertical-align: middle;">정보</td>
+		                            <td>
+		                                <textarea id="info" name="quotation_description" rows="4" style="width: 100%;" required></textarea>
+		                            </td>
+		                        </tr>
+		                    </table>
+		                    <div style="text-align: center; margin-top: 20px;">
+		                        <button type="submit" class="btn btn-md"
+		                            style="border-radius: 8px; color: white; background-color: #04AA6D;">등록</button>
+		                    </div>
+		                </form>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		</div>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+		document.getElementById('endDate').value = new Date().toISOString().split('T')[0];
+
+		function setDate(daysAgo) {
+			const today = new Date();
+			const targetDate = new Date();
+			targetDate.setDate(today.getDate() + daysAgo);
+			document.getElementById("startDate").value = targetDate.toISOString().split('T')[0];
+		}		
+
+		// 상세보기 모달
+		// 버튼 클릭 이벤트에 연결
+		function branchDetail(branch_code) {
+			$.ajax({
+				url: '/admin/branch/detail',
+				method: 'GET',
+				data: {branch_code: branch_code},
+				success: function (detail) {
+					if (detail) {
+						$('#branch_name').val(detail.branch_name);
+						$('#branch_region').val(detail.branch_region);
+						$('#branch_address').val(detail.branch_address);
+						$('#branch_owner').val(detail.branch_owner);
+						$('#branch_regdate').val(detail.branch_regdate);
+						$('#branch_status').val(detail.branch_status == 0 ? '영업중' : '폐업');
+						$('#branch_id').val(detail.branch_id);
+
+						if (detail.branch_status == 1) {
+							$('#branch_enddate_row').show(); // 폐업일 행 표시
+							$('#branch_enddate').val(detail.branch_enddate); // 폐업일 값 설정
+						} else {
+							$('#branch_enddate_row').hide(); // 폐업일 행 숨기기
+							$('#branch_enddate').val(''); // 폐업일 값 초기화
+						}
+
+						const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+						modal.show();
+						document.getElementById('modalConfirmButton').addEventListener('click', function () {
+							modal.hide(); // 모달 닫기
+						});
+					} else {
+						alert('데이터를 찾을 수 없습니다.');
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Ajax 요청 실패:', error);
+					alert('Ajax 요청 실패.');
+				}
+			});
+		}
+
+		// 서류 등록 모달
+		// 버튼 클릭 이벤트에 연결
+		function addQuotationModal() {
+			const modal = new bootstrap.Modal(document.getElementById('addQuotationModal'));
+
+			// 모달 열기
+			modal.show();
+
+			// 모달 닫기 버튼 클릭 시 처리
+			document.getElementById('closeAddModal').addEventListener('click', function () {
+				modal.hide(); // 모달 닫기
+				console.log('모달이 닫혔습니다.');
+				resetModalFields(); // 모달 필드 초기화
+			});
+
+			// 모달이 숨겨질 때 발생하는 이벤트에 초기화 로직 연결
+			document.getElementById('addQuotationModal').addEventListener('hidden.bs.modal', resetModalFields);
+		}
+		
+		// 입력 필드를 초기화하는 함수
+  		function resetModalFields() {
+  		    // 모든 input 요소를 초기화
+  		    const inputs = document.querySelectorAll('#addQuotationModal input');
+  		    inputs.forEach(input => {
+  		        input.value = ''; // 값을 초기화
+  		    });
+			
+			// 에러 메시지 초기화
+		    const idCheckLabel = document.getElementById('add_quotation_id_check_label');
+		    if (idCheckLabel) {
+		        idCheckLabel.textContent = '';
+		    }
+  		}
+
+		// quotation_id 유효성 검사
+		let originalBranchId = ''; // 초기 아이디를 저장할 변수
+
+		function checkIfIdChanged() {
+			const inputField = document.getElementById('add_quotation_id');
+			const emailCheckLabel = document.getElementById('add_quotation_id_check_label');
+
+			// 기존 아이디와 입력값 비교
+			if (inputField.value === originalBranchId) {
+				emailCheckLabel.textContent = ''; // 기존 아이디와 같으면 메시지 초기화
+				return; // 유효성 검사 실행하지 않음
+			}
+
+			// 기존 아이디와 다르면 중복 체크 실행
+			checkDuplicateId('add_quotation_id', 'add_quotation_id_check_label');
+		}
+
+		// 아이디 중복 체크
+		function checkDuplicateId(inputFieldId, labelId) {
+			const idCheckLabel = document.getElementById(labelId);
+			const quotationIdValue = document.getElementById(inputFieldId).value;
+
+			// 입력값이 비어 있는 경우 처리
+			if (!quotationIdValue) {
+				idCheckLabel.textContent = "아이디를 입력해주세요.";
+				idCheckLabel.style.color = "red";
+				return;
+			}
+
+			// AJAX 요청
+			$.ajax({
+				url: "/admin/quotation/idCheck",
+				type: "POST",
+				dataType: "JSON",
+				data: {quotation_id: quotationIdValue}, // branch_id 값을 전송
+				success: function (data) {
+					if (data === 1) { // 중복된 아이디
+						idCheckLabel.textContent = "중복된 아이디입니다.";
+						idCheckLabel.style.color = "red";
+					} else if (data === 0) { // 사용 가능한 아이디
+						idCheckLabel.textContent = "사용 가능한 아이디입니다.";
+						idCheckLabel.style.color = "green";
+					} else {
+						console.error("Unexpected response:", data); // 예외 처리
+					}
+				},
+				error: function () {
+					alert("요청 처리 중 에러가 발생했습니다.");
+				}
+			});
+		}
+		
+		// 테이블 툴팁
+		document.addEventListener('DOMContentLoaded', function () {
+		        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+		        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		            return new bootstrap.Tooltip(tooltipTriggerEl);
+		        });
+		    });
+			
+		// quotation_status ajax 요청
+		document.addEventListener('DOMContentLoaded', function () {
+		    const selectElements = document.querySelectorAll('.update-status');
+		    
+		    selectElements.forEach(function (selectElement) {
+		        selectElement.addEventListener('change', function () {
+		            const quotationId = this.getAttribute('data-id');
+		            const newStatus = this.value;
+
+		            // 로딩 상태 표시
+		            const originalText = this.options[this.selectedIndex].text;
+		            this.disabled = true;
+		            this.options[this.selectedIndex].text = '업데이트 중...';
+
+		            $.ajax({
+		                url: '/admin/quotation/updateStatus',
+		                method: 'POST',
+		                contentType: 'application/json',
+		                data: JSON.stringify({ quotationId: quotationId, newStatus: newStatus }),
+		                success: function (response) {
+		                    if (response.success) {
+		                        alert('상태가 성공적으로 업데이트되었습니다.');
+		                    } else {
+		                        alert('상태 업데이트 실패: ' + (response.error || '알 수 없는 이유'));
+		                    }
+		                },
+		                error: function (xhr, status, error) {
+		                    console.error('상태 업데이트 요청 실패:', error);
+		                    alert('상태 업데이트 중 에러가 발생했습니다.');
+		                },
+		                complete: function () {
+		                    // 로딩 상태 복원
+		                    selectElement.disabled = false;
+		                    selectElement.options[selectElement.selectedIndex].text = originalText;
+		                }
+		            });
+		        });
+		    });
+		});
+	</script>
+</body>
+</html>

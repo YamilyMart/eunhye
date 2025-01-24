@@ -65,6 +65,7 @@ public class SecurityConfig {
                 .requestMatchers("/user/**").hasRole("BRANCH") // 지점 점장
                 .requestMatchers("/admin/**").hasAnyRole("MANAGER", "STAFF") // 본사 직원
                 .requestMatchers("/admin/hr/manage").hasRole("MANAGER") //인사관리는 매니저만 접근 가능
+                .requestMatchers("/admin/download-file/**").hasAnyRole("MANAGER", "STAFF") //인사관리는 매니저만 접근 가능
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated() // 그 외 요청은 인증 필요
             )

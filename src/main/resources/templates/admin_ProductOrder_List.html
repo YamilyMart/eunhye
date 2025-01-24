@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>상품 주문 리스트</title>
+<style type="text/css">
+body {
+   display: flex;
+   min-height: 100vh;
+   margin: 0;
+}
+
+
+.date-buttons button {
+   border: 1px solid #bbb;
+   background-color: white;
+   padding: 3.5px 8px;
+   margin-right: 5px;
+   font-size: 14px;
+   cursor: pointer;
+   outline: none;
+   color: #696767;
+}
+
+.date-buttons button:hover {
+   background-color: #e6e6e6;
+}
+
+.date-buttons button:focus {
+   border-color: #888;
+   background-color: #ddd;
+}
+
+select,  input[type="text"] {
+   height: 30px;
+   width: 350px;
+   box-sizing: border-box;   
+}
+
+input[type="date"] {
+	height: 30px;
+   	width: 150px;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+th {
+    text-align: center;
+}
+
+td {
+   vertical-align: middle;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.pagination {
+    display: flex;
+    gap: 15px; 
+    margin: 0 auto;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+}
+
+.pagination a.active {
+    color: #ff6600; 
+    font-weight: bold; 
+}
+</style>
+</head>
+<head th:insert="~{fragments/links :: head}"></head>
+<head th:include="fragments/sidebar :: sidebar"></head>
+<body class="dashboard dashboard_1">
+     <div class="full_container">
+        <div class="inner_container">
+           <!-- right content -->
+           <div id="content">
+           <head th:include="fragments/topbar :: topbar"></head>
+              <!-- dashboard inner -->
+              <div class="midde_cont">
+                 <div class="container-fluid">
+				   <div class="main">
+				      <h6>
+				         <strong>상품 주문 관리</strong>
+				      </h6>
+				      <form th:action="@{/searchProduct}" method="post">
+				         <table class="table table-bordered">
+				            <tr>
+				               <th style="width: 120px;" >주문번호</th>
+				               <td>
+				                  <input type="text" name="searchKeyword" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;주문번호 입력">
+				               </td>
+				            </tr>
+				            <tr>
+				               <th>담당자</th>
+				               <td>
+			                    	<input type="text" name="searchKeyword" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;담당자 입력">
+				               </td>
+				            </tr>
+							<tr>
+				               <th>기간</th>
+				               <td>
+				               <select>
+				                     <option value="registerDate">&nbsp;&nbsp;&nbsp;주문일시</option>
+									 <option value="registerDate">&nbsp;&nbsp;&nbsp;요청날짜</option>
+				               </select>
+				                <input type="date" id="endDate" name="endDate"> - 
+				                <input   type="date" id="startDate" name="startDate">
+				                  <div class="date-buttons" style="display: inline-block;">
+				                     <button type="button" onclick="setDate(-1)">1일</button>
+				                     <button type="button" onclick="setDate(-3)">3일</button>
+				                     <button type="button" onclick="setDate(-7)">일주일</button>
+				                     <button type="button" onclick="setDate(-30)">한달</button>
+				                  </div>
+				               </td>
+				            </tr>
+							<tr>
+				               <th>거래처</th>
+				               <td>
+			                    	<input type="text" name="searchKeyword" placeholder="&nbsp;&nbsp;&nbsp;&nbsp;거래처 입력">
+				               </td>
+				            </tr>
+				         </table>
+				         <div style="text-align: right;">
+				            <button type="submit" class="btn btn-primary btn-sm" style="width: 70px; border-radius: 8px;">검색</button>
+				            <button type="reset" class="btn btn-secondary btn-sm" style="width: 70px; border-radius: 8px;">초기화</button>
+				         </div>
+				      </form>
+				      <hr style="color: black">
+				      <div style="display: flex; justify-content: space-between;">
+				         <div>				           
+				         </div>
+				         <div>
+				            <button type="button" class="btn btn-sm" style="width: 120px; border-radius: 8px; background-color: #04AA6D; color: white; " th:onclick="|location.href='@{/admin_add_ProductOrder}'|">주문 등록</button>
+				         </div>
+				      </div>
+				      <div class="wrapper mt-5" id="productListContainer">
+				         <table class="table product-list-table">
+				            <thead>
+				               <tr>
+				                  <th class="table-light text-center">
+				                     <input type="checkbox" id="selectAll">
+				                  </th>
+								  <th class="table-light text-center">주문번호</th>
+				                  <th class="table-light text-center">주문 일시</th>
+				                  <th class="table-light text-center">요청 날짜</th>
+				                  <th class="table-light text-center">담당자</th>
+				                  <th class="table-light text-center">주문 수량</th>
+				                  <th class="table-light text-center">주문 금액</th>
+								  <th class="table-light text-center">보기</th>
+				               </tr>
+				            </thead>
+				            <tbody>
+				               <tr th:each="o:${oList}">
+				                  <td><input type="checkbox" name="selectedCheckbox" th:value="${o.order_id}"></td>
+								  <td style="text-align: center;" th:text="${o.order_id}"></td>
+								  <td style="text-align: center;" th:text="${o.order_date}"></td>
+								  <td style="text-align: center;" th:text="${o.order_delivery}"></td>								  
+								  <td style="text-align: center;" th:text="${o.order_manager}"></td>
+								  <td style="text-align: center;" th:text="${o.order_amount}"></td>
+								  <td style="text-align: center;" th:text="${o.order_sum} + ' ' + 원" ></td>
+								  <td style="text-align: center;">
+	  								<button 
+	  								    type="button" 
+	  								    class="btn btn-sm"
+	  									style="border-radius: 8px; color: white; background-color: #8B393B;"
+	  									th:onclick="orderDetail([[${o.order_id}]])"
+	  									>
+	  								    상세보기
+	  								</button>
+								 </td>
+  				               </tr>
+				            </tbody>
+				         </table>
+				      </div>
+				      <!--<div class="pagination-container">
+				         <div class="pagination">
+				            <a th:if="${startPage > 1}" th:href="@{${basePath}(pageNum=${startPage - 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&lt;</a>
+				            <a th:each="page : ${#numbers.sequence(startPage, endPage)}" th:href="@{${basePath}(pageNum=${page}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}" th:classappend="${currentPage == page} ? 'active' : ''" th:text="${page}"></a>
+				            <a th:if="${endPage < totalPage}" th:href="@{${basePath}(pageNum=${endPage + 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&gt;</a>
+				         </div>
+				      </div>-->
+				   </div>
+                 </div>
+              </div>
+			  <!--상세보기 모달-->
+			  <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-lg modal-dialog-centered">
+			      <div class="modal-content" style="width:80%; margin:0 auto">
+			        <div class="modal-header" style="background-color: #8B393B;">
+			          <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">주문 상세보기</h5>
+			          <button
+			            type="button"
+			            id="modalConfirmButton"
+			            class="btn-close"
+			            data-bs-dismiss="modal"
+			            aria-label="Close"
+			            style="background-color: rgb(192, 192, 192); font-weight: bold;">
+			          </button>
+			        </div>
+			        <div class="modal-body">
+			          <!-- 주문 요약 정보 -->
+			          <div class="order-summary">
+			            <p><strong>주문일자:</strong> <span id="orderDate">N/A</span></p>
+			            <p style="display: inline-block; margin-right: 20px;"><strong>주문번호:</strong> <span id="orderNumber">N/A</span></p>
+			            <p style="display: inline-block; margin-right: 20px;"><strong>남기 요청일:</strong> <span id="requestDate">N/A</span></p>
+			            <p style="display: inline-block; margin-right: 20px;"><strong>결제 총합:</strong> <span id="totalPayment">N/A</span></p>
+			          </div>
+
+			          <!-- 거래처별 상품 목록 -->
+			          <div id="supplierDetailsContainer">
+			            <!-- 거래처별 데이터를 동적으로 렌더링 -->
+			          </div>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			  <!-- 상세보기 모달 -->
+			  <!--<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			    <div class="modal-dialog modal-lg modal-dialog-centered">
+			      <div class="modal-content" style="width:80%; margin:0 auto">
+			        <div class="modal-header" style="background-color: #8B393B;">
+			          <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">주문 상세보기</h5>
+			          <button
+			            type="button"
+			            id="modalConfirmButton"
+			            class="btn-close"
+			            data-bs-dismiss="modal"
+			            aria-label="Close"
+			            style="background-color: rgb(192, 192, 192); font-weight: bold;"
+			          ></button>
+			        </div>
+			        <div class="modal-body">
+			           주문 요약 정보 
+			          <div class="order-summary">
+			            <p><strong>주문일자:</strong> <span id="orderDate">N/A</span></p>
+			            <p><strong>총 수량:</strong> <span id="totalQuantity">N/A</span></p>
+			            <p><strong>결제 총합:</strong> <span id="totalPayment">N/A</span></p>
+			          </div>
+
+			           회사별 구매 품목 표시 영역 
+			          <div id="orderDetailsSection">
+			            <table id="productListContainer2" class="table table-bordered">
+			              <thead>
+			                <tr>
+			                  <th>세부 ID</th>
+			                  <th>주문 ID</th>
+			                  <th>상품 ID</th>
+			                  <th>가격</th>
+			                  <th>수량</th>
+			                  <th>합계</th>
+			                </tr>
+			              </thead>
+			              <tbody>
+			                 동적으로 추가될 데이터 
+			              </tbody>
+			            </table>
+			          </div>
+			        </div>
+			      </div>
+			    </div>
+			  </div>-->
+              <!-- end dashboard inner -->
+           </div>
+        </div>
+     </div>
+	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	 <script type="text/javascript">
+		/*
+	      window.onload = function () {
+	         if (!window.location.href.includes('refreshed')) {
+	            window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'refreshed=true';
+	         }
+	         const today = new Date().toISOString().split('T')[0];
+	         document.getElementById("startDate").value = today;
+	      };
+		  */
+	
+	      function setDate(daysAgo) {
+	         const today = new Date();
+	         const targetDate = new Date(today);
+	         targetDate.setDate(today.getDate() + daysAgo);
+	         document.getElementById("endDate").value = targetDate.toISOString().split('T')[0];
+	      }
+	
+	      document.getElementById('selectAll').addEventListener('click', function () {
+	         const checkboxes = document.querySelectorAll('input[name="selectedCheckbox"]');
+	         checkboxes.forEach(cb => cb.checked = this.checked);
+	      });
+	
+	      function submitDeleteForm() {
+	         if (!confirm('삭제 하시겠습니까?')) return;
+	         const selectedCheckboxes = document.querySelectorAll('input[name="selectedCheckbox"]:checked');
+	         const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.value).join(',');
+	         if (!selectedIds) {
+	            alert('삭제할 항목을 선택하세요.');
+	            return;
+	         }
+	         document.getElementById('hiddenSelectedIds').value = selectedIds;
+	         document.getElementById('deleteForm').submit();
+	      }
+		  
+		  function orderDetail(order_id) {
+		    if (!order_id) {
+		      alert("주문 ID가 유효하지 않습니다.");
+		      return;
+		    }
+
+		    // Ajax 요청: 주문 정보 가져오기
+		    $.ajax({
+		      url: '/user/order/list/detail',
+		      method: 'GET',
+		      data: { order_id: order_id },
+		      success: function (result) {
+		        if (result) {
+		          document.getElementById("orderDate").textContent = result.order_date || "N/A";
+		          document.getElementById("orderNumber").textContent = result.order_id || "N/A";
+		          document.getElementById("requestDate").textContent = result.order_delivery || "N/A";
+		          document.getElementById("totalPayment").textContent = result.order_sum || "N/A 원";
+		        } else {
+		          alert("주문 정보를 찾을 수 없습니다.");
+		        }
+		      },
+		      error: function (xhr, status, error) {
+		        alert("주문 정보 로드 중 오류 발생: " + xhr.status + " " + error);
+		      },
+		    });
+			
+			console.log("요청 보낼 order_id:", order_id);
+
+		    // Ajax 요청: 거래처별 상품 목록 가져오기
+		    $.ajax({
+		      url: '/user/order/list/detail2',
+		      method: 'GET',
+		      data: { orderDetail_orderid: order_id },
+		      success: function (result) {
+		        const container = document.getElementById("supplierDetailsContainer");
+		        container.innerHTML = ''; // 기존 데이터를 초기화
+
+		        if (result && result.length > 0) {
+		          // 거래처별 데이터 그룹화
+		          const groupedData = result.reduce((acc, item) => {
+		            if (!acc[item.supplier_name]) {
+		              acc[item.supplier_name] = [];
+		            }
+		            acc[item.supplier_name].push(item);
+		            return acc;
+		          }, {});
+
+		          // 거래처별로 테이블 생성
+		          for (const supplier in groupedData) {
+		            const supplierData = groupedData[supplier];
+		            let totalAmount = 0;
+		            let totalQuantity = 0;
+
+		            supplierData.forEach(item => {
+		              totalQuantity += item.quantity;
+		              totalAmount += item.total_price;
+		            });
+
+		            // 거래처 섹션 추가
+		            const supplierSection = `
+		              <div class="supplier-section">
+		                <h6>거래처: ${supplier}</h6>
+		                <p>총 수량: ${totalQuantity}개</p>
+		                <p>합계: ${totalAmount.toLocaleString()} 원</p>
+		                <table class="table table-bordered">
+		                  <thead>
+		                    <tr>
+		                      <th>상품코드</th>
+		                      <th>상품명</th>
+		                      <th>수량</th>
+		                      <th>개별 단가</th>
+		                      <th>공급가액</th>
+		                      <th>부가세</th>
+		                      <th>주문금액</th>
+		                    </tr>
+		                  </thead>
+		                  <tbody>
+		                    ${supplierData
+		                      .map(
+		                        item => `
+		                          <tr>
+		                            <td>${item.product_code}</td>
+		                            <td>${item.product_name}</td>
+		                            <td>${item.quantity}</td>
+		                            <td>${item.unit_price.toLocaleString()} 원</td>
+		                            <td>${item.supply_price.toLocaleString()} 원</td>
+		                            <td>${item.tax.toLocaleString()} 원</td>
+		                            <td>${item.total_price.toLocaleString()} 원</td>
+		                          </tr>
+		                        `
+		                      )
+		                      .join('')}
+		                  </tbody>
+		                </table>
+		              </div>
+		            `;
+		            container.innerHTML += supplierSection;
+		          }
+		        } else {
+		          container.innerHTML = '<p style="text-align: center;">거래처 정보가 없습니다.</p>';
+		        }
+
+		        // 모달 열기
+		        const modal = new bootstrap.Modal(document.getElementById("detailModal"));
+		        modal.show();
+				
+				document.getElementById('modalConfirmButton').addEventListener('click', function () {
+					modal.hide(); // 모달 닫기
+				});
+		      },
+		      error: function (xhr, status, error) {
+		        alert("거래처별 상세 정보 로드 중 오류 발생: " + xhr.status + " " + error);
+		      },
+		    });
+		  }
+
+	   </script>
+  </body>>
+</html>

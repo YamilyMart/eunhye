@@ -1,5 +1,7 @@
 package com.example.yamilymart.dto;
 
+import java.sql.Date;
+
 import org.apache.ibatis.type.Alias;
 
 import lombok.Getter;
@@ -24,4 +26,7 @@ public class OrderDTO {
 	private String branch_name;
 	
 	private int count;
+
+	//우진
+	private int orderDetail_amount;
 }

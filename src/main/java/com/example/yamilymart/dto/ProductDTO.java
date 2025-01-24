@@ -17,4 +17,7 @@ public class ProductDTO {
 	
 	private String partner_name;
 
+	//우진
+	private int order_amount = 1;
+
 }

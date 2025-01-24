@@ -20,5 +20,7 @@ public class OrderDetailDTO {
 	private int product_price;
 	
 	private int stock_remain;
-
+	
+	
+	
 }
