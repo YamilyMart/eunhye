@@ -80,6 +80,53 @@
 		}
    	  
    	  </style>
+   	  
+   	  
+   	  <style>
+		  .scroll_con::-webkit-scrollbar {
+		    width: 10px;
+		  }
+		  .scroll_con::-webkit-scrollbar-thumb {
+		    background-color: grey;
+		    border-radius: 10px;
+		    background-clip: padding-box;
+		    border: 2px solid transparent;
+		  }
+		  .scroll_con::-webkit-scrollbar-track {
+		    background-color: white;
+		    border-radius: 10px;
+		    box-shadow: inset 0px 0px 5px white;
+		  }
+		  
+	      .scroll_con {
+		      height: 500px;
+		      overflow: hidden; /* 기본적으로 스크롤바 숨김 */
+		      transition: overflow 1s ease; /* 부드러운 전환 */
+	      }
+
+		    .scroll_con:hover {
+		      overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
+		    }
+		    
+		    .counter_section:hover {
+		    	  cursor : pointer;
+		    }
+		    
+		    .modal-open {
+			  overflow: hidden;
+			  width:100%;
+			}
+			
+			.modal-open::-webkit-scrollbar {
+			  display: none;
+			  overflow: hidden;
+			 
+			}
+			
+			body {
+				overflow: hidden;
+			}
+		</style>
    
    </head>
    <body class="dashboard dashboard_1">
@@ -135,7 +182,7 @@
       
       <hr style="color: black">
 
-      <div class="wrapper mt-5" id="productListContainer">
+         <div class="wrapper mt-5" id="productListContainer">
       
                            <div class="row column1">
                         <div class="col-md-12 col-lg-6">
@@ -220,7 +267,7 @@
 			            </tr>
 		            </table>
 
-					<div id="productListContainer2">
+					<div id="productListContainer2" class="scroll_con">
 					    <table class="table product-list-table">
 					        <thead>
 					            <tr>
@@ -314,6 +361,9 @@
 		    	                const modal = document.getElementById('modalContainer');
 		    	                modal.classList.remove('hidden');
 		    	                
+		    	      	        document.body.classList.add('modal-open'); // body 스크롤 비활성화
+
+		    	                
 		    	            } else {
 		    	            	alert("데이터 응답 실패");
 		    	            }
@@ -325,6 +375,36 @@
 
 	    	}
     </script>
+    
+<!--     <script>
+	    const modal = document.getElementById('modalContainer');
+	    const modalCloseButton = document.getElementById('modalCloseButton');
+	
+	    // 모달 열기
+	    function openModal() {
+	      modal.classList.remove('hidden');
+	      document.body.classList.add('modal-open'); // body 스크롤 비활성화
+	    }
+	
+	    // 모달 닫기
+	    function closeModal() {
+	      modal.classList.add('hidden');
+	      document.body.classList.remove('modal-open'); // body 스크롤 복원
+	    }
+	
+	    // 닫기 버튼 클릭 이벤트
+	    modalCloseButton.addEventListener('click', closeModal);
+	
+	    // 모달 외부 클릭 시 닫기
+	    window.addEventListener('click', (event) => {
+	      if (event.target === modal) {
+	        closeModal();
+	      }
+	    });
+
+    
+    
+    </script> -->
       
     
 
@@ -337,6 +417,8 @@
 	
 	      modalCloseButton.addEventListener('click', () => {
 	        modal.classList.add('hidden');
+		      document.body.classList.remove('modal-open'); // body 스크롤 복원
+
 	      });
 	      
 	        window.addEventListener('click', (event) => {

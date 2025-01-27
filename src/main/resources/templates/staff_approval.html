@@ -77,7 +77,7 @@
 			        var calendar = new FullCalendar.Calendar(calendarEl, {
 			          initialView: 'dayGridMonth',
 			          events: function(info, successCallback, failureCallback) {
-			        	  fetch('calendar')
+			        	  fetch('/admin/approval/calendar')
 			        	  	.then(response => response.json())
 			        	  	.then(events => {
 			        	  		const mappedEvents = events.map(event => ({
@@ -404,7 +404,7 @@
 				                           <div class="white_shd full margin_bottom_30" style="width:800px">	
 				                              <div class="table_section padding_infor_info">
 				                                 <div class="table-responsive-sm">
-				                                	<form action="addApproval" method="post" onsubmit="return pdoCheck()" enctype="multipart/form-data">
+				                                	<form action="/admin/approval/add" method="post" onsubmit="return pdoCheck()" enctype="multipart/form-data">
 				                                    <table class="table table-bordered">
 				                                       <tbody>
 				                                          <tr>
@@ -504,7 +504,7 @@
 				                           <div class="white_shd full margin_bottom_30" style="width:800px">	
 				                              <div class="table_section padding_infor_info">
 				                                 <div class="table-responsive-sm">
-				                                 <form id = "process" action="approveApproval" method="post">
+				                                 <form id = "process" action="/admin/approval/complete" method="post">
 				                                    <table class="table table-bordered">
 				                                       <tbody>
 				                                       <input type="number" id="hr_code" name="hr_code" th:value="${staff.hr_code}" hidden>
@@ -566,6 +566,7 @@
 				                                    <button type="button" class="btn cur-p btn-outline-primary" onclick="setAction('reject')" style="width: 100px; border-color: #AA041A; color: #AA041A"
 				                                         			onmouseover="this.style.backgroundColor='#AA041A'; this.style.color='white';" 
 				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#AA041A';">결재 취소</button>
+				                         							
 				                                    <button type="button" class="btn btn-danger" onclick="$('#specs').modal('hide');" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
 				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
 				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">확인</button>
@@ -753,7 +754,7 @@
 		let form = document.getElementById('process')
 		
 		if (action == 'reject') {
-			form.action = 'cancelApproval';
+			form.action = '/admin/approval/cancel';
 		}
 		form.submit(); 
 	}
@@ -776,7 +777,7 @@
 		$('#msg').empty();
 		$('#bossRow').empty();
 		$.ajax({
-			url: 'bossSearch',
+			url: '/admin/approval/bossSearch',
 			method: 'POST',
 			data:{hr_name: hr_name,
 				hr_code: hr_code},
@@ -824,7 +825,7 @@
 						
 						// Example AJAX POST request to send the `selectedUser` data
 						$.ajax({
-						    url: 'addApproval', 
+						    url: '/admin/approval/add', 
 						    method: 'POST',
 						    data: selectedUser,  // Send the selectedUser data as request parameters
 						    success: function(response) {
@@ -865,7 +866,7 @@
 		console.log("Tldldlqkf");
 		
 		$.ajax({
-			url: 'appDetail',	
+			url: '/admin/approval/detail',	
 			method: 'GET',
 			data: {app_id: app_id,
 				hr_code:hr_code},

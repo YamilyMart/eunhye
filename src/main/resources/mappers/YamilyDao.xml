@@ -301,7 +301,7 @@
     </insert>
 
 	<update id="staffEdit" parameterType="StaffDTO">
-		update hr set hr_grade = #{hr_grade}, hr_id = #{hr_id}, hr_pdo = #{hr_pdo},
+		update hr set hr_grade = #{hr_grade},hr_pdo = #{hr_pdo},
 		hr_sybname = #{hr_sybname}, hr_oriname = #{hr_oriname} where hr_code = #{hr_code}
 	</update>
 	

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -128,6 +131,7 @@ public class YamilyService {
     public ModelAndView admin_order_list() {
     	mv = new ModelAndView();
     	List<OrderDTO> list = yDao.admin_order_list();
+    	
         mv.addObject("list", list);
         mv.setViewName("admin_order_list");
 
@@ -602,7 +606,7 @@ public class YamilyService {
 	    	return mv;
 	    }
 	    
-	    public StaffDTO staffDetail(@RequestParam("hr_code")Integer hr_code) {
+	    public StaffDTO staffDetail(@RequestParam("hr_code")int hr_code) {
 	    	StaffDTO staffDetail = yDao.staffDetail(hr_code);
 	    	return staffDetail;
 	    }
@@ -686,6 +690,7 @@ public class YamilyService {
 				sDTO.setHr_oriname("default.jpg");
 	    	}
 	    	String upFile = files.get(0).getOriginalFilename();
+	    	
 	    	try {
 	    		if(!upFile.equals("")) {
 	    			fileUpload(files, session, sDTO);
@@ -738,15 +743,14 @@ public class YamilyService {
 	    	return mav;
 	    }
 	    
-	    public ModelAndView login(Map<String, String> params) {
-	        StaffDTO staff = new StaffDTO();
-	        staff = yDao.login(params);
-	        ModelAndView mav = new ModelAndView();
-	        mav.addObject("staff", staff);
-	        mav.setViewName("redirect:staff_approval?hr_code=" + staff.getHr_code());
-	        
-	        return mav;
-	    }
+		/*
+		 * public ModelAndView login(Map<String, String> params) { StaffDTO staff = new
+		 * StaffDTO(); staff = yDao.login(params); ModelAndView mav = new
+		 * ModelAndView(); mav.addObject("staff", staff);
+		 * mav.setViewName("redirect:staff_approval?hr_code=" + staff.getHr_code());
+		 * 
+		 * return mav; }
+		 */
 
 	    public List<StaffDTO> searchBoss(@RequestParam("hr_name")String hr_name, @RequestParam("hr_code")String hr_code) {
 	    	System.out.println("hr_code is::::::::::::::" +hr_code);
@@ -809,7 +813,7 @@ public class YamilyService {
 	    		System.out.println("not");
 	    	}
 	    	
-	    	return "redirect:staff_approval?hr_code="+hr_code;
+	    	return "redirect:/admin/approval/main";
 	    }
 	    
 	    public ModelAndView appList (@RequestParam("hr_code") int hr_code) {
@@ -917,7 +921,7 @@ public class YamilyService {
 	    	else {
 	    		System.out.println("You didn't write this.");
 	    	}
-	    	return "redirect:staff_approval?hr_code="+hr_code;
+	    	return "redirect:/admin/approval/main";
 	    }
 	    
 	    public String approveApproval (
@@ -940,11 +944,15 @@ public class YamilyService {
 				int b = yDao.pdoApproval(app_id);
 			}
 	    	
-	    	return "redirect:staff_approval?hr_code="+hr_code;
+	    	return "redirect:/admin/approval/main";
 	    }
 	    
 	    public List<ApprovalDTO> calendar() {
 	    	return yDao.calendar();
+	    }
+	    
+	    public int staff_get_hrCode(String username) {
+	    	return yDao.staff_get_hrCode(username);
 	    }
 
 }

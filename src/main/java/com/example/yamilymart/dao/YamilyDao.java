@@ -10,6 +10,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.example.yamilymart.dto.ApprovalDTO;
 import com.example.yamilymart.dto.BranchDTO;
@@ -286,7 +288,7 @@ public interface YamilyDao {
 	@Select("select * from hr where hr_del = 0")
 	List<StaffDTO> staffList();
 	
-	@Select("select * from hr where hr_code=#{hr_code}")
+	@Select("select * from hr where hr_code = #{hr_code}")
 	StaffDTO staffDetail(int hr_code);
 	
 	@Select("select * from hr where hr_id = #{hr_id}")
@@ -328,5 +330,8 @@ public interface YamilyDao {
 	int pdoApproval(int app_id);
 	
 	List<ApprovalDTO> calendar();
+	
+	@Select("select hr_code from hr where hr_id = #{username}")
+	int staff_get_hrCode(String username);
 
 }

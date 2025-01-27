@@ -16,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 @Configuration
 //@ComponentScan("controllers")
@@ -67,7 +69,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/hr/manage").hasRole("MANAGER") //인사관리는 매니저만 접근 가능
                 .requestMatchers("/admin/download-file/**").hasAnyRole("MANAGER", "STAFF") //인사관리는 매니저만 접근 가능
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스 허용
-                .anyRequest().authenticated() // 그 외 요청은 인증 필요
+                .anyRequest().permitAll() // 그 외 요청은 인증 필요
             )
             .formLogin(form -> form
                 .loginPage("/loginForm") // 커스텀 로그인 페이지
@@ -80,6 +82,9 @@ public class SecurityConfig {
                 .permitAll()
             )
             .userDetailsService(principalDetailsService);
+        
+        http.setSharedObject(HttpFirewall.class, allowPercentHttpFirewall());
+
 
         return http.build();
     }
@@ -100,6 +105,14 @@ public class SecurityConfig {
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    
+    @Bean
+    public HttpFirewall allowPercentHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        // % 문자를 허용
+        firewall.setAllowUrlEncodedPercent(true);
+        return firewall;
     }
 
 }

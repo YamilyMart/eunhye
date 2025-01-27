@@ -1,12 +1,13 @@
 package com.example.yamilymart.controller;
 import org.springframework.http.HttpHeaders;
 
-
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.net.FileNameMap;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +27,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -44,8 +47,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 
-
+import com.example.yamilymart.dao.YamilyDao;
 import com.example.yamilymart.dto.ApprovalDTO;
 import com.example.yamilymart.dto.BranchDTO;
 import com.example.yamilymart.dto.HrDTO;
@@ -76,6 +81,10 @@ public class YamilyController {
 
 	@Autowired
     private YamilyService yServ;
+	
+    @Autowired
+    private YamilyDao yDao;
+    
 
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
@@ -91,19 +100,13 @@ public class YamilyController {
 		return "login_form";
 	}
 
-	@GetMapping("/joinForm")
-	public String join() {
-		return "join";
-	}
-	
-	@PostMapping("/joinForm")
-	public String join(@RequestBody User user) {
-		yServ.join(user);
-		return "redirect:/loginForm";
-	}
-	
-	
-	
+	/*
+	 * @GetMapping("/joinForm") public String join() { return "join"; }
+	 * 
+	 * @PostMapping("/joinForm") public String join(@RequestBody User user) {
+	 * yServ.join(user); return "redirect:/loginForm"; }
+	 */
+		
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
 	//본사 - 발주요청목록 get
@@ -491,6 +494,9 @@ public class YamilyController {
 		// 파일 이름 추출
 		if (file != null && !file.isEmpty()) {
 			String originalFileName = file.getOriginalFilename();
+			
+			System.out.println(originalFileName);
+		
 			String safeFileName = originalFileName;
 
 			if (!isAllowedFileType(safeFileName)) {
@@ -509,6 +515,10 @@ public class YamilyController {
 				dir.mkdirs();
 			}
 			File destination = new File(dir, safeFileName);
+			
+			System.out.println(destination);
+
+			
 			file.transferTo(destination);
 		} else {
 			rttr.addFlashAttribute("errorMesssage", "파일을 업로드해야 합니다.");
@@ -545,7 +555,7 @@ public class YamilyController {
 	public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String fileName) {
 		try {
 			// 요청된 파일 이름을 URL 디코딩
-			String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
+	        String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
 
 			// 정규식으로 안전한 파일 이름 변환
 			String safeFileName = decodedFileName.replaceAll("[^a-zA-Z0-9ㄱ-ㅎ가-힣(). _-]", "_");
@@ -731,13 +741,9 @@ public class YamilyController {
 	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-		
-		@GetMapping("general_elements")
-	    public String general_elements() {
-	       
-			return "general_elements";
-	    }
 
+
+	  	//인사추가
 		@PostMapping("/admin/staff/add")
 		public String addStaff(StaffDTO sDTO, @RequestPart("files") List<MultipartFile> files,
 	    		HttpSession session) {
@@ -745,19 +751,22 @@ public class YamilyController {
 			return view;
 		}
 		
-//		@GetMapping("staff_main")
+		//@RequestParam은 검색 시에 사용???
 		@GetMapping("/admin/staff/main")
 		public ModelAndView staff_main(@RequestParam(value="hr_code", required=false)Integer hr_code, Model model) {
+			
 			if(hr_code != null) {
 				StaffDTO staffDetail = yServ.staffDetail(hr_code);
 				mv.addObject("staffDetail", staffDetail);
 			} else {
 				mv = yServ.staffList();
 			}
+			
 			mv.setViewName("staff_main");
 			return mv;
 		}
 		
+		//인사 상세조회
 		@GetMapping("/admin/staff/detail")
 		@ResponseBody
 		public ResponseEntity<Map<String, Object>> staffDetail(@RequestParam("hr_code") int hr_code) {
@@ -769,8 +778,7 @@ public class YamilyController {
 		    return ResponseEntity.ok(response);
 		}
 		 
-		
-//		@PostMapping("idSearch")
+		//인사 추가 시 아이디 중복체크
 		@PostMapping("/admin/staff/idSearch")
 		@ResponseBody
 		public ResponseEntity<Map<String, Object>> idSearch(@RequestParam("hr_id") String hr_id) {
@@ -787,6 +795,7 @@ public class YamilyController {
 		    return ResponseEntity.ok(response);
 		}
 
+		//인사 수정
 		@PostMapping("/admin/staff/edit")
 		public String staffEdit(@RequestParam("hr_code")int hr_code,
 	    		@RequestParam("hr_grade")int hr_grade,
@@ -795,11 +804,14 @@ public class YamilyController {
 	    		@RequestParam("hr_pdo")int hr_pdo,
 	    		@RequestPart("files") List<MultipartFile> files,
 	    		StaffDTO sDTO, HttpSession session) {
+			
+			//hr 테이블 수정
 			String view = yServ.staffEdit(hr_code, hr_grade, hr_id, hr_pwd, hr_pdo, files, sDTO, session);
+			
 			return view;
 		}
 		
-//		@PostMapping("staffSearch")
+		//인사목록 검색 필터
 		@PostMapping("/admin/staff/search")
 		public ModelAndView staffSearch(
 				@RequestParam(value = "del", required=false)Integer del,
@@ -820,36 +832,27 @@ public class YamilyController {
 		
 		
 		
-		//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-		
-		
-		@GetMapping("login")
-		public String login() {
-			return "login";
-		}
-		
-		@PostMapping("login")
-		public ModelAndView login(@RequestParam("hr_id") String hr_id, 
-		                          @RequestParam("hr_pwd") String hr_pwd) {
-		    Map<String, String> params = new HashMap<>();
-		    params.put("hr_id", hr_id);
-		    params.put("hr_pwd", hr_pwd);
-		    mv = yServ.login(params);
-		    System.out.println("로그인합니다잉");
-		    return mv;
-		}
-		
-		@GetMapping("staff_approval")
-		public ModelAndView staff_approval(@RequestParam("hr_code")int hr_code, Model model) {
-			System.out.println("hr_code is: " + hr_code);
+		//결재관리ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+		//내 결재관리 메인
+		@GetMapping("/admin/approval/main")
+		public ModelAndView staff_approval(Model model) {
+	
+			//시큐리티 아이디 가져오기
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String username = authentication.getName();
+	        int hr_code = yServ.staff_get_hrCode(username);
+			
+	        //인사정보
 			StaffDTO staff = yServ.staffDetail(hr_code);
-			System.out.println(staff);
+						
 			model.addAttribute("staff", staff);
 			mv = yServ.appList(hr_code);
 			return mv;
 		}
 
-		@GetMapping("calendar")
+		//캘린더
+		@GetMapping("/admin/approval/calendar")
 		@ResponseBody
 		public List<ApprovalDTO> calendar() {
 			List<ApprovalDTO> calendar = yServ.calendar();
@@ -862,7 +865,8 @@ public class YamilyController {
 		    return calendar;
 		}
 		
-		@PostMapping("bossSearch")
+		//신규 결재 추가 시 결재자 찾기
+		@PostMapping("/admin/approval/bossSearch")
 		@ResponseBody
 		public ResponseEntity<Map<String, Object>> bossSearch(@RequestParam("hr_name") String hr_name, @RequestParam("hr_code")String hr_code) {
 		    System.out.println("Searching for ID: " + hr_name);
@@ -879,7 +883,8 @@ public class YamilyController {
 		    return ResponseEntity.ok(response); 
 		}
 		
-		@PostMapping("addApproval")
+		//신규 결재 저장
+		@PostMapping("/admin/approval/add")
 		public String addApproval(@RequestParam("hr_code")int hr_code, 
 				@RequestParam("selected_hr_code")int selected_hr_code,
 				@RequestParam("approvalFile") List<MultipartFile> files,
@@ -891,7 +896,8 @@ public class YamilyController {
 			return view;
 		}
 		
-		@GetMapping("appDetail")
+		//결재 상세페이지
+		@GetMapping("/admin/approval/detail")
 		@ResponseBody
 		public ResponseEntity<Map<String, Object>> appDetail(
 				 @RequestParam("app_id") int app_id,
@@ -905,7 +911,8 @@ public class YamilyController {
 		    return ResponseEntity.ok(response);
 		}
 		
-		@PostMapping("cancelApproval")
+		//상사가 부결 시, 내가 취소시
+		@PostMapping("/admin/approval/cancel")
 		public String cancelApproval(@RequestParam("hr_code")int hr_code,
 				@RequestParam("app_id")int app_id,
 				@RequestParam(value="selected_hr_code", required=false)Integer selected_hr_code,
@@ -914,7 +921,8 @@ public class YamilyController {
 			return view;
 		}
 		
-		@PostMapping("approveApproval")
+		//결재 완료
+		@PostMapping("/admin/approval/complete")
 		public String approveApproval (
 		    		@RequestParam("hr_code")int hr_code,
 		    		@RequestParam("app_id")int app_id,
@@ -923,15 +931,6 @@ public class YamilyController {
 			return view;
 		}
 		
-		@GetMapping("calendardemo")
-		public String calendardemo(){
-			return "calendardemo";
-		}
-		
-		@GetMapping("widgets")
-		public String widgets(){
-			return "widgets";
-		}
 		
 		@Configuration
 		public class StaticResourceConfig implements WebMvcConfigurer {
@@ -945,8 +944,7 @@ public class YamilyController {
 		        registry.addResourceHandler("/uploadDoc/**")
 	            .addResourceLocations("file:/C:/images/uploadDoc/");
 		    }
-		
-	}
+		}
 
 }
 

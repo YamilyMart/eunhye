@@ -81,6 +81,36 @@
 		}
    	  
    	  </style>
+   	  
+<!--    	  <style>
+		  .scroll_con::-webkit-scrollbar {
+		    width: 10px;
+		  }
+		  .scroll_con::-webkit-scrollbar-thumb {
+		    background-color: grey;
+		    border-radius: 10px;
+		    background-clip: padding-box;
+		    border: 2px solid transparent;
+		  }
+		  .scroll_con::-webkit-scrollbar-track {
+		    background-color: white;
+		    border-radius: 10px;
+		    box-shadow: inset 0px 0px 5px white;
+		  }
+		      .scroll_con {
+		      height: 500px;
+		      overflow: hidden; /* 기본적으로 스크롤바 숨김 */
+		      transition: overflow 1s ease; /* 부드러운 전환 */
+		    }
+
+		    .scroll_con:hover {
+		      overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
+		    }
+		    
+		    .counter_section:hover {
+		    	  cursor : pointer;
+		    }
+		</style> -->
    
    </head>
    <body class="dashboard dashboard_1">
@@ -90,12 +120,14 @@
             <!-- right content -->
             <div id="content">
             	<head th:include="fragments/topbar :: topbar"></head>
-
-			<!-- 메인 내용 -->
+            	
+		        <div class="page_title" style="margin-bottom: 0px;">
+                        <h2 style="margin-bottom: 0px;">발주요청관리</h2>
+                </div>
+			  
+			  <!-- 메인 내용 -->
               <div class="main p-5">
-			      <h6>
-			         <strong>발주 요청 목록</strong>
-			      </h6>
+			             
 			      
 			  <!-- 필터 -->
 		      <form action="/admin/order/list" method="post">
@@ -224,6 +256,25 @@
          <br>
          <div></div>
          <br>
+         
+<!--    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${startPage == list.pageable.pageNumber + 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/board/list(page=${list.pageable.pageNumber - 1})}" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item" th:classappend="${num == list.pageable.pageNumber + 1} ? 'active'" th:each="num : ${#numbers.sequence(startPage, endPage)}">
+                <a class="page-link" th:href="@{/board/list(page=${num-1})}" th:text="${num}">1</a></li>
+ 
+            <li class="page-item" th:classappend="${endPage == list.pageable.pageNumber + 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/board/list(page=${list.pageable.pageNumber + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav> -->
+
+
+
+
+
       </div>
 
 		<!-- 모달 -->
@@ -271,7 +322,7 @@
 			            
 			            <input id="hid_order_status" type="hidden">
 	
-						<div id="productListContainer2">
+						<div id="productListContainer2" class="scroll_con">
 						    <table class="table product-list-table">
 						        <thead>
 						            <tr>
