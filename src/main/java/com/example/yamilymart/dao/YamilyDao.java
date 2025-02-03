@@ -30,11 +30,13 @@ import com.example.yamilymart.dto.User;
 
 @Mapper
 public interface YamilyDao {
+	
+	int countFilteredOrders(Map<String, Object> params);
 
-	@Select("select * from `order`, branch where `order`.order_sender = branch.branch_id and order.order_type = 0")
-	List<OrderDTO> admin_order_list();
+	@Select("select * from `order`, branch where `order`.order_sender = branch.branch_id and `order`.order_type = 0 ORDER BY `order`.order_date DESC LIMIT #{start}, #{pageSize}")
+	List<OrderDTO> admin_order_list(Map<String, Object> params);
 
-	List<OrderDTO> admin_order_list_search(OrderSearchDTO dto);
+	List<OrderDTO> admin_order_list_search(Map<String, Object> params);
 
     List<OrderDetailDTO> admin_order_detail(String orderDetail_orderid);
 

@@ -46,6 +46,10 @@
     
     
    	  <style>
+   	   html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+
    	    #modalOpenButton, #modalCloseButton {
 		  cursor: pointer;
 		}
@@ -122,7 +126,7 @@
             	<head th:include="fragments/topbar :: topbar"></head>
             	
 		        <div class="page_title" style="margin-bottom: 0px;">
-                        <h2 style="margin-bottom: 0px;">발주요청관리</h2>
+                   <h2 style="margin-bottom: 0px;">발주요청관리</h2>
                 </div>
 			  
 			  <!-- 메인 내용 -->
@@ -133,14 +137,14 @@
 		      <form action="/admin/order/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
-		               <th style="text-align: center; vertical-align: middle;">검색어</th>
+		               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">검색어</td>
 		               <td>		               		
 		               		<select class="form-select" style="width: 110px; display: inline-block;"><option>지점명</option></select>
 		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
                  <tr>
-               	   <th style="text-align: center; vertical-align: middle;">발주일자</th>
+               	   <td class="table-light text-center" style="text-align: center; vertical-align: middle;">발주일자</td>
 		               <td>
 		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate1" name="startDate1"> - 
 		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="endDate1" name="endDate1">
@@ -155,7 +159,7 @@
 		               </td>
                		</tr>
            			 <tr>
-			               <th style="text-align: center; vertical-align: middle;">납기일자</th>
+			               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">납기일자</td>
 			               <td>
 			               <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate2" name="startDate2"> - 
 			               <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="endDate2" name="endDate2">
@@ -170,7 +174,7 @@
 		               </td>
 		            </tr>
 		            <tr>
-		               <th style="text-align: center; vertical-align: middle;">발주상태</th>
+		               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">발주상태</td>
 		               <td>
 		               		<div style="display: inline-block;">
 			               	    <div class="form-check" style="display: inline-block; margin: 0 5px 0 0;">
@@ -237,7 +241,7 @@
 	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_delivery}]]</td>
 	                         <td style="text-align: center; vertical-align: middle;">[[${str.order_amount}]]</td>    
   	                         <td style="text-align: center; vertical-align: middle;">
-  	                         <div data-th-text="${#numbers.formatInteger(str.order_sum, 3, 'COMMA') + '원'}"></div>
+  	                         	<div data-th-text="${#numbers.formatInteger(str.order_sum, 3, 'COMMA') + '원'}"></div>
   	                         </td>    
   	                         <td style="text-align: center;">
   	                         	<th:block th:switch="${str.order_status}">
@@ -356,25 +360,61 @@
 		  	</div>
 		</div>
 		<!-- 모달 끝 -->
-
-		<!-- 
-		<div class="pagination-container">
-		    <div class="pagination">
-		        <c:if test="${startPage > 1}">
-		            <a href="${basePath}?pageNum=${startPage - 1}&pageListNum=${pageListNum}&searchType=${searchType}&searchKeyword=${searchKeyword}&startDate=${startDate}&endDate=${endDate}">&lt;</a>
-		        </c:if>
-		        <c:forEach begin="${startPage}" end="${endPage}" var="page">
-		            <a href="${basePath}?pageNum=${page}&pageListNum=${pageListNum}&searchType=${searchType}&searchKeyword=${searchKeyword}&startDate=${startDate}&endDate=${endDate}"
-		               class="${currentPage == page ? 'active' : ''}">${page}</a>
-		        </c:forEach>
-		        <c:if test="${endPage < totalPage}">
-		            <a href="${basePath}?pageNum=${endPage + 1}&pageListNum=${pageListNum}&searchType=${searchType}&searchKeyword=${searchKeyword}&startDate=${startDate}&endDate=${endDate}">&gt;</a>
-		        </c:if>
-		    </div>
-		</div>  
-		-->
-	 
-   </div>
+		
+		<!-- 페이징 -->			
+			<nav aria-label="Page navigation example" style="text-align: center; vertical-align: middle;">
+  				<ul class="pagination justify-content-center">
+			    <li class="page-item">
+			    	<a class="page-link" th:if="${currentPage > 1}" 
+				       th:href="@{/admin/order/list(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+				        &lt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage <= 1}" 
+				       href="#" tabindex="-1" aria-disabled="true">
+				        &lt;
+				    </a>
+				 </li>
+			    <li class="page-item">				    
+			   		<a class="page-link" style="display: inline-block;" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
+				       th:href="@{/admin/order/list(pageNum=${page}, pageSize=${pageSize})}" 
+				       th:classappend="${currentPage == page} ? 'active' : ''" 
+				       th:text="${page}">
+				    </a>
+				</li>
+			    <li class="page-item">
+			    	<a class="page-link" th:if="${currentPage < totalPage}" 
+				       th:href="@{/admin/order/list(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+				        &gt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage >= totalPage}" 
+				       href="#" tabindex="-1" aria-disabled="true">
+				        &gt;
+				    </a>
+				</li>
+			  </ul>
+			</nav>
+			
+<!-- 			<div class="pagination-container">
+				<div class="pagination">
+					    <a th:if="${currentPage > 1}" 
+					       th:href="@{/admin/order/list(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+					        &lt;
+					    </a>
+					    
+					    <a th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
+					       th:href="@{/admin/order/list(pageNum=${page}, pageSize=${pageSize})}" 
+					       th:classappend="${currentPage == page} ? 'active' : ''" 
+					       th:text="${page}">
+					    </a>
+					    
+					    <a th:if="${currentPage < totalPage}" 
+					       th:href="@{/admin/order/list(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+					        &gt;
+					    </a>
+					</div> 
+				</div> -->
+			 
+   		</div>
                
    <!-- 메인 내용 END -->
                

@@ -21,28 +21,57 @@
         where product_id = #{product_id}
     </update>
     
-    <select id="admin_order_list_search" parameterType="OrderSearchDTO">
+    <select id="admin_order_list_search" parameterType="map">
     	select * from `order`, branch 
     	where `order`.order_sender = branch.branch_id
     	and `order`.order_type = 0
-   		<if test="keyword != ''">
+       <if test="keyword != '' and keyword != null">
    			and branch.branch_name like concat('%',#{keyword},'%')
    		</if>
-   		<if test="startDate1 != ''">
+   		<if test="startDate1 != '' and startDate1 != null">
    			and `order`.order_date &gt;= #{startDate1}
    		</if>
-   		<if test="startDate2 != ''">
+   		<if test="startDate2 != '' and startDate2 != null">
    			and `order`.order_delivery &gt;= #{startDate2}
    		</if>
-   		<if test="endDate1 != ''">
+   		<if test="endDate1 != '' and endDate1 != null">
    			and `order`.order_date &lt;= #{endDate1}
    		</if>
-   		<if test="endDate2 != ''">
+   		<if test="endDate2 != '' and endDate2 != null">
    			and `order`.order_delivery &lt;= #{endDate2}
    		</if>
-   		<if test="status != ''">
+   		<if test="status != '' and status != null">
    			and `order`.order_status = #{status}
    		</if>
+  		ORDER BY `order`.order_date DESC
+   		LIMIT #{start}, #{pageSize}
+    </select>
+    
+    <select id="countFilteredOrders" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM `order`, branch
+        WHERE `order`.order_sender = branch.branch_id
+        AND order_type = 0
+          
+       <if test="keyword != '' and keyword != null">
+   			and branch.branch_name like concat('%',#{keyword},'%')
+   		</if>
+   		<if test="startDate1 != '' and startDate1 != null">
+   			and `order`.order_date &gt;= #{startDate1}
+   		</if>
+   		<if test="startDate2 != '' and startDate2 != null">
+   			and `order`.order_delivery &gt;= #{startDate2}
+   		</if>
+   		<if test="endDate1 != '' and endDate1 != null">
+   			and `order`.order_date &lt;= #{endDate1}
+   		</if>
+   		<if test="endDate2 != '' and endDate2 != null">
+   			and `order`.order_delivery &lt;= #{endDate2}
+   		</if>
+   		<if test="status != '' and status != null">
+   			and `order`.order_status = #{status}
+   		</if>
+        
     </select>
     
     <update id="admin_order_approval">
@@ -422,6 +451,11 @@
 	<select id="calendar" resultType="ApprovalDTO">
 		select app_id, hr_code, app_title, app_datestart, app_dateend from approval where app_status = 3
 	</select>
+	
+	
+	
+	
+
     
 
 </mapper>

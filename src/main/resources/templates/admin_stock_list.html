@@ -42,6 +42,10 @@
   	  
     
    	  <style>
+   	    html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+   	  
    	    #modalOpenButtonAdd, #modalCloseButtonAdd, #modalCloseButtonUpdate {
 		  cursor: pointer;
 		}
@@ -100,16 +104,17 @@
             <div id="content">
             	<head th:include="fragments/topbar :: topbar"></head>
 
+		        <div class="page_title" style="margin-bottom: 0px;">
+                   <h2 style="margin-bottom: 0px;">재고관리</h2>
+                </div>
 
 			<!-- 메인 내용 -->
               <div class="main p-5">
-		      <h6>
-		         <strong>재고 목록</strong>
-		      </h6>
+
 		      <form action="/admin/stock/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
-		               <th>검색어</th>
+		               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">검색어</td>
 		               <td>
 		               		<select name="searchType" class="form-select" style="width: 100px; display: inline-block;">
 			                     <option value="0">상품명</option>
@@ -182,8 +187,39 @@
          <div></div>
          <br>
       </div>
-       <c:set var="basePath" value="${not empty searchKeyword or not empty searchType or not empty startDate or not empty endDate ? 'searchProduct' : 'catdog-product-list-admin'}" />
-
+      
+		<!-- 페이징 -->			
+			<nav aria-label="Page navigation example" style="text-align: center; vertical-align: middle;">
+  				<ul class="pagination justify-content-center">
+			    <li class="page-item">
+			    	<a class="page-link" th:if="${currentPage > 1}" 
+				       th:href="@{/admin/stock/list(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+				        &lt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage <= 1}" 
+				       href="#" tabindex="-1" aria-disabled="true">
+				        &lt;
+				    </a>
+				 </li>
+			    <li class="page-item">				    
+			   		<a class="page-link" style="display: inline-block;" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
+				       th:href="@{/admin/stock/list(pageNum=${page}, pageSize=${pageSize})}" 
+				       th:classappend="${currentPage == page} ? 'active' : ''" 
+				       th:text="${page}">
+				    </a>
+				</li>
+			    <li class="page-item">
+			    	<a class="page-link" th:if="${currentPage < totalPage}" 
+				       th:href="@{/admin/stock/list(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+				        &gt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage >= totalPage}" 
+				       href="#" tabindex="-1" aria-disabled="true">
+				        &gt;
+				    </a>
+				</li>
+			  </ul>
+			</nav>
 
 		 <!-- 상품등록 모달 -->
 		 <div id="modalContainerAdd" class="hidden">

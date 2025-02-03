@@ -12,7 +12,16 @@ background-color: #04AA6D;
 .table-responsive-sm {
     margin-top: 20px;  /* Optional: Adds spacing between the image and the table */
 }
+html, body {
+    font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+}
+
 </style>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}"> 
+   	  
 </head>
 <body>
  <body class="dashboard dashboard_1">
@@ -23,8 +32,82 @@ background-color: #04AA6D;
             <div id="content">
             	<head th:include="fragments/topbar :: topbar"></head>
             	
+            	<div class="page_title" style="margin-bottom: 0px;">
+                   <h2 style="margin-bottom: 0px;">인사관리</h2>
+                </div>
+                              
+                <div class="main p-5">
+                     <form action="/admin/staff/search" method="POST">
+                              <table class="table table-bordered">
+                                 <tbody>
+                                 <input type="text" value="0" name="del" hidden>
+                                    <tr>
+                                       <td class="table-light text-center" style="text-align: center; vertical-align: middle;">이름</td>
+                                       <td><input class="form-control" style="width: 200px;" type="text" id="staff_search" name="staff_search"></td>
+                                    </tr>
+                                    <tr>
+                                       <td class="table-light text-center" style="text-align: center; vertical-align: middle;">권한</td>
+                                       <td style="padding: 10px 0 0 10px;">
+	                                       <input type="radio" id="master" name="grade" value="0">
+	                                       <label for="master">마스터</label>
+	                                       &emsp;
+	                                       <input type="radio" id="admin" name="grade" value="1">
+	                                       <label for="admin">관리자</label>
+	                                       &emsp;
+	                                       <input type="radio" id="staff" name="grade" value="2">
+	                                       <label for="staff">일반 staff</label>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td class="table-light text-center" style="text-align: center; vertical-align: middle;">입사 날짜</td>
+                                       <td>
+                                       <input class="form-control" style="width: 200px; display: inline-block;" type="date" id="start" name="start">
+                                       &emsp;
+                                       ~
+                                       &emsp;
+                                       <input class="form-control" style="width: 200px; display: inline-block;" type="date" id="end" name="end">
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td class="table-light text-center" style="text-align: center; vertical-align: middle;">직급</td>
+                                       <td>
+                                       <select class="form-select" data-toggle="dropdown" name="auth" id="auth" style="width: 200px; display: inline-block;">
+                                       		<option value="">선택</option>
+                                     		<option value="1">staff</option>
+                                     		<option value="2">assistant manager</option>
+                                     		<option value="3">manager</option>
+                                     		<option value="4">team leader</option>
+                                     		<option value="5">executive</option>
+                                     		<option value="6">vice president</option>
+                                       		<option value="7">president</option>
+                                       </select>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+<!--                               <div style="text-align: right">
+                  			<button type="reset" class="btn cur-p btn-primary" style="width: 200px; background-color: #6c757d; border-color: #6c757d">초기화</button>
+                  			<button type="submit" class="btn cur-p btn-outline-primary" style="width: 200px; border-color: #04AA6D; color: #04AA6D"
+                  			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+  							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"
+                  			>검색</button>
+                  			</div> -->
+                  			
+                  			<div style="text-align: right;">
+					            <button type="submit" class="btn btn-primary btn-sm"
+					               style="width: 70px; border-radius: 8px;">검색</button>
+					            <button type="reset" class="btn btn-secondary btn-sm"
+					               style="width: 70px; border-radius: 8px;">초기화</button>
+					         </div>
+					         
+                  	    </form>
+                  	    
+                  	    <hr style="color: black"><br>
+                  	    
+                
+            	
             	<!--main-->
-            	<div class="col-md-12" style="margin-top: 30px">
+            	<!-- <div class="col-md-12" style="margin-top: 30px">
                            <div class="white_shd full margin_bottom_30" >
                               <div class="full graph_head">
                                  <div class="heading1 margin_0">
@@ -96,7 +179,8 @@ background-color: #04AA6D;
                               </div>
                            </div>
                         </div>
-                        
+                         -->
+                                               
                         
                 <!-- first table end -->
                 
@@ -121,28 +205,28 @@ background-color: #04AA6D;
                               <div class="table_section padding_infor_info">
                                  <div class="table-responsive-sm">
                                     <table class="table table-hover">
-                                       <thead>
+                                       <thead >
                                           <tr>
-                                             <th>NO.</th>
-                                             <th>이름</th>
-                                             <th>직급</th>
-                                             <th>입사날짜</th>
-                                             <th>권한</th>
+                                             <th class="table-light">NO.</th>
+                                             <th class="table-light">이름</th>
+                                             <th class="table-light">직급</th>
+                                             <th class="table-light">입사날짜</th>
+                                             <th class="table-light">권한</th>
                                           </tr>
                                        </thead>
-                                          <tr th:each="s : ${staffList}" th:onclick="staffDetail([[${s.hr_code}]])">
-                                             <td th:text = "${s.hr_code}"></td>
-                                             <td th:text = "${s.hr_name}"></td>
-                                             <td th:if = "${s.hr_authority == 1}" th:text = "'staff'"></td> 
-                                             <td th:if = "${s.hr_authority == 2}" th:text = "'assistant manager'"></td>
-                                             <td th:if = "${s.hr_authority == 3}" th:text = "'manager'"></td>
-                                             <td th:if = "${s.hr_authority == 4	}" th:text = "'team leader'"></td>
-                                             <td th:if = "${s.hr_authority == 5	}" th:text = "'executive'"></td>
-                                             <td th:if = "${s.hr_authority == 6	}" th:text = "'vice president'"></td>
-                                             <td th:if = "${s.hr_authority == 7	}" th:text = "'president'"></td>
-                                      		 <td th:text = "${s.hr_joindate}"></td>
-                                             <td th:if = "${s.hr_grade == 1	}" th:text = "'관리자'"></td>
-                                             <td th:if = "${s.hr_grade == 2	}" th:text = "'일반 staff'"></td>
+                                          <tr th:each="s : ${staffList}" th:onclick="staffDetail([[${s.hr_code}]])" style="vertical-align: middle; padding: 20px;">
+                                             <td th:text = "${s.hr_code}" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:text = "${s.hr_name}" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_authority == 1}" th:text = "'staff'" style="vertical-align: middle; padding: 12px;"></td> 
+                                             <td th:if = "${s.hr_authority == 2}" th:text = "'assistant manager'" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_authority == 3}" th:text = "'manager'" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_authority == 4	}" th:text = "'team leader'" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_authority == 5	}" th:text = "'executive'" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_authority == 6	}" th:text = "'vice president'" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_authority == 7	}" th:text = "'president'" style="vertical-align: middle; padding: 12px;"></td>
+                                      		 <td th:text = "${s.hr_joindate}" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_grade == 1	}" th:text = "'관리자'" style="vertical-align: middle; padding: 12px;"></td>
+                                             <td th:if = "${s.hr_grade == 2	}" th:text = "'일반 staff'" style="vertical-align: middle; padding: 12px;"></td>
                                           </tr>
                                           </th:block> 
                                        </tbody>
@@ -157,13 +241,24 @@ background-color: #04AA6D;
                   <!-- model popup -->
          <!-- The Modal -->
          <div class="modal fade" id="myModal">
-            <div class="modal-dialog" style="max-width: 900px">
-               <div class="modal-content">
+            <div class="modal-dialog" style="max-width: 900px; margin: 100px auto;">
+               <div class="modal-content" style="border-radius: 10px;">
                   <!-- Modal Header -->
-                  <div class="modal-header">
+                  
+                  
+<!--                   <div class="modal-header">
                      <h4 class="modal-title">직원 추가</h4>
                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                  </div>
+                  </div> -->
+                  
+                  <!-- 직원추가 -->
+                <div style="background-color: #04AA6D; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">직원추가</h4>
+			  		<button type="button" id="modalCloseButtonAdd" class="btn-close" data-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+			  	
+<!-- 		    	<div style="padding: 30px;">
+ -->                  
                   <!-- Modal body -->
                   <div class="modal-body">
                      <div class="col-md-6">
@@ -243,13 +338,16 @@ background-color: #04AA6D;
          <!-- end modal popup --
          <!-- modal popup for id-->
           <div class="modal fade" id="idCheck">
-            <div class="modal-dialog">
-               <div class="modal-content">
+            <div class="modal-dialog" style="margin: 100px auto;">
+               <div class="modal-content" style="border-radius: 10px;">
                   <!-- Modal Header -->
-                  <div class="modal-header">
-                     <h4 class="modal-title">아이디 검색</h4>
-                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                  </div>
+                  
+                  <!-- 아이디검색 -->
+                <div style="background-color: #0D6EFD; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 92%; color: white; font-size: 15px;">아이디검색</h4>
+			  		<button type="button" id="modalCloseButtonAdd" class="btn-close" data-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+			  	
                   <!-- Modal body -->
                   <div class="modal-body">
                      <div class="col-md-6">
@@ -299,13 +397,18 @@ background-color: #04AA6D;
          <!-- modal popup -->
          <!-- The Modal -->  
          <div class="modal fade" id="staffDetail" aria-labelledby="staffDetailLabel">
-            <div class="modal-dialog" style="max-width: 800px; margin: auto;">
-               <div class="modal-content">
+            <div class="modal-dialog" style="max-width: 800px; margin: 100px auto;">
+               <div class="modal-content" style="border-radius: 10px;">
                   <!-- Modal Header -->
-                  <div class="modal-header">
-                     <h4 class="modal-title">인사 정보</h4>
-                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
+                  
+                <!-- 인사정보 -->
+                <div style="background-color: #8B393B; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">인사정보</h4>
+			  		<button type="button" id="modalCloseButtonAdd" class="btn-close" data-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+                  
+                  
+                  
                   <div class="modal-footer" style="text-align: center">
                     <button type="button" class="btn cur-p btn-primary" data-toggle="modal" style="background-color: #9D3CC3; border-color: #9D3CC3"data-target="#staffEdit" id="editButton" onclick="staffEdit($(this).data('hr-code'))">수정</button>
                   </div>
@@ -372,13 +475,18 @@ background-color: #04AA6D;
          <!-- end model popup -->
          <!-- edit Modal open -->
          <div class="modal fade" id="staffEdit" aria-labelledby="staffEditLabel">
-            <div class="modal-dialog" style="max-width: 800px; margin: auto;">
-               <div class="modal-content">
+            <div class="modal-dialog" style="max-width: 800px; margin: 100px auto;">
+               <div class="modal-content" style="border-radius: 10px;">
                   <!-- Modal Header -->
-                  <div class="modal-header">
-                     <h4 class="modal-title">인사 정보 수정</h4>
-                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
+                  
+                  <!-- 직원수정 -->
+                <div style="background-color: #9D3CC3; border-radius: 10px 10px 0 0; padding: 15px; text-align: left; float: center;">
+			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">인사수정</h4>
+			  		<button type="button" id="modalCloseButtonAdd" class="btn-close" data-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
+			  	</div>
+                  
+                  
+                  
                   <!-- Modal body -->
                   <div class="modal-body">
                      <div class="col-md-6">
@@ -467,6 +575,9 @@ background-color: #04AA6D;
          
          <!-- edit Modal end -->
 	</div>
+	
+	                        </div>
+	
 	<!-- main end -->
 	<script>
 	function valForm() {

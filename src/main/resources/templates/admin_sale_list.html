@@ -46,6 +46,11 @@
     
     
    	  <style>
+   	  
+   	    html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+		
    	    #modalOpenButton, #modalCloseButton {
 		  cursor: pointer;
 		}
@@ -136,25 +141,26 @@
             <!-- right content -->
             <div id="content">
             	<head th:include="fragments/topbar :: topbar"></head>
+           		
+           		<div class="page_title" style="margin-bottom: 0px;">
+                   <h2 style="margin-bottom: 0px;">매출관리</h2>
+                </div>
 
 			<!-- 메인 내용 -->
               <div class="main p-5">
-			      <h6>
-			         <strong>매출 목록</strong>
-			      </h6>
 			      
 			  <!-- 필터 -->
 		      <form action="/admin/sale/list" method="post">
 		         <table class="table table-bordered">
 		            <tr>
-		               <th style="text-align: center; vertical-align: middle;">검색어</th>
+		               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">검색어</td>
 		               <td>		               		
 		               		<select class="form-select" style="width: 110px; display: inline-block;"><option>지점명</option></select>
 		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		             </tr>
                	  <tr>
-               	   <th style="text-align: center; vertical-align: middle;">날짜</th>
+               	   <td class="table-light text-center" style="text-align: center; vertical-align: middle;">날짜</td>
 		               <td>
 		                <input type="date" value="0" id="startDate1" class="form-control" style="width: 200px; display: inline-block;" name="startDate"> - 
 		                <input type="date" value="0" id="endDate1" class="form-control" style="width: 200px; display: inline-block;" name="endDate">

@@ -111,15 +111,21 @@ public class YamilyController {
 
 	//본사 - 발주요청목록 get
 	@GetMapping("/admin/order/list")
-    public ModelAndView admin_order_list(){
-        mv = yServ.admin_order_list();
+    public ModelAndView admin_order_list(
+    		@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,   // 현재 페이지 번호
+    	    @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+	    log.info("admin_ProductOrder_List() - pageNum: {}, pageSize: {}", pageNum, pageSize);
+
+        mv = yServ.admin_order_list(pageNum, pageSize);
         return mv;
     }
 
 	//본사 - 발주요청목록검색
 	@PostMapping("/admin/order/list")
-    public ModelAndView admin_order_list_search(OrderSearchDTO dto){
-        mv = yServ.admin_order_list_search(dto);
+    public ModelAndView admin_order_list_search(OrderSearchDTO dto, 
+    		@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        mv = yServ.admin_order_list_search(dto, pageNum, pageSize);
         return mv;
     }
 

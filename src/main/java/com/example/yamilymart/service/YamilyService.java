@@ -64,11 +64,7 @@ public class YamilyService {
     	user.setRole("ROLE_USER");
         yDao.userSave(user);
         return "redirect:/loginForm";
-    }
-    
-    
-    
-    
+    }    
 
     public ModelAndView admin_main() {
     	mv = new ModelAndView();
@@ -104,33 +100,44 @@ public class YamilyService {
         return mv;
     }
 
-    public ModelAndView login() {
-   	   mv = new ModelAndView();
-       mv.setViewName("login");
+    
+      
+	
 
-       return mv;
-   }
+    
+    
+    
+    
 
-    public ModelAndView yamily_login() {
-    	   mv = new ModelAndView();
-        mv.setViewName("login");
+    public ModelAndView admin_order_list(int pageNum, int pageSize) {
+    	
+    	Map<String, Object> params = new HashMap<>();
+	    params.put("order_id", null); // 검색 조건 없음
+	    params.put("order_manager", null);
+	    params.put("searchType", null);
+	    params.put("startDate", null);
+	    params.put("endDate", null);
+	    params.put("start", (pageNum - 1) * pageSize);
+	    params.put("pageSize", pageSize);
 
-        return mv;
-    }
+	    // 전체 데이터 개수 조회
+	    int totalCount = yDao.countFilteredOrders(params);
+	    
+	    List<OrderDTO> list = yDao.admin_order_list(params);
 
-    public ModelAndView login_submit() {
-      	 mv = new ModelAndView();
+	    // 페이지 관련 계산
+	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
 
-     	//int a = yDao.admin_stock_product_add(pdto);
+	    mv = new ModelAndView();
 
-         mv.setViewName("admin_main");
-
-          return mv;
-      }
-
-    public ModelAndView admin_order_list() {
-    	mv = new ModelAndView();
-    	List<OrderDTO> list = yDao.admin_order_list();
+	    mv.addObject("currentPage", pageNum);
+	    mv.addObject("pageSize", pageSize);
+	    mv.addObject("totalCount", totalCount);
+	    mv.addObject("totalPage", totalPage);
+	    mv.addObject("startPage", startPage); // 추가
+	    mv.addObject("endPage", endPage); 
     	
         mv.addObject("list", list);
         mv.setViewName("admin_order_list");
@@ -138,9 +145,28 @@ public class YamilyService {
         return mv;
     }
 
-    public ModelAndView admin_order_list_search(OrderSearchDTO dto) {
+    public ModelAndView admin_order_list_search(OrderSearchDTO dto, int pageNum, int pageSize) {    	
+		Map<String, Object> params = new HashMap<>();
+	    params.put("keyword", dto.getKeyword());
+	    params.put("startDate1", dto.getStartDate1());
+	    params.put("endDat1", dto.getEndDate1());
+	    params.put("startDate2", dto.getStartDate2());
+	    params.put("endDate2", dto.getEndDate2());
+	    params.put("status", dto.getStatus());
+	    params.put("start", (pageNum - 1) * pageSize);
+	    params.put("pageSize", pageSize);
+	
+	    // 전체 데이터 개수 조회
+	    int totalCount = yDao.countFilteredOrders(params);
+    	List<OrderDTO> list = yDao.admin_order_list_search(params);
+	    
     	mv = new ModelAndView();
-    	List<OrderDTO> list = yDao.admin_order_list_search(dto);
+	
+	    mv.addObject("currentPage", pageNum);
+	    mv.addObject("pageSize", pageSize);
+	    mv.addObject("totalCount", totalCount);
+	    mv.addObject("totalPage", (int) Math.ceil((double) totalCount / pageSize));
+    	
         mv.addObject("list", list);
         mv.setViewName("admin_order_list");
 
