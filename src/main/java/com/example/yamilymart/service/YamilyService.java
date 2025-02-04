@@ -47,17 +47,8 @@ public class YamilyService {
     @Autowired
     private YamilyDao yDao;
     
-    
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-
-//    public String join(HrDTO hrDTO) {
-//    	hrDTO.setHr_pwd(bCryptPasswordEncoder.encode(hrDTO.getHr_pwd()));
-//    	hrDTO.setHr_grade(0);
-//        yDao.save(hrDTO);
-//        return "redirect:/loginForm";
-//    }
     
     public String join(User user) {
     	user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -100,72 +91,80 @@ public class YamilyService {
         return mv;
     }
 
-    
-      
-	
+//    public ModelAndView admin_order_list(int pageNum, int pageSize) {
+//    	
+//    	Map<String, Object> params = new HashMap<>();
+//	    params.put("order_id", null); // 검색 조건 없음
+//	    params.put("order_manager", null);
+//	    params.put("searchType", null);
+//	    params.put("startDate", null);
+//	    params.put("endDate", null);
+//	    params.put("start", (pageNum - 1) * pageSize);
+//	    params.put("pageSize", pageSize);
+//
+//	    // 전체 데이터 개수 조회
+//	    int totalCount = yDao.countFilteredOrders(params);
+//	    
+//	    List<OrderDTO> list = yDao.admin_order_list(params);
+//
+//	    // 페이지 관련 계산
+//	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+//	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+//	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+//
+//	    mv = new ModelAndView();
+//
+//	    mv.addObject("currentPage", pageNum);
+//	    mv.addObject("pageSize", pageSize);
+//	    mv.addObject("totalCount", totalCount);
+//	    mv.addObject("totalPage", totalPage);
+//	    mv.addObject("startPage", startPage); // 추가
+//	    mv.addObject("endPage", endPage); 
+//    	
+//        mv.addObject("list", list);
+//        mv.setViewName("admin_order_list");
+//
+//        return mv;
+//    }
 
-    
-    
-    
-    
-
-    public ModelAndView admin_order_list(int pageNum, int pageSize) {
-    	
-    	Map<String, Object> params = new HashMap<>();
-	    params.put("order_id", null); // 검색 조건 없음
-	    params.put("order_manager", null);
-	    params.put("searchType", null);
-	    params.put("startDate", null);
-	    params.put("endDate", null);
-	    params.put("start", (pageNum - 1) * pageSize);
-	    params.put("pageSize", pageSize);
-
-	    // 전체 데이터 개수 조회
-	    int totalCount = yDao.countFilteredOrders(params);
-	    
-	    List<OrderDTO> list = yDao.admin_order_list(params);
-
-	    // 페이지 관련 계산
-	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
-	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
-
-	    mv = new ModelAndView();
-
-	    mv.addObject("currentPage", pageNum);
-	    mv.addObject("pageSize", pageSize);
-	    mv.addObject("totalCount", totalCount);
-	    mv.addObject("totalPage", totalPage);
-	    mv.addObject("startPage", startPage); // 추가
-	    mv.addObject("endPage", endPage); 
-    	
-        mv.addObject("list", list);
-        mv.setViewName("admin_order_list");
-
-        return mv;
-    }
-
-    public ModelAndView admin_order_list_search(OrderSearchDTO dto, int pageNum, int pageSize) {    	
+    public ModelAndView admin_order_list_search(
+    		String keyword, String startDate1, String endDate1, 
+    		String startDate2, String endDate2, String status, 
+    		int pageNum, int pageSize) {    	
 		Map<String, Object> params = new HashMap<>();
-	    params.put("keyword", dto.getKeyword());
-	    params.put("startDate1", dto.getStartDate1());
-	    params.put("endDat1", dto.getEndDate1());
-	    params.put("startDate2", dto.getStartDate2());
-	    params.put("endDate2", dto.getEndDate2());
-	    params.put("status", dto.getStatus());
+	    params.put("keyword", keyword);
+	    params.put("startDate1", startDate1);
+	    params.put("endDate1", endDate1);
+	    params.put("startDate2", startDate2);
+	    params.put("endDate2", endDate2);
+	    params.put("status", (status != null && !status.isEmpty()) ? Integer.parseInt(status) : null);
 	    params.put("start", (pageNum - 1) * pageSize);
 	    params.put("pageSize", pageSize);
 	
 	    // 전체 데이터 개수 조회
 	    int totalCount = yDao.countFilteredOrders(params);
     	List<OrderDTO> list = yDao.admin_order_list_search(params);
+    	
+	    // 페이지 관련 계산
+	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
 	    
     	mv = new ModelAndView();
 	
 	    mv.addObject("currentPage", pageNum);
 	    mv.addObject("pageSize", pageSize);
 	    mv.addObject("totalCount", totalCount);
-	    mv.addObject("totalPage", (int) Math.ceil((double) totalCount / pageSize));
+	    mv.addObject("totalPage", totalPage);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage); 
+	    
+	    mv.addObject("keyword", keyword);
+	    mv.addObject("startDate1", startDate1);
+	    mv.addObject("endDate1", endDate1);
+	    mv.addObject("startDate2", startDate2);
+	    mv.addObject("endDate2", endDate2);
+	    mv.addObject("status", status);
     	
         mv.addObject("list", list);
         mv.setViewName("admin_order_list");
@@ -183,14 +182,40 @@ public class YamilyService {
         return dto;
     }
 
-    public ModelAndView admin_stock_list() {
-    	mv = new ModelAndView();
-    	List<StockDTO> list = yDao.admin_stock_list();
-        mv.addObject("list", list);
-        mv.setViewName("admin_stock_list");
-
-        return mv;
-    }
+//    public ModelAndView admin_stock_list(int pageNum, int pageSize) {
+//    	mv = new ModelAndView();
+//    	
+//    	Map<String, Object> params = new HashMap<>();
+////	    params.put("order_id", null); // 검색 조건 없음
+////	    params.put("order_manager", null);
+////	    params.put("searchType", null);
+////	    params.put("startDate", null);
+////	    params.put("endDate", null);
+//	    params.put("start", (pageNum - 1) * pageSize);
+//	    params.put("pageSize", pageSize);
+//
+//	    // 전체 데이터 개수 조회
+//	    int totalCount = yDao.countFilteredStock(params);
+//	    
+//    	List<StockDTO> list = yDao.admin_stock_list(params);
+//
+//	    // 페이지 관련 계산
+//	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+//	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+//	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+//
+//	    mv.addObject("currentPage", pageNum);
+//	    mv.addObject("pageSize", pageSize);
+//	    mv.addObject("totalCount", totalCount);
+//	    mv.addObject("totalPage", totalPage);
+//	    mv.addObject("startPage", startPage); // 추가
+//	    mv.addObject("endPage", endPage);
+//	    
+//        mv.addObject("list", list);
+//        mv.setViewName("admin_stock_list");
+//
+//        return mv;
+//    }
 
 
     public ModelAndView admin_order_approval(int approval_type, String order_id) {
@@ -209,9 +234,35 @@ public class YamilyService {
         return mv;
     }
 
-    public ModelAndView admin_stock_list_search(int searchType, String keyword) {
+    public ModelAndView admin_stock_list_search(String searchType, String keyword, int pageNum, int pageSize) {
     	mv = new ModelAndView();
-    	List<StockDTO> list = yDao.admin_stock_list_search(searchType, keyword);
+    	    	
+    	Map<String, Object> params = new HashMap<>();
+	    params.put("searchType", (searchType != null && !searchType.isEmpty()) ? Integer.parseInt(searchType) : null);
+	    params.put("keyword", keyword);
+	    params.put("start", (pageNum - 1) * pageSize);
+	    params.put("pageSize", pageSize);
+
+	    // 전체 데이터 개수 조회
+	    int totalCount = yDao.countFilteredStock(params);
+	    
+    	List<StockDTO> list = yDao.admin_stock_list_search(params);
+
+	    // 페이지 관련 계산
+	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+
+	    mv.addObject("currentPage", pageNum);
+	    mv.addObject("pageSize", pageSize);
+	    mv.addObject("totalCount", totalCount);
+	    mv.addObject("totalPage", totalPage);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage); 
+	    
+	    mv.addObject("searchType", searchType);
+	    mv.addObject("keyword", keyword);
+
         mv.addObject("list", list);
         mv.setViewName("admin_stock_list");
 
@@ -277,16 +328,45 @@ public class YamilyService {
         return mv;
     }
 
-    public ModelAndView admin_sale_list() {
+    public ModelAndView admin_sale_list(String keyword, String startDate, String endDate, int pageNum, int pageSize) {
    	   mv = new ModelAndView();
-   	   List<SaleDTO> list = yDao.admin_sale_list();
+	
+   	    Map<String, Object> params = new HashMap<>();
+	    params.put("keyword", keyword);
+	    params.put("startDate", startDate);
+	    params.put("endDate", endDate);
+	    params.put("start", (pageNum - 1) * pageSize);
+	    params.put("pageSize", pageSize);
 
-       int count = list.size();
+	    // 전체 데이터 개수 조회
+	    int totalCount = yDao.countFilteredSale(params);
+	    
+	   	List<SaleDTO> list = yDao.admin_sale_list_search(params);
+
+	    // 페이지 관련 계산
+	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+
+	    mv.addObject("currentPage", pageNum);
+	    mv.addObject("pageSize", pageSize);
+	    mv.addObject("totalCount", totalCount);
+	    mv.addObject("totalPage", totalPage);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage);
+	    
+	    mv.addObject("keyword", keyword);
+	    mv.addObject("startDate", startDate);
+	    mv.addObject("endDate", endDate);
+	    
+	   	List<SaleDTO> list2 = yDao.admin_sale_list(params);
+
+       int count = list2.size();
        int sum = 0;
 
        //총 매출 계산하기
        for(int i=0; i<count; i++) {
-    	   SaleDTO dto = list.get(i);
+    	   SaleDTO dto = list2.get(i);
 			sum += dto.getSale_sum();
        }
 
@@ -298,26 +378,52 @@ public class YamilyService {
        return mv;
    }
 
-    public ModelAndView admin_sale_list_search(String keyword, String starDate, String endDate) {
-    	mv = new ModelAndView();
-    	List<SaleDTO> list = yDao.admin_sale_list_search(keyword, starDate, endDate);
-
-        int count = list.size();
-        int sum = 0;
-
-        //총 매출 계산하기
-        for(int i=0; i<count; i++) {
-     	   SaleDTO dto = list.get(i);
- 			sum += dto.getSale_sum();
-        }
-
-        mv.addObject("list", list);
-        mv.addObject("count", count);
-        mv.addObject("sum", sum);
-        mv.setViewName("admin_sale_list");
-
-        return mv;
-    }
+//    public ModelAndView admin_sale_list_search(String keyword, String startDate, String endDate, int pageNum, int pageSize) {
+//    	mv = new ModelAndView();
+//
+//   	    Map<String, Object> params = new HashMap<>();
+//	    params.put("keyword", keyword); // 검색 조건 없음
+//	    params.put("startDate", startDate);
+//	    params.put("endDate", endDate);
+//	    params.put("start", (pageNum - 1) * pageSize);
+//	    params.put("pageSize", pageSize);
+//
+//	    // 전체 데이터 개수 조회
+//	    int totalCount = yDao.countFilteredSale(params);
+//	    
+//    	List<SaleDTO> list = yDao.admin_sale_list_search(params);
+//
+//	    // 페이지 관련 계산
+//	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+//	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
+//	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+//
+//	    mv.addObject("currentPage", pageNum);
+//	    mv.addObject("pageSize", pageSize);
+//	    mv.addObject("totalCount", totalCount);
+//	    mv.addObject("totalPage", totalPage);
+//	    mv.addObject("startPage", startPage);
+//	    mv.addObject("endPage", endPage);
+//	    mv.addObject("keyword", keyword);
+//	    mv.addObject("startDate", startDate);
+//	    mv.addObject("endDate", endDate);
+//
+//        int count = list.size();
+//        int sum = 0;
+//
+//        //총 매출 계산하기
+//        for(int i=0; i<count; i++) {
+//     	   SaleDTO dto = list.get(i);
+// 			sum += dto.getSale_sum();
+//        }
+//
+//        mv.addObject("list", list);
+//        mv.addObject("count", count);
+//        mv.addObject("sum", sum);
+//        mv.setViewName("admin_sale_list");
+//
+//        return mv;
+//    }
 
     public List<SaleDTO> admin_sale_detail(String sale_branchid, String sale_date) {
     	List<SaleDTO> dto = yDao.admin_sale_detail(sale_branchid, sale_date);

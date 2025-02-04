@@ -55,6 +55,7 @@
 		}
 		
 		#modalContainer {
+	      z-index: 2000 !important;
 		  width: 100%;
 		  height: 100%;
 		  position: fixed;
@@ -70,7 +71,7 @@
 		  position: absolute;
 		  background-color: #ffffff;
 		  width: 900px;
-		  height: 700px;
+		  height: 780px;
 		  border-radius: 10px;
 		  
 		}
@@ -86,7 +87,7 @@
    	  
    	  </style>
    	  
-<!--    	  <style>
+   	  <style>
 		  .scroll_con::-webkit-scrollbar {
 		    width: 10px;
 		  }
@@ -101,11 +102,12 @@
 		    border-radius: 10px;
 		    box-shadow: inset 0px 0px 5px white;
 		  }
-		      .scroll_con {
-		      height: 500px;
+		  
+	      .scroll_con {
+		      height: 330px;
 		      overflow: hidden; /* 기본적으로 스크롤바 숨김 */
 		      transition: overflow 1s ease; /* 부드러운 전환 */
-		    }
+	      }
 
 		    .scroll_con:hover {
 		      overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
@@ -114,7 +116,22 @@
 		    .counter_section:hover {
 		    	  cursor : pointer;
 		    }
-		</style> -->
+		    
+		    .modal-open {
+			  overflow: hidden;
+			  width:100%;
+			}
+			
+			.modal-open::-webkit-scrollbar {
+			  display: none;
+			  overflow: hidden;
+			 
+			}
+			
+			body {
+				overflow: hidden;
+			}
+		</style>
    
    </head>
    <body class="dashboard dashboard_1">
@@ -140,14 +157,14 @@
 		               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">검색어</td>
 		               <td>		               		
 		               		<select class="form-select" style="width: 110px; display: inline-block;"><option>지점명</option></select>
-		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
+		               		<input th:value="${keyword}" type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
                  <tr>
                	   <td class="table-light text-center" style="text-align: center; vertical-align: middle;">발주일자</td>
 		               <td>
-		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate1" name="startDate1"> - 
-		                <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="endDate1" name="endDate1">
+		                <input th:value="${startDate1}" type="date" class="form-control" style="width: 200px; display: inline-block;" id="startDate1" name="startDate1"> - 
+		                <input th:value="${endDate1}" type="date" class="form-control" style="width: 200px; display: inline-block;" id="endDate1" name="endDate1">
 		                  <!-- 
 		                  <div class="date-buttons" style="display: inline-block;">
 		                     <button type="button" onclick="setDate(-1)">1일</button>
@@ -161,8 +178,8 @@
            			 <tr>
 			               <td class="table-light text-center" style="text-align: center; vertical-align: middle;">납기일자</td>
 			               <td>
-			               <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="startDate2" name="startDate2"> - 
-			               <input type="date" class="form-control" style="width: 200px; display: inline-block;" value="0" id="endDate2" name="endDate2">
+			               <input th:value="${startDate2}" type="date" class="form-control" style="width: 200px; display: inline-block;" id="startDate2" name="startDate2"> - 
+			               <input th:value="${endDate2}" type="date" class="form-control" style="width: 200px; display: inline-block;" id="endDate2" name="endDate2">
                   <!-- 
                   <div class="date-buttons" style="display: inline-block;">
                      <button type="button" onclick="setDate(-1)">1일</button>
@@ -258,26 +275,50 @@
             </tbody>
          </table>
          <br>
-         <div></div>
          <br>
-         
-<!--    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${startPage == list.pageable.pageNumber + 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/board/list(page=${list.pageable.pageNumber - 1})}" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item" th:classappend="${num == list.pageable.pageNumber + 1} ? 'active'" th:each="num : ${#numbers.sequence(startPage, endPage)}">
-                <a class="page-link" th:href="@{/board/list(page=${num-1})}" th:text="${num}">1</a></li>
- 
-            <li class="page-item" th:classappend="${endPage == list.pageable.pageNumber + 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/board/list(page=${list.pageable.pageNumber + 1})}">Next</a>
-            </li>
-        </ul>
-    </nav> -->
 
-
-
-
+            <!-- 페이징 -->			
+			<nav aria-label="Page navigation example" style="text-align: center; vertical-align: middle;">
+  				<ul class="pagination justify-content-center">
+  				
+			    <li class="page-item">
+			    	<a class="page-link" th:if="${currentPage > 1}" 
+				       th:href="@{/admin/order/list(pageNum=${currentPage - 1}, pageSize=${pageSize}, 
+				       keyword=${keyword}, startDate1=${startDate1}, endDate1=${endDate1},
+				       startDate2=${startDate2}, endDate2=${endDate2}, status=${status})}">
+				        &lt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage <= 1}" 
+				       href="#" tabindex="-1" aria-disabled="true">
+				        &lt;
+				    </a>
+				 </li>
+				 
+			    <li class="page-item">				    
+			   		<a class="page-link" style="display: inline-block;" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
+					   th:href="@{/admin/order/list(pageNum=${page}, pageSize=${pageSize}, 
+				       keyword=${keyword}, startDate1=${startDate1}, endDate1=${endDate1},
+				       startDate2=${startDate2}, endDate2=${endDate2}, status=${status})}"
+				       th:classappend="${currentPage == page} ? 'active' : ''" 
+				       th:text="${page}">
+				    </a>
+				</li>
+				
+			    <li class="page-item">
+  			    	<a class="page-link" th:if="${currentPage < totalPage}" 
+				       th:href="@{/admin/order/list(pageNum=${currentPage + 1}, pageSize=${pageSize}, 
+				       keyword=${keyword}, startDate1=${startDate1}, endDate1=${endDate1},
+				       startDate2=${startDate2}, endDate2=${endDate2}, status=${status})}">
+				        &gt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage >= totalPage}" 
+				       href="#" tabindex="-1" aria-disabled="true">
+				        &gt; 
+				    </a>
+				</li>
+				
+			  </ul>
+			</nav>
 
       </div>
 
@@ -360,59 +401,7 @@
 		  	</div>
 		</div>
 		<!-- 모달 끝 -->
-		
-		<!-- 페이징 -->			
-			<nav aria-label="Page navigation example" style="text-align: center; vertical-align: middle;">
-  				<ul class="pagination justify-content-center">
-			    <li class="page-item">
-			    	<a class="page-link" th:if="${currentPage > 1}" 
-				       th:href="@{/admin/order/list(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
-				        &lt;
-				    </a>
-				    <a class="page-link" th:if="${currentPage <= 1}" 
-				       href="#" tabindex="-1" aria-disabled="true">
-				        &lt;
-				    </a>
-				 </li>
-			    <li class="page-item">				    
-			   		<a class="page-link" style="display: inline-block;" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
-				       th:href="@{/admin/order/list(pageNum=${page}, pageSize=${pageSize})}" 
-				       th:classappend="${currentPage == page} ? 'active' : ''" 
-				       th:text="${page}">
-				    </a>
-				</li>
-			    <li class="page-item">
-			    	<a class="page-link" th:if="${currentPage < totalPage}" 
-				       th:href="@{/admin/order/list(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
-				        &gt;
-				    </a>
-				    <a class="page-link" th:if="${currentPage >= totalPage}" 
-				       href="#" tabindex="-1" aria-disabled="true">
-				        &gt;
-				    </a>
-				</li>
-			  </ul>
-			</nav>
-			
-<!-- 			<div class="pagination-container">
-				<div class="pagination">
-					    <a th:if="${currentPage > 1}" 
-					       th:href="@{/admin/order/list(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
-					        &lt;
-					    </a>
-					    
-					    <a th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
-					       th:href="@{/admin/order/list(pageNum=${page}, pageSize=${pageSize})}" 
-					       th:classappend="${currentPage == page} ? 'active' : ''" 
-					       th:text="${page}">
-					    </a>
-					    
-					    <a th:if="${currentPage < totalPage}" 
-					       th:href="@{/admin/order/list(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
-					        &gt;
-					    </a>
-					</div> 
-				</div> -->
+
 			 
    		</div>
                

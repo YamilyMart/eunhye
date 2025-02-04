@@ -69,7 +69,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/hr/manage").hasRole("MANAGER") //인사관리는 매니저만 접근 가능
                 .requestMatchers("/admin/download-file/**").hasAnyRole("MANAGER", "STAFF") //인사관리는 매니저만 접근 가능
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스 허용
-                .anyRequest().permitAll() // 그 외 요청은 인증 필요
+                .anyRequest().authenticated() // 그 외 요청은 인증 필요
             )
             .formLogin(form -> form
                 .loginPage("/loginForm") // 커스텀 로그인 페이지

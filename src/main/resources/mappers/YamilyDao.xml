@@ -25,24 +25,26 @@
     	select * from `order`, branch 
     	where `order`.order_sender = branch.branch_id
     	and `order`.order_type = 0
+    	
        <if test="keyword != '' and keyword != null">
    			and branch.branch_name like concat('%',#{keyword},'%')
    		</if>
    		<if test="startDate1 != '' and startDate1 != null">
-   			and `order`.order_date &gt;= #{startDate1}
+   			and date(`order`.order_date) &gt;= #{startDate1}
    		</if>
    		<if test="startDate2 != '' and startDate2 != null">
-   			and `order`.order_delivery &gt;= #{startDate2}
+   			and date(`order`.order_delivery) &gt;= #{startDate2}
    		</if>
    		<if test="endDate1 != '' and endDate1 != null">
-   			and `order`.order_date &lt;= #{endDate1}
+   			and date(`order`.order_date) &lt;= #{endDate1}
    		</if>
    		<if test="endDate2 != '' and endDate2 != null">
-   			and `order`.order_delivery &lt;= #{endDate2}
+   			and date(`order`.order_delivery) &lt;= #{endDate2}
    		</if>
    		<if test="status != '' and status != null">
    			and `order`.order_status = #{status}
    		</if>
+   		
   		ORDER BY `order`.order_date DESC
    		LIMIT #{start}, #{pageSize}
     </select>
@@ -57,16 +59,16 @@
    			and branch.branch_name like concat('%',#{keyword},'%')
    		</if>
    		<if test="startDate1 != '' and startDate1 != null">
-   			and `order`.order_date &gt;= #{startDate1}
+   			and date(`order`.order_date) &gt;= #{startDate1}
    		</if>
    		<if test="startDate2 != '' and startDate2 != null">
-   			and `order`.order_delivery &gt;= #{startDate2}
+   			and date(`order`.order_delivery) &gt;= #{startDate2}
    		</if>
    		<if test="endDate1 != '' and endDate1 != null">
-   			and `order`.order_date &lt;= #{endDate1}
+   			and date(`order`.order_date) &lt;= #{endDate1}
    		</if>
    		<if test="endDate2 != '' and endDate2 != null">
-   			and `order`.order_delivery &lt;= #{endDate2}
+   			and date(`order`.order_delivery) &lt;= #{endDate2}
    		</if>
    		<if test="status != '' and status != null">
    			and `order`.order_status = #{status}
@@ -94,7 +96,7 @@
         </foreach>
     </update>
     
-    <select id="admin_stock_list_search">
+    <select id="admin_stock_list_search" parameterType="map">
     	select * from `stock`, `product` 
     	where stock.stock_productid = product.product_id 
     	and stock.stock_type = 1
@@ -104,6 +106,23 @@
    		<if test="searchType == 1">
    			and product.product_id like concat('%',#{keyword},'%')
    		</if>
+   		ORDER BY `stock`.stock_id DESC
+   		LIMIT #{start}, #{pageSize}
+    </select>
+    
+    <select id="countFilteredStock" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM `stock`, `product`
+        where stock.stock_productid = product.product_id 
+        and stock_type = 1 and stock_del = 0
+          
+   		<if test="searchType == 0">
+   			and product.product_name like concat('%',#{keyword},'%')
+   		</if>
+   		<if test="searchType == 1">
+   			and product.product_id like concat('%',#{keyword},'%')
+   		</if>
+        
     </select>
     
     
@@ -124,7 +143,7 @@
 		and stock.stock_type = 1;
     </select>
     
-    <select id="admin_sale_list">
+     <select id="admin_sale_list" parameterType="map">
 		select 
 		    SUM(sale.sale_sum) as sale_sum, 
 		    sale.sale_branchid, 
@@ -137,14 +156,23 @@
 		    branch 
 		on 
 		    branch.branch_id = sale.sale_branchid
+		    <if test="keyword != '' and keyword != null">
+	   			and branch.branch_name like concat('%',#{keyword},'%')
+	   		</if>
+	   		<if test="startDate != '' and startDate != null">
+	   			and date(sale.sale_date) &gt;= #{startDate}
+	   		</if>
+	   		<if test="endDate != '' and endDate != null">
+	   			and date(sale.sale_date) &lt;= #{endDate}
+	   		</if>
 		group by
 		    DATE(sale.sale_date), 
 		    sale.sale_branchid, 
-		    branch.branch_name, 
-		    branch.branch_id;
+		    branch.branch_name,
+		    branch.branch_id
     </select>
     
-    <select id="admin_sale_list_search">
+    <select id="admin_sale_list_search" parameterType="map">
     	select 
 		    SUM(sale.sale_sum) AS sale_sum, 
 		    sale.sale_branchid, 
@@ -157,20 +185,45 @@
 		    branch 
 		on 
 		    branch.branch_id = sale.sale_branchid
-		    <if test="keyword != ''">
+		    <if test="keyword != '' and keyword != null">
 	   			and branch.branch_name like concat('%',#{keyword},'%')
 	   		</if>
-	   		<if test="startDate != ''">
-	   			and sale.sale_date &gt;= #{startDate}
+	   		<if test="startDate != '' and startDate != null">
+	   			and date(sale.sale_date) &gt;= #{startDate}
 	   		</if>
-	   		<if test="endDate != ''">
-	   			and sale.sale_date &lt;= #{endDate}
+	   		<if test="endDate != '' and endDate != null">
+	   			and date(sale.sale_date) &lt;= #{endDate}
 	   		</if>
 		group by
 		    DATE(sale.sale_date), 
 		    sale.sale_branchid, 
 		    branch.branch_name, 
-		    branch.branch_id;
+		    branch.branch_id
+		ORDER BY DATE(sale.sale_date) DESC
+		LIMIT #{start}, #{pageSize}
+    </select>
+    
+    <select id="countFilteredSale" parameterType="map" resultType="int">
+        select count(*)
+        from (
+	        select
+				date(sale_date),
+	            sale_branchid
+			from sale, branch
+			where branch.branch_id = sale.sale_branchid
+		    <if test="keyword != '' and keyword != null">
+	   			and branch.branch_name like concat('%',#{keyword},'%')
+	   		</if>
+	   		<if test="startDate != '' and startDate != null">
+	   			and date(sale.sale_date) &gt;= #{startDate}
+	   		</if>
+	   		<if test="endDate != '' and endDate != null">
+	   			and date(sale.sale_date) &lt;= #{endDate}
+	   		</if>
+	        group by DATE(sale_date), 
+			    sale_branchid
+		    ) AS subquery
+        
     </select>
     
     <select id="admin_sale_detail">

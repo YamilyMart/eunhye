@@ -31,7 +31,14 @@ import com.example.yamilymart.dto.User;
 @Mapper
 public interface YamilyDao {
 	
+	//주문목록 갯수 조회
 	int countFilteredOrders(Map<String, Object> params);
+	
+	//재고목록 갯수 조회
+	int countFilteredStock(Map<String, Object> params);
+	
+	//매출목록 갯수 조회
+	int countFilteredSale(Map<String, Object> params);
 
 	@Select("select * from `order`, branch where `order`.order_sender = branch.branch_id and `order`.order_type = 0 ORDER BY `order`.order_date DESC LIMIT #{start}, #{pageSize}")
 	List<OrderDTO> admin_order_list(Map<String, Object> params);
@@ -47,11 +54,10 @@ public interface YamilyDao {
 	
 	int admin_order_approval_decrease(List<OrderDetailDTO> list);
 
-	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1 and stock_del = 0")
-	List<StockDTO> admin_stock_list();
+	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1 and stock_del = 0 ORDER BY `stock`.stock_id DESC LIMIT #{start}, #{pageSize}")
+	List<StockDTO> admin_stock_list(Map<String, Object> params);
 
-	List<StockDTO> admin_stock_list_search(@Param("searchType") int searchType,
-			@Param("keyword") String keyword);
+	List<StockDTO> admin_stock_list_search(Map<String, Object> params);
 
 	int admin_stock_product_add(ProductDTO pdto);
 	
@@ -73,11 +79,9 @@ public interface YamilyDao {
 	@Update("update stock set stock_remain = #{stock_remain} where stock_id = #{stock_id}")
 	int admin_stock_amount(@Param("stock_id") int stock_id, @Param("stock_remain") int stock_remain);
 
-	List<SaleDTO> admin_sale_list();
+	List<SaleDTO> admin_sale_list(Map<String, Object> params);
 
-	List<SaleDTO> admin_sale_list_search(@Param("keyword") String keyword,
-    		@Param("startDate") String startDate,
-    		@Param("endDate") String endDate);
+	List<SaleDTO> admin_sale_list_search(Map<String, Object> params);
 
     List<SaleDTO> admin_sale_detail(@Param("sale_branchid") String sale_branchid, @Param("sale_date") String sale_date);
     

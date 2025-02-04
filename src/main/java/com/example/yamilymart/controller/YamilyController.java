@@ -112,20 +112,34 @@ public class YamilyController {
 	//본사 - 발주요청목록 get
 	@GetMapping("/admin/order/list")
     public ModelAndView admin_order_list(
+    		@RequestParam(name = "keyword", required = false) String keyword,
+    		@RequestParam(name = "startDate1", required = false) String startDate1,
+    		@RequestParam(name = "endDate1", required = false) String endDate1,
+    		@RequestParam(name = "startDate2", required = false) String startDate2,
+    		@RequestParam(name = "endDate2", required = false) String endDate2,
+    		@RequestParam(name = "status", required = false) String status,
     		@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,   // 현재 페이지 번호
     	    @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+		
 	    log.info("admin_ProductOrder_List() - pageNum: {}, pageSize: {}", pageNum, pageSize);
 
-        mv = yServ.admin_order_list(pageNum, pageSize);
+        mv = yServ.admin_order_list_search(keyword, startDate1, endDate1, startDate2, endDate2, status, pageNum, pageSize);
         return mv;
     }
 
 	//본사 - 발주요청목록검색
 	@PostMapping("/admin/order/list")
-    public ModelAndView admin_order_list_search(OrderSearchDTO dto, 
-    		@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
-        mv = yServ.admin_order_list_search(dto, pageNum, pageSize);
+    public ModelAndView admin_order_list_search(
+    		@RequestParam(name = "keyword", required=false) String keyword,
+    		@RequestParam(name = "startDate1", required=false) String startDate1,
+    		@RequestParam(name = "endDate1", required=false) String endDate1,
+    		@RequestParam(name = "startDate2", required=false) String startDate2,
+    		@RequestParam(name = "endDate2", required=false) String endDate2,
+    		@RequestParam(name = "status", required=false) String status,
+    		@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,   // 현재 페이지 번호
+    	    @RequestParam(name = "pageSize", defaultValue = "10") int pageSize){
+		
+        mv = yServ.admin_order_list_search(keyword, startDate1, endDate1, startDate2, endDate2, status, pageNum, pageSize);
         return mv;
     }
 
@@ -162,16 +176,23 @@ public class YamilyController {
 
 	//본사 - 재고관리목록
 	@GetMapping("/admin/stock/list")
-    public ModelAndView admin_stock_list(){
-        mv = yServ.admin_stock_list();
+    public ModelAndView admin_stock_list(
+    		@RequestParam(name = "searchType", required=false) String searchType,
+    		@RequestParam(name = "keyword", required=false) String keyword,
+    		@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        mv = yServ.admin_stock_list_search(searchType, keyword, pageNum, pageSize);
         return mv;
     }
 
 	//본사 - 재고관리 필터검색
 	@PostMapping("/admin/stock/list")
-    public ModelAndView admin_stock_list_search(@RequestParam("searchType") int searchType,
-    		@RequestParam("keyword") String keyword){
-        mv = yServ.admin_stock_list_search(searchType, keyword);
+    public ModelAndView admin_stock_list_search(
+    		@RequestParam(name = "searchType", required=false) String searchType,
+    		@RequestParam(name = "keyword", required=false) String keyword,
+    		@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        mv = yServ.admin_stock_list_search(searchType, keyword, pageNum, pageSize);
         return mv;
     }
 
@@ -293,8 +314,13 @@ public class YamilyController {
 
 	//본사 - 매출목록(GET)
 	@GetMapping("admin/sale/list")
-    public ModelAndView admin_sale_list(){
-        mv = yServ.admin_sale_list();
+    public ModelAndView admin_sale_list(@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+    	    @RequestParam(name = "keyword", required=false) String keyword,
+    		@RequestParam(name = "startDate", required=false) String startDate,
+    		@RequestParam(name = "endDate", required=false) String endDate
+    		){
+        mv = yServ.admin_sale_list(keyword, startDate, endDate, pageNum, pageSize);
 
         return mv;
     }
@@ -303,8 +329,10 @@ public class YamilyController {
 	@PostMapping("admin/sale/list")
     public ModelAndView admin_sale_list_search(@RequestParam("keyword") String keyword,
     		@RequestParam("startDate") String startDate,
-    		@RequestParam("endDate") String endDate){
-        mv = yServ.admin_sale_list_search(keyword, startDate, endDate);
+    		@RequestParam("endDate") String endDate,
+    		@RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        mv = yServ.admin_sale_list(keyword, startDate, endDate, pageNum, pageSize);
 
         return mv;
     }

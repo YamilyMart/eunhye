@@ -51,6 +51,7 @@
 		}
 		
 		#modalContainerAdd, #modalContainerUpdate {
+	      z-index: 2000 !important;
 		  width: 100%;
 		  height: 100%;
 		  position: fixed;
@@ -63,6 +64,7 @@
 		}
 		
 		#modalContainerPartner {
+		  z-index: 2000 !important;
 		  width: 100%;
 		  height: 100%;
 		  position: fixed;
@@ -71,9 +73,7 @@
 		  display: flex;
 		  justify-content: center;
 		  align-items: center;
-		}
-		
-		
+		}		
 		
 		#modalContent {
 		  position: absolute;
@@ -120,7 +120,7 @@
 			                     <option value="0">상품명</option>
 			                     <option value="1">상품코드</option>
 		               		</select> 
-		               		<input type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
+		               		<input th:value="${keyword}" type="text" name="keyword" class="form-control" style="width: 300px; display: inline-block;" placeholder="검색어 입력">
 		               </td>
 		            </tr>
          		</table>
@@ -143,6 +143,7 @@
             <thead>
                <tr>
                   <th class="table-light text-center">No</th>
+                  <th class="table-light text-center">이미지</th>
                   <th class="table-light text-center">상품코드</th>
                   <th class="table-light text-center">상품명  </th>
                   <th class="table-light text-center">단가</th>
@@ -154,11 +155,13 @@
             	<th::block th:each="list: ${list}">
 					     <tr>
 	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_id}]]</td>
+	                         <td style="text-align: center; vertical-align: middle;">
+	                         	<img style="width: 80px; height: 80px;" th:src="@{/display(filename=${list.product_image})}">
+	                         </td>
 	                         <td style="text-align: center; vertical-align: middle;">[[${list.stock_productid}]]</td>
 	                         <td style="text-align: center; vertical-align: middle;">[[${list.product_name}]]</td> 
-	                         
 	                         <td style="text-align: center; vertical-align: middle;">
-  	                         <div data-th-text="${#numbers.formatInteger(list.product_price, 3, 'COMMA') + '원'}"></div>
+  	                         	<div data-th-text="${#numbers.formatInteger(list.product_price, 3, 'COMMA') + '원'}"></div>
   	                         </td>
 
 	                         <td style="text-align: center; vertical-align: middle;">
@@ -175,7 +178,7 @@
 	                         </form>
 	                         
 	                         </td>
-	                         <td style="text-align: center;">
+	                         <td style="text-align: center; vertical-align: middle;">
 		                         <button type="button" class="btn cur-p" style="background-color: #558bcf; color: white;" th:onclick="amountUpdate([[${list.stock_id}]])">재고변경</button>
 		                         <button type="button" class="btn cur-p" style="background-color: #9D3CC3; color: white;" th:onclick="stockUpdate([[${list.stock_productid}]])">상품수정</button>
 	                         </td>
@@ -193,7 +196,7 @@
   				<ul class="pagination justify-content-center">
 			    <li class="page-item">
 			    	<a class="page-link" th:if="${currentPage > 1}" 
-				       th:href="@{/admin/stock/list(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+				       th:href="@{/admin/stock/list(pageNum=${currentPage - 1}, pageSize=${pageSize}, searchType=${searchType}, keyword=${keyword})}">
 				        &lt;
 				    </a>
 				    <a class="page-link" th:if="${currentPage <= 1}" 
@@ -203,14 +206,14 @@
 				 </li>
 			    <li class="page-item">				    
 			   		<a class="page-link" style="display: inline-block;" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
-				       th:href="@{/admin/stock/list(pageNum=${page}, pageSize=${pageSize})}" 
+				       th:href="@{/admin/stock/list(pageNum=${page}, pageSize=${pageSize}, searchType=${searchType}, keyword=${keyword})}" 
 				       th:classappend="${currentPage == page} ? 'active' : ''" 
 				       th:text="${page}">
 				    </a>
 				</li>
 			    <li class="page-item">
 			    	<a class="page-link" th:if="${currentPage < totalPage}" 
-				       th:href="@{/admin/stock/list(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+				       th:href="@{/admin/stock/list(pageNum=${currentPage + 1}, pageSize=${pageSize}, searchType=${searchType}, keyword=${keyword})}">
 				        &gt;
 				    </a>
 				    <a class="page-link" th:if="${currentPage >= totalPage}" 
@@ -229,6 +232,8 @@
 			  		<h4 style="text-align: left; display: inline-block; margin: 0 0 0 10px; width: 95%; color: white; font-size: 15px;">상품 등록</h4>
 			  		<button type="button" id="modalCloseButtonAdd" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold; text-align: right;"></button>
 			  	</div>
+			  	
+			  	<br>
 			  	
 		    	<div style="padding: 30px;">
 		    		
@@ -270,7 +275,7 @@
 				            </tr>
 			            </table>
 		
-						<div style="margin: 0 30px 0 0; text-align: center;">
+						<div style="margin: 50px 30px 0 0; text-align: center;">
 							<div>
 								<button type="reset" class="btn cur-p btn-danger">초기화</button>
 								<button type="submit" class="btn cur-p btn-success">저장</button>
@@ -339,10 +344,10 @@
 				            </tr>
 			            </table>
 
-						<div style="margin: 0 30px 0 0; text-align: center;">
+						<div style="margin: 50px 30px 0 0; text-align: center;">
 							<div>
-								<button type="reset" class="btn cur-p btn-danger">초기화</button>
-								<button type="submit" class="btn cur-p btn-success">저장</button>
+<!-- 								<button type="reset" class="btn cur-p btn-danger">초기화</button>
+ -->								<button type="submit" class="btn cur-p btn-success">저장</button>
 							</div>
 						</div>
 		    		</form>
@@ -573,7 +578,8 @@
      <script>
      		//상품 등록시 유효성 검사
 			function check() {
-				var idReg = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{4,12}$/;
+				var idReg = /^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9-]{4,12}$/;
+				
 				const numberRegex = /^\d+$/;
 				
 				var product_id = document.getElementById("product_id");
