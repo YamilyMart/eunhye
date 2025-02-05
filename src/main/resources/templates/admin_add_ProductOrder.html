@@ -453,7 +453,7 @@
 
 	          // Ajax 요청
 	          $.ajax({
-	              url: '/user/order/request/detail',
+	              url: '/admin/user/order/request/detail',
 	              method: 'GET',
 	              data: { product_name: searchKeyword  },
 	              success: function (result) {
@@ -614,7 +614,7 @@
 
 	      	    // Ajax 요청 보내기
 	      	    $.ajax({
-	      	        url: '/user/order/request',
+	      	        url: '/admin/user/order/request',
 	      	        method: 'POST',
 	      	        contentType: 'application/json',
 	      	        data: JSON.stringify({

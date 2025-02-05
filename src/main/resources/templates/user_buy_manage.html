@@ -1,0 +1,240 @@
+ <!DOCTYPE html >
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- site icon -->
+      <link rel="icon" href="/images/fevicon.png" type="image/png" />
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+      <!-- site css -->
+      <link rel="stylesheet" href="/css/style.css" />
+      <!-- responsive css -->
+      <link rel="stylesheet" href="/css/responsive.css" />
+      <!-- color css -->
+      <!-- <link rel="stylesheet" href="/css/color_2.css" />  -->
+      <link rel="stylesheet" href="/css/color_2.css" />
+      <!-- select bootstrap -->
+      <link rel="stylesheet" href="/css/bootstrap-select.css" />
+      <!-- scrollbar css -->
+      <link rel="stylesheet" href="/css/perfect-scrollbar.css" />
+      <!-- custom css -->
+      <link rel="stylesheet" href="/css/custom.css" />
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+    
+      <!-- <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">  -->
+   
+   	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+     	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+ 	  <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+   
+	  
+	  
+	  <style>
+		
+		.pagination {
+			display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
+		}
+
+		.pagination ul {
+			display: flex !important;
+			justify-content: center !important;
+		}
+		
+	  </style>
+	  
+   
+   
+  
+   		
+   
+   </head>
+   <body class="dashboard dashboard_1">
+      <div class="full_container">
+         <div class="inner_container">
+            <head th:include="fragments/user_sidebar :: sidebar"></head>
+            <!-- right content -->
+            <div id="content">
+               <head th:include="fragments/user_topbar :: topbar"></head>
+
+
+         <!-- 메인 내용 -->
+                 <div class="main p-5">
+            <h6>
+               <strong>물품목록</strong>
+            </h6>
+            <form action="/user/buy/manage" method="post">
+               <table class="table table-bordered">
+                  <tr>
+                     <th>키워드 검색</th>
+                     <td><input type="text" id="searchKeyword" name="searchKeyword" placeholder="상품명 입력" th:value="${searchKeyword}"></td>
+                  </tr>
+         </table>
+         <div style="text-align: right;">
+            <button type="submit" class="btn btn-primary btn-sm"
+               style="width: 70px; border-radius: 8px;">검색</button>
+            <button type="reset" class="btn btn-secondary btn-sm"
+               style="width: 70px; border-radius: 8px;">초기화</button>
+         </div>
+      </form>
+      <div class="wrapper mt-5" id="productListContainer">
+         <table class="table product-list-table">
+            <thead>
+               <tr>
+                  <th class="table-light text-center">NO</th>
+                  <th class="table-light text-center">품목코드</th>
+                  <th class="table-light text-center">품목명</th>
+                  <th class="table-light text-center">단가</th>
+                  <th class="table-light text-center">남은수량</th>
+                  <th class="table-light text-center">구매수량</th>
+                  <th class="table-light text-center">구매</th>
+               </tr>
+            </thead>
+            <tbody>
+  				<th:block th:each="product : ${productlist}">
+   					 <tr>
+      					<td style="text-align: center;" th:text="${product.stock_id}"></td>
+      					<td style="text-align: center;" th:text="${product.stock_productid}"></td>
+      					<td style="text-align: center;" th:text="${product.product_name}"></td>
+      					<td style="text-align: center;" th:text="${#numbers.formatInteger(product.product_price, 3, 'COMMA')}"></td>
+      					<td style="text-align: center;" th:text="${product.stock_remain}"></td>
+      					<td style="text-align: center;">
+                  			<input type="number"  th:id="'quantity_' + ${product.stock_productid}" name="quantity_${product.stock_productid}" value="1" min="1" style="width: 50px; text-align: center;">
+               			<td style="text-align: center;">
+            			<!-- 구매 버튼 클릭 시 자바스크립트 함수 호출 -->
+            				<button type="button" class="btn btn-secondary btn-sm" style="border-radius: 8px; background-color:#04AA6D " 
+        						th:onclick="buyProduct([[${product.stock_productid}]], [[${product.product_price}]])">
+    							구매
+							</button>
+        				 </td>
+    				</tr>
+  				</th:block>
+			</tbody>
+         </table>
+         
+        
+		 <div class="pagination-container">
+			<div class="pagination">
+			<ul class="pagination justify-content-center">
+				<li class="page-item">
+				    <a class="page-link" th:if="${currentPage > 1}" 
+				       th:href="@{/user/inventory/manage(pageNum=${currentPage - 1}, pageSize=${pageSize}, searchKeyword=${searchKeyword})}">
+				        &lt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage <= 1}" 
+                   		href="#" tabindex="-1" aria-disabled="true">
+                    	&lt;
+                	</a>
+				</li> 
+				
+				<li class="page-item">
+				    <a class="page-link" style="display: inline-block;" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}" 
+				       th:href="@{/user/inventory/manage(pageNum=${page}, pageSize=${pageSize}, searchKeyword=${searchKeyword})}" 
+				       th:classappend="${currentPage == page} ? 'active' : ''" 
+				       th:text="${page}">
+				    </a>
+				 </li>    
+				 <li class="page-item">   
+				    <a class="page-link" th:if="${currentPage < totalPage}" 
+				       th:href="@{/user/inventory/manage(pageNum=${currentPage + 1}, pageSize=${pageSize}, searchKeyword=${searchKeyword})}">
+				        &gt;
+				    </a>
+				    <a class="page-link" th:if="${currentPage >= totalPage}" 
+                   		href="#" tabindex="-1" aria-disabled="true">
+                    	&gt; 
+                	</a>
+				 </li> 
+				</ul>
+				</div> 
+			</div>
+		 
+		 
+         <br>
+        
+         <br>
+      </div>
+               
+   <!-- 메인 내용 END -->
+            </div>
+         </div>
+      </div>
+      
+      <script>
+   			function buyProduct(productId, productPrice) {
+   			 let quantityInputId = 'quantity_' + productId;
+   		     let quantity = document.getElementById(quantityInputId).value;
+   		    
+   		    	if (!quantity) {
+   		        	alert("수량을 체크해주세요.");
+   		        	return;
+   		    	}
+
+			      // Ajax로 서버에 요청을 보냄
+			      $.ajax({
+			         type: "POST",
+			         url: "/user/buy/insert",
+			         data: {
+			            productId: productId,
+			            quantity: quantity,
+			            price: productPrice
+			         },
+			         success: function(response) {
+			        	 if(response ==="success") {
+			        		 alert('구매가 완료되었습니다!');
+			        		 location.reload();
+			        	 } else if(response ==="fail") {
+			        		 alert('재고가 부족합니다!');
+			        	 }
+			            
+			            // 필요한 UI 업데이트나 리다이렉션 추가
+			         },
+			         error: function() {
+			            alert('구매 실패: ' + error);
+			         }
+			      });
+			   }
+	</script>
+      
+      
+ 
+      
+       
+      
+      <!-- jQuery -->
+      <!--  <script src="/js/jquery.min.js"></script>--> 
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="/js/popper.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <!-- wow animation -->
+      <script src="/js/animate.js"></script>
+      <!-- select country -->
+      <script src="/js/bootstrap-select.js"></script>
+      <!-- owl carousel -->
+      <script src="/js/owl.carousel.js"></script> 
+      <!-- chart js -->
+      <script src="/js/Chart.min.js"></script>
+      <script src="/js/Chart.bundle.min.js"></script>
+      <script src="/js/utils.js"></script>
+      <script src="/js/analyser.js"></script>
+      <!-- nice scrollbar -->
+      <script src="/js/perfect-scrollbar.min.js"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- custom js -->
+      <script src="/js/chart_custom_style1.js"></script>
+      <script src="/js/custom.js"></script> 
+   </body>
+</html>

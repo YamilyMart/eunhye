@@ -25,5 +25,10 @@ public class SaleDTO {
 	
 	private int sale_year;
 	private int sale_month;
+	
+	//준혁
+	private int sum_amount;
+	private String username;
+
 
 }

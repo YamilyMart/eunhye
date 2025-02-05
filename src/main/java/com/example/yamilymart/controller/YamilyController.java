@@ -95,17 +95,11 @@ public class YamilyController {
         return mv;
     }
     
+	//로그인
 	@GetMapping("/loginForm")
 	public String loginForm() {
 		return "login_form";
 	}
-
-	/*
-	 * @GetMapping("/joinForm") public String join() { return "join"; }
-	 * 
-	 * @PostMapping("/joinForm") public String join(@RequestBody User user) {
-	 * yServ.join(user); return "redirect:/loginForm"; }
-	 */
 		
 	//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
@@ -351,7 +345,12 @@ public class YamilyController {
 	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
+	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	
 	/* 지점 관리 */
 	@GetMapping("/adminBranchList")
@@ -714,7 +713,7 @@ public class YamilyController {
 	}
 
 	/* 상품 추가 모달 검색 필터 */
-	@GetMapping("/user/order/request/detail")
+	@GetMapping("/admin/user/order/request/detail")
 	public ResponseEntity<List<ProductDTO>> order_request_detail(@RequestParam("product_name") String searchKeyword,
 			HttpServletRequest request) throws Exception {
 		request.setCharacterEncoding("UTF-8");
@@ -738,7 +737,7 @@ public class YamilyController {
 
 	// 발주 요청 POST
 	// 점주 발주 요청 완료
-	@PostMapping("/user/order/request")
+	@PostMapping("/admin/user/order/request")
 	@ResponseBody
 	public ResponseEntity<String> orderRequest(@RequestBody OrderRequestDTO orderRequest) throws Exception {
 	    // 1. OrderDTO 저장
@@ -755,7 +754,7 @@ public class YamilyController {
 	}
 	
 	
-	  @GetMapping("/user/order/list/detail") public ResponseEntity<OrderDTO>
+	  @GetMapping("/admin/user/order/list/detail") public ResponseEntity<OrderDTO>
 	  listdetail(@RequestParam("order_id") String order_id) { OrderDTO dto =
 	  yServ.listdetail(order_id);
 	  
@@ -763,7 +762,7 @@ public class YamilyController {
 	  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); } }
 	 
 
-	  @GetMapping("/user/order/list/detail2")
+	  @GetMapping("/admin/user/order/list/detail2")
 	  @ResponseBody
 	  public List<OrderDetailDTO> listdetail_2(@RequestParam("orderDetail_orderid") String orderDetail_orderid) {
 	      List<OrderDetailDTO> list = yServ.listdetail_2(orderDetail_orderid);
@@ -775,8 +774,13 @@ public class YamilyController {
 	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
-
+	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  
 	  	//인사추가
 		@PostMapping("/admin/staff/add")
 		public String addStaff(StaffDTO sDTO, @RequestPart("files") List<MultipartFile> files,
@@ -978,6 +982,280 @@ public class YamilyController {
 		        registry.addResourceHandler("/uploadDoc/**")
 	            .addResourceLocations("file:/C:/images/uploadDoc/");
 		    }
+		}
+		
+		
+		
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+		
+		
+		//점주 홈페이지
+		@GetMapping("/user/main")
+	    public ModelAndView login(){
+	        log.info("login()");
+	        
+	        ModelAndView mv = new ModelAndView();
+	        
+	        mv = yServ.login();
+	       
+	        return mv;	
+		}
+		
+		//점주 발주요청 목록 페이지
+		@GetMapping("/user/order/list")
+		public ModelAndView user_order_list(@RequestParam(value = "startDate", required = false) String startDate,
+											@RequestParam(value = "endDate", required = false) String endDate,
+								            @RequestParam(value = "startDate_2", required = false) String startDate_2,
+								            @RequestParam(value = "endDate_2", required = false) String endDate_2,
+								            @RequestParam(value = "orderstatus", required = false) String orderstatus,
+											@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+				 							@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+			
+			log.info("order_list() - pageNum: {}, pageSize: {}", pageNum, pageSize);
+			
+			
+			return yServ.orderList(startDate,endDate,startDate_2,endDate_2,orderstatus,pageNum,pageSize);
+		}
+		
+		
+		
+		//점주 발주요청 목록 검색 구현
+		@PostMapping("/user/order/list")
+		public ModelAndView orderlist(	@RequestParam(value = "startDate", required = false) String startDate,
+	            						@RequestParam(value = "endDate", required = false) String endDate,
+							            @RequestParam(value = "startDate_2", required = false) String startDate_2,
+							            @RequestParam(value = "endDate_2", required = false) String endDate_2,
+							            @RequestParam(value = "orderstatus", required = false) String orderstatus,
+							            @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+							    	    @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+			
+			return yServ.orderList(startDate,endDate,startDate_2,endDate_2,orderstatus,pageNum,pageSize);
+		}
+		
+		
+		//점주 발주 요청 목록 상세보기
+		@GetMapping("/user/order/list/detail")
+	    public ResponseEntity<OrderDTO> userListdetail(@RequestParam("order_id") String order_id) {
+			OrderDTO dto = yServ.userListdetail(order_id);
+			
+			if (dto != null) {
+		        return ResponseEntity.ok(dto);
+		    } else {
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+		                             .body(new OrderDTO()); // 빈 객체 반환
+		    }
+		}
+		
+		//점주 발주 요청 목록 상세보기
+		@GetMapping("/user/order/list/detail2")
+		@ResponseBody
+		public List<OrderDetailDTO> userListdetail_2(@RequestParam("orderDetail_orderid") String orderDetail_orderid) {
+			
+			List<OrderDetailDTO> list = yServ.userListdetail_2(orderDetail_orderid);
+
+		    return (list != null) ? list : new ArrayList<>(); // 빈 리스트 반환
+		}
+
+		
+		//점주 발주요청 입력 페이지
+		@GetMapping("/user/order/request")
+		public ModelAndView user_order_request() {
+			log.info("order_request()");
+			
+			ModelAndView mv = new ModelAndView();
+			mv = yServ.order_request();
+	        return mv;
+	   
+		}
+		
+		//점주 발주 요청 완료
+		@PostMapping("/user/order/request")
+		@ResponseBody
+		public ResponseEntity<String> userOrderRequest(@RequestBody OrderRequestDTO orderRequest) {
+		    // 1. OrderDTO 저장
+		    String orderId = yServ.userSaveOrder(orderRequest.getOrderDTO());
+
+		    // 2. OrderDetailDTO 저장
+		    List<OrderDetailDTO> orderDetails = orderRequest.getOrderDetails();
+		    for (OrderDetailDTO detail : orderDetails) {
+		        detail.setOrderDetail_orderid(orderId); // 메인 발주 ID를 상세 발주에 매핑
+		    }
+		    yServ.userSaveOrderDetails(orderDetails);
+
+		    return ResponseEntity.ok("발주 요청 저장 성공");
+		}
+		
+		
+		
+		//점주 발주 요청 상품추가 페이지
+		 @GetMapping("/user/order/request/detail")
+		 public ResponseEntity<List<ProductDTO>> order_request_detail(@RequestParam("product_name")String productName) {
+			
+			 List<ProductDTO> products = yServ.order_request_detail(productName);
+			 
+			 if (products != null && !products.isEmpty()) {
+				 return ResponseEntity.ok(products);
+			 } else {
+				 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+			 }
+		 }
+		   
+		
+		
+		//점주 재고관리 페이지
+		@GetMapping("/user/inventory/manage")
+		public ModelAndView user_inventory_manage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+	            								@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+	            								@RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
+			
+			
+		
+			return  yServ.inventory_manage(searchKeyword, pageNum, pageSize);
+			
+		}
+		
+		//점주 재고관리 검색 구현
+		@PostMapping("/user/inventory/manage")
+		public ModelAndView inventory_manage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+											@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+											@RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
+											
+			return yServ.inventory_manage(searchKeyword, pageNum, pageSize);
+			
+		}
+		
+		//점주 재고관리 수량 변경 구현
+		@PostMapping("user/inventory/insert")
+		@ResponseBody
+		public ResponseEntity<String> updateStock(@RequestBody Map<String, Object> payload) {
+			
+			try {
+				// 파라미터 값을 String으로 받아서 Integer로 변환
+		        int stockId = Integer.parseInt((String) payload.get("stock_id"));
+		        int newStockRemain = Integer.parseInt((String) payload.get("stock_remain"));
+
+		        // 서비스 호출
+		        yServ.updateStock(stockId, newStockRemain);
+
+		        return ResponseEntity.ok("재고 변경 성공");
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("재고 변경 실패");
+		    }
+			
+		}
+		
+		
+		
+		
+		//점주 판매현황 페이지
+		@GetMapping("/user/sales/manage")
+		public ModelAndView user_sales_manage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+											@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+											@RequestParam(value = "startDate",required = false)String startDate,
+											@RequestParam(value = "endDate",required = false)String endDate) {
+			log.info("sales()");
+			
+			
+			return yServ.sales_manage(pageNum,pageSize,startDate,endDate);
+			
+		}
+		
+		//점주 판매현황 페이지 검색 구현
+		@PostMapping("/user/sales/manage")
+		public ModelAndView sales_manage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+										@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,		
+										@RequestParam(value = "startDate",required = false)String startDate,
+										@RequestParam(value = "endDate",required = false)String endDate) {
+			
+			return yServ.sales_manage(pageNum,pageSize,startDate,endDate);
+		}
+		
+		
+		//점주 판매현황 페이지 상세보기 구현
+		@PostMapping("/user/sales/detail")
+		@ResponseBody
+		public List<SaleDTO> getSalesDetail(@RequestBody Map<String, String> params) {
+			String saleDate = params.get("saleDate");
+			
+			List<SaleDTO> saleDetails = yServ.getSalesDetail(saleDate);
+			return saleDetails;
+		}
+
+		
+		
+		
+		
+		//손님 구매 페이지
+		@GetMapping("/user/buy/manage")
+		public ModelAndView user_buy_manage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+											@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+											@RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
+			log.info("sales()");
+			
+			
+			
+			return yServ.buy_manage(pageNum,pageSize,searchKeyword);
+			
+		}
+		
+		
+		
+		//손님 구매 페이지 검색 구현
+		@PostMapping("/user/buy/manage")
+		public ModelAndView buy_manage(@RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+									@RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+									@RequestParam(value = "searchKeyword", required = false) String searchKeyword){
+			
+			
+			
+			return yServ.buy_manage(pageNum,pageSize,searchKeyword);
+			
+			
+		}
+		
+		//손님 구매 페이지 구매 구현
+		@PostMapping("/user/buy/insert")
+		@ResponseBody
+		public String insertSale(@RequestParam("productId")String productId,
+								@RequestParam("quantity")int quantity,
+								@RequestParam("price")int price) {
+			
+			try {
+				int saleSum = quantity * price;
+				
+				SaleDTO sale = new SaleDTO();
+				sale.setSale_productid(productId);
+				sale.setSale_amount(quantity);
+				sale.setSale_sum(saleSum);
+				sale.setSale_date("now()");
+				
+				yServ.insertSale(sale, quantity);
+				return "success";
+				
+			} catch (IllegalArgumentException e) {
+				return "fail";
+			}
+			
+		}
+		
+		
+		//점주 매출 현황 페이지
+		@GetMapping("/user/sales/status")
+		public ModelAndView user_sales_status() {
+			log.info("sales()");
+			
+			ModelAndView mv = new ModelAndView();
+			mv = yServ.sales_status();
+			return mv;
 		}
 
 }

@@ -25,9 +25,10 @@ public class GlobalControllerAdvice {
             String username = authentication.getName();
             String role = authentication.getAuthorities().iterator().next().getAuthority();
             String hr_name = yDao.hrNameSelect(username);
+            String branch_name = yDao.branchNameSelect(username);
         	
             model.addAttribute("username", hr_name);
-            
+            model.addAttribute("userID", branch_name);
             
         }
     }

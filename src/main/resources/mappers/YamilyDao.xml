@@ -505,9 +505,257 @@
 		select app_id, hr_code, app_title, app_datestart, app_dateend from approval where app_status = 3
 	</select>
 	
+	<!-- 
+	//준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 
+    -->
+	
+	<!-- 점주 홈 화면 발주상태 띄우기 -->
+	<select id="homeOrder" resultType="OrderDTO">
+		SELECT
+			order_status,
+			COUNT(*) AS count
+		FROM
+			`order`
+		WHERE 
+			order_sender = #{username}
+		GROUP BY
+			order_status
+		
+	</select>
+	<select id="homeSale" resultType="SaleDTO">
+		SELECT
+			product.product_image,
+			product.product_name,
+			product.product_price,
+			SUM(sale.sale_amount) AS sum_amount
+		FROM
+			`sale`,`product`
+		WHERE
+			sale.sale_productid = product.product_id AND
+			sale_branchid = #{username}
+		GROUP BY
+			sale.sale_productid, product.product_name, product.product_price
+		ORDER BY SUM(sale.sale_amount) desc;
+	</select>
+	<select id="homeToday" resultType="SaleDTO">
+		SELECT *
+		FROM `sale`, `product`
+		WHERE DATE(sale_date) = CURDATE() AND sale.sale_productid = product.product_id AND sale.sale_branchid = #{username}
+		ORDER BY sale_date ASC	
+	
+	
+	</select>
+	
+	
+	<select id="homeMonth" resultType="SaleDTO">
+		SELECT
+			SUM(sale_sum) AS sale_sum,
+			MONTH(sale_date),
+			YEAR(sale_date)
+		FROM
+			`sale`
+		WHERE
+			sale_branchid = #{username}
+		GROUP BY
+			MONTH(sale_date),YEAR(sale_date)
+		ORDER BY
+			MONTH(sale_date) DESC ,YEAR(sale_date) DESC
+	</select>
 	
 	
 	
+		
+		
+
+	<!-- 물품 요청목록 검색 -->
+	<select id="orderList" parameterType="map" resultType="OrderDTO">
+		SELECT * FROM `order` WHERE order_type = 0 AND order_sender = #{username}
+				<if test="startDate != null and startDate.trim() != ''">
+				    AND DATE(order_date) &gt;= #{startDate}
+				</if>
+				<if test="endDate != null and endDate.trim() != ''">
+				    AND DATE(order_date) &lt;= #{endDate}
+				</if>
+				<if test="startDate_2 != null and startDate_2.trim() != ''">
+				    AND DATE(order_delivery) &gt;= #{startDate_2}
+				</if>
+				<if test="endDate_2 != null and endDate_2.trim() != ''">
+				    AND DATE(order_delivery) &lt;= #{endDate_2}
+				</if>
+				<if test="orderstatus != null and orderstatus.trim() != ''">
+				    AND order_status = #{orderstatus}
+				</if>
+				ORDER BY order_date DESC
+	    		LIMIT #{start}, #{pageSize}
+	</select>
+	
+	
+	<!-- 검색된 주문 개수 조회 -->
+	<select id="userCountFilteredOrders" parameterType="map" resultType="int">
+	    SELECT COUNT(*)
+	    FROM `order`
+	    WHERE order_type = 0
+	    AND order_sender = #{username}
+		<if test="startDate != null and startDate.trim() != ''">
+	        AND DATE(order_date) &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate.trim() != ''">
+	        AND DATE(order_date) &lt;= #{endDate}
+	    </if>
+	    <if test="startDate_2 != null and startDate_2.trim() != ''">
+	        AND DATE(order_delivery) &gt;= #{startDate_2}
+	    </if>
+	    <if test="endDate_2 != null and endDate_2.trim() != ''">
+	        AND DATE(order_delivery) &lt;= #{endDate_2}
+	    </if>
+	    <if test="orderstatus != null and orderstatus.trim() != ''">
+	        AND order_status = #{orderstatus}
+	    </if>
+	</select>
+	
+	
+		
+
+
+	<!-- 물품 요청 보내기 -->
+	<insert id="userInsertOrder" parameterType="OrderDTO" >
+		INSERT INTO `order` (order_id, order_sender, order_date, order_amount, order_sum, order_type, order_status, order_manager, order_delivery, order_memo)
+		VALUES (#{order_id}, #{order_sender}, now(), 0, #{order_sum}, 0, 0, #{order_manager}, #{order_delivery}, #{order_memo})
+	</insert>
+	
+	<insert id="userInsertOrderDetail" parameterType="OrderDetailDTO">
+    INSERT INTO `orderdetail` (orderDetail_orderid, orderDetail_productid, orderDetail_price, orderDetail_amount, orderDetail_sum)
+    VALUES (#{orderDetail_orderid}, #{orderDetail_productid}, #{orderDetail_price}, #{orderDetail_amount}, #{orderDetail_sum})
+	</insert>
+	
+	<update id="updateOrderAmount">
+		UPDATE `order`
+		SET order_amount = #{count}
+		WHERE order_id = #{orderId}
+	</update>
+	
+	
+	
+		<!-- 재고 목록 검색 -->
+	<select id="inventory_manage" parameterType="map" resultType="StockDTO">
+	    SELECT * FROM `stock`, `product` 
+	    WHERE stock_branchid = #{username}
+	    AND stock.stock_productid = product.product_id
+	    <if test="searchKeyword != null and searchKeyword.trim() != ''">
+	        AND product.product_name LIKE CONCAT('%', #{searchKeyword}, '%')
+	    </if>
+	    ORDER BY stock_id DESC
+	    LIMIT #{start}, #{pageSize}
+	</select>
+	
+	<!-- 검색된 재고 개수 조회 -->
+	<select id="countFilteredInventory" parameterType="map" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM `stock`, `product`
+	    WHERE stock_branchid = #{username}
+	    AND stock.stock_productid = product.product_id
+	    <if test="searchKeyword != null and searchKeyword.trim() != ''">
+	        AND product.product_name LIKE CONCAT('%', #{searchKeyword}, '%')
+	    </if>
+	</select>
+
+
+	<!-- 점주 재고관리 수량 변경 구현 -->
+	<update id="updateStock">
+		UPDATE `stock`
+		SET stock_remain = #{newStockRemain}
+		WHERE stock_id = #{stockId}
+	</update>
+
+
+
+	<!-- 손님 구매 페이지 검색 구현 -->
+	<select id="buy_manage" parameterType="map" resultType="StockDTO">
+		SELECT * FROM `stock`, `product`
+		WHERE stock.stock_branchid = #{username} AND stock.stock_productid = product.product_id
+		<if test="searchKeyword != null and searchKeyword.trim() != ''">
+        AND product.product_name LIKE CONCAT('%', #{searchKeyword}, '%')
+	    </if>
+	    ORDER BY stock_id DESC
+	    LIMIT #{start}, #{pageSize} 
+	</select>
+	
+	<!-- 검색된 구매 개수 조회 -->
+	<select id="countFilteredBuy" parameterType="map" resultType="int">
+	    SELECT COUNT(*) 
+	    FROM `stock`, `product`
+	    WHERE stock.stock_branchid = #{username}
+	    AND stock.stock_productid = product.product_id
+	    <if test="searchKeyword != null and searchKeyword.trim() != ''">
+	        AND product.product_name LIKE CONCAT('%', #{searchKeyword}, '%')
+	    </if>
+	</select>
+	
+	
+	<!-- 손님 구매 페이지 구매 구현 -->
+	<insert id="insertSale" parameterType="SaleDTO">
+		INSERT INTO `sale` (sale_branchid, sale_productid, sale_amount, sale_date, sale_sum)
+		VALUES (#{username},#{sale_productid},#{sale_amount},now(),#{sale_sum})
+	</insert>
+	<update id="updateStockRemain" parameterType="map">
+		UPDATE `stock`
+		SET stock_remain = stock_remain - #{quantity}
+		WHERE stock_productid = #{productId} AND stock_branchid = #{username}
+	</update>
+	<select id="getStockQuantity" parameterType="map" resultType="int">
+		SELECT stock_remain
+		FROM `stock`
+		WHERE stock_productid = #{productId} AND stock_branchid = #{username}
+	</select>
+	
+	
+	
+	<!-- 점주 판매 현황 페이지 검색 구현 -->
+	<select id="sales_manage" parameterType="map" resultType="SaleDTO">
+    SELECT sale_date, SUM(sale_amount) AS sale_amount, SUM(sale_sum) AS sale_sum
+    FROM (
+        SELECT DATE(sale_date) AS sale_date, sale_amount, sale_sum
+        FROM sale
+        WHERE sale_branchid = #{username}
+         <if test="startDate != null and startDate != ''">
+            AND DATE(sale_date) &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND DATE(sale_date) &lt;= #{endDate}
+        </if>
+    ) AS filtered_sales
+    GROUP BY sale_date
+    ORDER BY sale_date DESC
+    LIMIT #{pageSize} OFFSET #{start} 
+	</select>
+		
+		<!-- 검색된 판매 개수 조회 -->
+	<select id="userCountFilteredSale" parameterType="map" resultType="int">
+	    SELECT COUNT(*) FROM (
+	        SELECT DISTINCT DATE(sale_date)
+	        FROM sale
+	        WHERE sale_branchid = #{username}
+	        <if test="startDate != null and startDate != ''">
+	            AND DATE(sale_date) &gt;= #{startDate}
+	        </if>
+	        <if test="endDate != null and endDate != ''">
+	            AND DATE(sale_date) &lt;= #{endDate}
+	        </if>
+	    ) AS filtered_sales
+	</select>
+	
+	
+	
+	
+	<!-- 점주 판매 현황 페이지 상세보기 구현 -->
+	<select id="getSalesDetail" parameterType="map" resultType="SaleDTO">
+		SELECT *
+		FROM `sale`, `product`
+		WHERE DATE(sale_date) = #{saleDate} AND sale.sale_productid = product.product_id AND sale.sale_branchid = #{username}
+		ORDER BY sale_date ASC	
+	</select>
 
     
 

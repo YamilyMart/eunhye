@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -91,42 +93,6 @@ public class YamilyService {
         return mv;
     }
 
-//    public ModelAndView admin_order_list(int pageNum, int pageSize) {
-//    	
-//    	Map<String, Object> params = new HashMap<>();
-//	    params.put("order_id", null); // 검색 조건 없음
-//	    params.put("order_manager", null);
-//	    params.put("searchType", null);
-//	    params.put("startDate", null);
-//	    params.put("endDate", null);
-//	    params.put("start", (pageNum - 1) * pageSize);
-//	    params.put("pageSize", pageSize);
-//
-//	    // 전체 데이터 개수 조회
-//	    int totalCount = yDao.countFilteredOrders(params);
-//	    
-//	    List<OrderDTO> list = yDao.admin_order_list(params);
-//
-//	    // 페이지 관련 계산
-//	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-//	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
-//	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
-//
-//	    mv = new ModelAndView();
-//
-//	    mv.addObject("currentPage", pageNum);
-//	    mv.addObject("pageSize", pageSize);
-//	    mv.addObject("totalCount", totalCount);
-//	    mv.addObject("totalPage", totalPage);
-//	    mv.addObject("startPage", startPage); // 추가
-//	    mv.addObject("endPage", endPage); 
-//    	
-//        mv.addObject("list", list);
-//        mv.setViewName("admin_order_list");
-//
-//        return mv;
-//    }
-
     public ModelAndView admin_order_list_search(
     		String keyword, String startDate1, String endDate1, 
     		String startDate2, String endDate2, String status, 
@@ -182,49 +148,14 @@ public class YamilyService {
         return dto;
     }
 
-//    public ModelAndView admin_stock_list(int pageNum, int pageSize) {
-//    	mv = new ModelAndView();
-//    	
-//    	Map<String, Object> params = new HashMap<>();
-////	    params.put("order_id", null); // 검색 조건 없음
-////	    params.put("order_manager", null);
-////	    params.put("searchType", null);
-////	    params.put("startDate", null);
-////	    params.put("endDate", null);
-//	    params.put("start", (pageNum - 1) * pageSize);
-//	    params.put("pageSize", pageSize);
-//
-//	    // 전체 데이터 개수 조회
-//	    int totalCount = yDao.countFilteredStock(params);
-//	    
-//    	List<StockDTO> list = yDao.admin_stock_list(params);
-//
-//	    // 페이지 관련 계산
-//	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-//	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
-//	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
-//
-//	    mv.addObject("currentPage", pageNum);
-//	    mv.addObject("pageSize", pageSize);
-//	    mv.addObject("totalCount", totalCount);
-//	    mv.addObject("totalPage", totalPage);
-//	    mv.addObject("startPage", startPage); // 추가
-//	    mv.addObject("endPage", endPage);
-//	    
-//        mv.addObject("list", list);
-//        mv.setViewName("admin_stock_list");
-//
-//        return mv;
-//    }
-
 
     public ModelAndView admin_order_approval(int approval_type, String order_id) {
     	mv = new ModelAndView();
     	
-    	if(approval_type == 0) { //승인 시에 물류창고 재고 감소
+    	if(approval_type == 0) { //승인 시에 물류창고 재고 감소, 지점 재고 감소
         	List<OrderDetailDTO> list = yDao.admin_order_detail(order_id);
-        	
     		int a = yDao.admin_order_approval_decrease(list);
+    		int b = yDao.admin_order_approval_increase(list);
     	}
     	
     	int a = yDao.admin_order_approval(approval_type, order_id);
@@ -377,53 +308,6 @@ public class YamilyService {
 
        return mv;
    }
-
-//    public ModelAndView admin_sale_list_search(String keyword, String startDate, String endDate, int pageNum, int pageSize) {
-//    	mv = new ModelAndView();
-//
-//   	    Map<String, Object> params = new HashMap<>();
-//	    params.put("keyword", keyword); // 검색 조건 없음
-//	    params.put("startDate", startDate);
-//	    params.put("endDate", endDate);
-//	    params.put("start", (pageNum - 1) * pageSize);
-//	    params.put("pageSize", pageSize);
-//
-//	    // 전체 데이터 개수 조회
-//	    int totalCount = yDao.countFilteredSale(params);
-//	    
-//    	List<SaleDTO> list = yDao.admin_sale_list_search(params);
-//
-//	    // 페이지 관련 계산
-//	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
-//	    int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지
-//	    int endPage = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
-//
-//	    mv.addObject("currentPage", pageNum);
-//	    mv.addObject("pageSize", pageSize);
-//	    mv.addObject("totalCount", totalCount);
-//	    mv.addObject("totalPage", totalPage);
-//	    mv.addObject("startPage", startPage);
-//	    mv.addObject("endPage", endPage);
-//	    mv.addObject("keyword", keyword);
-//	    mv.addObject("startDate", startDate);
-//	    mv.addObject("endDate", endDate);
-//
-//        int count = list.size();
-//        int sum = 0;
-//
-//        //총 매출 계산하기
-//        for(int i=0; i<count; i++) {
-//     	   SaleDTO dto = list.get(i);
-// 			sum += dto.getSale_sum();
-//        }
-//
-//        mv.addObject("list", list);
-//        mv.addObject("count", count);
-//        mv.addObject("sum", sum);
-//        mv.setViewName("admin_sale_list");
-//
-//        return mv;
-//    }
 
     public List<SaleDTO> admin_sale_detail(String sale_branchid, String sale_date) {
     	List<SaleDTO> dto = yDao.admin_sale_detail(sale_branchid, sale_date);
@@ -1085,6 +969,331 @@ public class YamilyService {
 	    
 	    public int staff_get_hrCode(String username) {
 	    	return yDao.staff_get_hrCode(username);
+	    }
+	    
+	    
+	    
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String username = authentication.getName();
+        
+        
+        public String getCurrentUsername() {
+            // SecurityContextHolder를 이용해 현재 로그인한 사용자 ID 가져오기
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new IllegalStateException("No authenticated user found");
+            }
+            return authentication.getName();
+        }
+        
+	    
+	    // 홈 화면 페이지
+	    public ModelAndView login() {
+	    	
+	    	ModelAndView mv = new ModelAndView();
+	    	String username = getCurrentUsername();
+	    
+	    	List<OrderDTO> orderStatusList = yDao.homeOrder(username);
+	    	mv.addObject("orderStatusList", orderStatusList);
+	    	
+	    	List<SaleDTO> saleStatusList = yDao.homeSale(username);
+	    	mv.addObject("saleStatusList",saleStatusList);
+	    	
+	    	
+	    	List<SaleDTO> SaleTodayList = yDao.homeToday(username);
+	    	mv.addObject("SaleTodayList",SaleTodayList);
+	    	
+	    	
+//	    	List<SaleDTO> saleMonthList =  yDao.homeMonth(username);
+//	    		int[] saleMonth = new int[6];
+//	    		for(int i=0; i<6; i++) {
+//	    			saleMonth[i] = saleMonthList.get(i).getSale_sum();
+//	    		}
+//	    		mv.addObject("saleMonth",saleMonth);
+//	    		
+	    	
+	    	
+	    		
+	    	
+	    	mv.setViewName("user_main");
+	    	return mv;
+	    }
+	    
+	    //점주 발주요청 목록 검색 구현
+	    public ModelAndView  orderList(String startDate, String endDate, String startDate_2, String endDate_2, String orderstatus,
+	    		 int pageNum, int pageSize){
+	    	 ModelAndView mv = new ModelAndView("user_order_list");
+	    	 
+	    	
+	    	Map<String, Object> params = new HashMap<>();    
+	    	params.put("startDate", (startDate != null && !startDate.isEmpty()) ? startDate : null);
+	        params.put("endDate", (endDate != null && !endDate.isEmpty()) ? endDate : null);
+	        params.put("startDate_2", (startDate_2 != null && !startDate_2.isEmpty()) ? startDate_2 : null);
+	        params.put("endDate_2", (endDate_2 != null && !endDate_2.isEmpty()) ? endDate_2 : null);
+	        params.put("orderstatus", (orderstatus != null && !orderstatus.isEmpty()) ? orderstatus : null);
+	    	params.put("start", (pageNum - 1) * pageSize);
+	        params.put("pageSize", pageSize);
+	        
+	    	String username = getCurrentUsername();
+	        params.put("username", username);
+	    	
+	    	
+	    	 // 검색된 전체 데이터 개수 조회
+	        int totalCount = yDao.userCountFilteredOrders(params);
+
+	        // 페이징 처리된 데이터 조회
+	        List<OrderDTO> orderList = yDao.orderList(params);
+	    	
+	     // 페이징 계산
+	        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	        int startPage = Math.max(1, pageNum - 2);
+	        int endPage = Math.min(totalPage, pageNum + 2);
+
+	        mv.addObject("orderList", orderList);
+	        mv.addObject("currentPage", pageNum);
+	        mv.addObject("pageSize", pageSize);
+	        mv.addObject("totalCount", totalCount);
+	        mv.addObject("totalPage", totalPage);
+	        mv.addObject("startPage", startPage);
+	        mv.addObject("endPage", endPage);
+	        mv.addObject("startDate", startDate);
+	        mv.addObject("endDate", endDate);
+	        mv.addObject("startDate_2", startDate_2);
+	        mv.addObject("endDate_2", endDate_2);
+	        mv.addObject("orderstatus", orderstatus);
+	        
+	        return mv;
+	        
+	    }
+
+	    //점주 발주 요청 목록 상세보기
+	    public OrderDTO userListdetail(String order_id) {
+	    	return yDao.userListdetail(order_id);
+	    } 
+	    
+	    
+	    //점주 발주 요청 목록 상세보기
+	    public List<OrderDetailDTO> userListdetail_2(String orderDetail_orderid) {
+	    	return yDao.userListdetail_2(orderDetail_orderid);
+	    }
+	    
+	    
+	    
+	    
+	    //점주 발주 요청입력 페이지
+	    public ModelAndView order_request() {
+	    	mv = new ModelAndView();
+	    	mv.setViewName("user_order_request");
+	    	
+	    	return mv;
+	    }
+	    
+	    //점주 발주 요청 완료
+	    public String userSaveOrder(OrderDTO orderDTO) {
+	    	String username = getCurrentUsername();
+	    	orderDTO.setOrder_sender(username);
+	    	
+	        yDao.userInsertOrder(orderDTO);
+	        return orderDTO.getOrder_id(); // 발주 ID 반환
+	    }
+
+	    public void userSaveOrderDetails(List<OrderDetailDTO> orderDetails) {
+	    	String orderId = orderDetails.get(0).getOrderDetail_orderid();
+	    	
+	    	int count = 0;
+	    	
+	        for (OrderDetailDTO detail : orderDetails) {
+	        	count += 1;
+	            yDao.userInsertOrderDetail(detail);
+	        }
+	        
+	        yDao.updateOrderAmount(orderId, count);
+	    }
+
+	    //점주 발주 요청입력 상세페이지
+	    public List<ProductDTO> user_order_request_detail(String productName) {
+	    	return yDao.order_request_detail(productName);
+	    }
+	    
+
+	    //점주 재고 관리 검색 구현
+	    public ModelAndView inventory_manage(String searchKeyword, int pageNum, int pageSize) {
+	    	ModelAndView mv = new ModelAndView("user_inventory_manage");
+	    	
+	    	 Map<String, Object> params = new HashMap<>();
+	    	    params.put("searchKeyword", (searchKeyword != null && !searchKeyword.isEmpty()) ? searchKeyword : null);
+	    	    params.put("start", (pageNum - 1) * pageSize);
+	    	    params.put("pageSize", pageSize);
+	    	    
+		    	String username = getCurrentUsername();
+	    	    params.put("username",username);
+
+	    	    // 검색된 전체 데이터 개수 조회
+	    	    int totalCount = yDao.countFilteredInventory(params);
+	    	    List<StockDTO> stockList = yDao.inventory_manage(params);
+
+	    	    
+	    	    log.info("재고 목록: {}", stockList);
+	    	    
+	    	    // 페이징 계산
+	    	    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	    	    int startPage = Math.max(1, pageNum - 2);
+	    	    int endPage = Math.min(totalPage, pageNum + 2);
+	    	    
+	    	    mv.addObject("stockList", stockList);
+	    	    mv.addObject("currentPage", pageNum);
+	    	    mv.addObject("pageSize", pageSize);
+	    	    mv.addObject("totalCount", totalCount);
+	    	    mv.addObject("totalPage", totalPage);
+	    	    mv.addObject("startPage", startPage);
+	    	    mv.addObject("endPage", endPage);
+	    	    mv.addObject("searchKeyword", searchKeyword); // 검색 키워드 유지
+
+	    	    return mv;
+	    	
+	    }
+	    
+	    //점주 재고관리 수량 변경 구현
+	    public void updateStock(int stockId, int stockRemain) {
+	    	yDao.updateStock(stockId, stockRemain);
+	    }
+
+	    //점주 판매 현황 페이지 검색 구현
+	    public ModelAndView sales_manage(int pageNum, int pageSize,String startDate, String endDate) {
+	    	ModelAndView mv = new ModelAndView("user_sales_manage");
+	    	 
+	    	
+	    	log.info("Start Date: {}, End Date: {}", startDate, endDate);
+	    	
+	    	Map<String, Object> params = new HashMap<>();    
+	    	params.put("startDate", (startDate != null && !startDate.isEmpty()) ? startDate : null);
+	        params.put("endDate", (endDate != null && !endDate.isEmpty()) ? endDate : null);
+	        params.put("start", (pageNum - 1) * pageSize);
+	        params.put("pageSize", pageSize);
+	        
+	    	String username = getCurrentUsername();
+	        params.put("username", username);
+	        
+	        // 검색된 전체 데이터 개수 조회
+	        int totalCount = yDao.userCountFilteredSale(params);
+	        
+	        
+	        log.info("Executing SQL: SELECT DATE(sale_date) AS sale_date, SUM(sale_amount), SUM(sale_sum) " +
+	                "FROM sale WHERE sale_branchid = 'sw1111' AND sale_date >= {} AND sale_date <= {} " +
+	                "ORDER BY sale_date ASC LIMIT {} OFFSET {}",
+	                startDate, endDate, pageSize, (pageNum - 1) * pageSize);
+	        
+
+	        // 페이징 처리된 데이터 조회
+	        List<SaleDTO> salelist = yDao.sales_manage(params);
+	    	
+	     // 페이징 계산
+	        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	        int startPage = Math.max(1, pageNum - 2);
+	        int endPage = Math.min(totalPage, pageNum + 2);
+
+	       
+	        log.info("Prepared Params for Query: {}", params);
+	        
+	       
+	        
+	        mv.addObject("salelist", salelist);
+	        mv.addObject("currentPage", pageNum);
+	        mv.addObject("pageSize", pageSize);
+	        mv.addObject("totalCount", totalCount);
+	        mv.addObject("totalPage", totalPage);
+	        mv.addObject("startPage", startPage);
+	        mv.addObject("endPage", endPage);
+	        mv.addObject("startDate", startDate);
+	        mv.addObject("endDate", endDate);
+
+	        return mv;
+	    }
+	    	
+	    //점주 판매 현황 페이지 상세보기 구현
+	    public List<SaleDTO> getSalesDetail(String saleDate) {
+	    	Map<String, Object> params = new HashMap<>();    
+	    	params.put("saleDate", saleDate);
+	    	
+	    	String username = getCurrentUsername();
+	        params.put("username", username);
+	        
+	    	return yDao.getSalesDetail(params);
+	    }
+	    
+	    
+	    //손님 구매 페이지 검색구현
+	    public ModelAndView buy_manage(int pageNum, int pageSize, String searchKeyword) {
+	    	ModelAndView mv = new ModelAndView("user_buy_manage");
+	    	
+	    	Map<String, Object> params = new HashMap<>();
+		    params.put("start", (pageNum - 1) * pageSize);
+		    params.put("pageSize", pageSize);
+		    params.put("searchKeyword", (searchKeyword != null && !searchKeyword.isEmpty()) ? searchKeyword : null);
+		    
+	    	String username = getCurrentUsername();
+		    params.put("username", username);
+	    	
+		 // 검색된 전체 데이터 개수 조회
+		    int totalCount = yDao.countFilteredBuy(params);
+		    List<StockDTO> productlist = yDao.buy_manage(params);
+
+		    
+		    log.info("재고 목록: {}", productlist);
+		    
+		    // 페이징 계산
+		    int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+		    int startPage = Math.max(1, pageNum - 2);
+		    int endPage = Math.min(totalPage, pageNum + 2);
+		    
+		    mv.addObject("productlist", productlist);
+		    mv.addObject("currentPage", pageNum);
+		    mv.addObject("pageSize", pageSize);
+		    mv.addObject("totalCount", totalCount);
+		    mv.addObject("totalPage", totalPage);
+		    mv.addObject("startPage", startPage);
+		    mv.addObject("endPage", endPage);
+		    mv.addObject("searchKeyword", searchKeyword); // 검색 키워드 유지
+
+		    return mv;
+		
+	    }
+	    
+	    //손님 구매 페이지 구매 구현
+	    public void insertSale(SaleDTO sale, int quantity) {
+	    	
+	    	Map<String, Object> params2 = new HashMap<>();
+	    	params2.put("productId", sale.getSale_productid());
+	    	
+	    	String username = getCurrentUsername();
+	    	params2.put("username", username);
+	    	
+	    	int currentStock = yDao.getStockQuantity(params2);
+	    	
+	    	if(currentStock < quantity) {
+	    		throw new IllegalArgumentException("재고 부족");
+	    	}
+	    	
+	    	sale.setUsername(username);
+	    	yDao.insertSale(sale);
+	    	
+	    	Map<String, Object> params = new HashMap<>();
+	    	params.put("productId", sale.getSale_productid());
+	    	params.put("quantity", quantity);
+	    	params.put("username", username);
+	    	yDao.updateStockRemain(params);
+
+	    }
+
+	  //점주 매출현황 페이지
+	    public ModelAndView sales_status() {
+	    	mv = new ModelAndView();
+	    	mv.setViewName("user_sales_status");
+	    	
+	    	return mv;
 	    }
 
 }

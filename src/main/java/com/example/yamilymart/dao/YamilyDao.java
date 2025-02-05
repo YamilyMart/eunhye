@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.yamilymart.dto.ApprovalDTO;
 import com.example.yamilymart.dto.BranchDTO;
@@ -53,6 +54,8 @@ public interface YamilyDao {
 	int admin_order_approval(@Param("approval_type")int approval_type, @Param("order_id")String order_id);
 	
 	int admin_order_approval_decrease(List<OrderDetailDTO> list);
+	
+	int admin_order_approval_increase(List<OrderDetailDTO> list);
 
 	@Select("select * from `stock`, `product` where stock.stock_productid = product.product_id and stock_type = 1 and stock_del = 0 ORDER BY `stock`.stock_id DESC LIMIT #{start}, #{pageSize}")
 	List<StockDTO> admin_stock_list(Map<String, Object> params);
@@ -105,7 +108,9 @@ public interface YamilyDao {
     
     @Select("select hr_name from hr where hr_id = #{username}")
     String hrNameSelect(String username);
-
+    
+    @Select("select branch_name from branch where branch_id = #{username}")
+    String branchNameSelect(String username);
     
     //우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
   	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
@@ -339,5 +344,65 @@ public interface YamilyDao {
 	
 	@Select("select hr_code from hr where hr_id = #{username}")
 	int staff_get_hrCode(String username);
+	
+	
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	  //준혁ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+	
+		//점주 홈 화면
+		List<OrderDTO> homeOrder(String username);
+		List<SaleDTO> homeSale(String username);
+		List<SaleDTO> homeToday(String username);
+		List<SaleDTO> homeMonth(String username);	
+		
+		//점주 발주요청 목록 검색 구현
+		List<OrderDTO> orderList(Map<String, Object> params);
+		// 검색된 주문 개수 조회
+		int userCountFilteredOrders(Map<String, Object> params);
+		
+		
+		//물품 요청 목록 상세보기
+		@Select("SELECT * FROM `order`, `branch` WHERE order_id = #{order_id} AND order.order_sender = branch.branch_id" )
+		OrderDTO userListdetail(String order_id);
+		
+		//물품 요청 목록 상세보기
+		@Select("SELECT * FROM `orderdetail`, `product` WHERE orderDetail_orderid = #{orderDetail_orderid} AND orderdetail.orderDetail_productid = product.product_id ")
+		List<OrderDetailDTO> userListdetail_2(String orderDetail_orderid);
+		
+		//물품 요청 보내기
+		void userInsertOrder(OrderDTO orderDTO);
+	    void userInsertOrderDetail(OrderDetailDTO orderDetail);
+	    void updateOrderAmount(@Param("orderId")String orderId,@Param("count") int count);
+		
+		//물품 요청 상세 페이지
+		@Select("SELECT * FROM `product` WHERE  product.product_name LIKE CONCAT('%', #{product_name}, '%')")
+		List<ProductDTO> user_order_request_detail(String productName);
+		
+		//점주 재고관리 검색 구현
+		List<StockDTO> inventory_manage(Map<String, Object> params);
+		// 검색된 재고 개수 조회
+		int countFilteredInventory(Map<String, Object> params);
+		
+		//점주 재고관리 수량 변경 구현
+		void updateStock(@Param("stockId") int stockId, @Param("newStockRemain") int mewStockRemain);
+
+		//점주 판매현황 페이지 검색 구현
+		List<SaleDTO> sales_manage(Map<String,Object> params);
+		
+		int userCountFilteredSale(Map<String, Object> params);
+
+		//점주 판매 현황 페이지 상세보기 구현
+		List<SaleDTO> getSalesDetail(Map<String, Object> params);
+
+		//손님 구매 페이지 검색 구현
+		List<StockDTO> buy_manage(Map<String, Object> params);
+		// 검색된 재고 개수 조회
+		int countFilteredBuy(Map<String, Object> params);
+		
+		//손님 구매 페이지 구매 구현
+		int getStockQuantity(Map<String, Object> params);
+		void insertSale(SaleDTO sale);
+		void updateStockRemain(Map<String,Object> params);
 
 }

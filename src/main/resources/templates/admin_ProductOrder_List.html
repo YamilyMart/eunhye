@@ -317,7 +317,7 @@ td {
 
 		    // Ajax 요청: 주문 정보 가져오기
 		    $.ajax({
-		      url: '/user/order/list/detail',
+		      url: '/admin/user/order/list/detail',
 		      method: 'GET',
 		      data: { order_id: order_id },
 		      success: function (result) {
@@ -339,7 +339,7 @@ td {
 
 		    // Ajax 요청: 거래처별 상품 목록 가져오기
 		    $.ajax({
-		      url: '/user/order/list/detail2',
+		      url: '/admin/user/order/list/detail2',
 		      method: 'GET',
 		      data: { orderDetail_orderid: order_id },
 		      success: function (result) {
@@ -366,13 +366,16 @@ td {
 		              totalQuantity += item.quantity;
 		              totalAmount += item.total_price;
 		            });
+		            
+		            
+                	const formattedSum = parseFloat(totalAmount).toLocaleString();
 
 		            // 거래처 섹션 추가
 		            const supplierSection = `
 		              <div class="supplier-section">
 		                <h6>거래처: ${supplier}</h6>
 		                <p>총 수량: ${totalQuantity}개</p>
-		                <p>합계: ${totalAmount.toLocaleString()} 원</p>
+		                <p>합계: ${formattedSum} 원</p>
 		                <table class="table table-bordered">
 		                  <thead>
 		                    <tr>
@@ -388,15 +391,14 @@ td {
 		                  <tbody>
 		                    ${supplierData
 		                      .map(
+		                    		  
 		                        item => `
+		                       
 		                          <tr>
 		                            <td>${item.product_code}</td>
 		                            <td>${item.product_name}</td>
 		                            <td>${item.quantity}</td>
-		                            <td>${item.unit_price.toLocaleString()} 원</td>
-		                            <td>${item.supply_price.toLocaleString()} 원</td>
-		                            <td>${item.tax.toLocaleString()} 원</td>
-		                            <td>${item.total_price.toLocaleString()} 원</td>
+		                          
 		                          </tr>
 		                        `
 		                      )
