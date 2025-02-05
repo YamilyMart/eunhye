@@ -29,4 +29,5 @@ public class OrderDTO {
 
 	//우진
 	private int orderDetail_amount;
+
 }

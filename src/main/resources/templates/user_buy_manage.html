@@ -43,17 +43,22 @@
 	  
 	  
 	  <style>
-		
-		.pagination {
-			display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
-		}
+      
+      .pagination {
+         display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
+      }
 
-		.pagination ul {
-			display: flex !important;
-			justify-content: center !important;
-		}
-		
-	  </style>
+      .pagination ul {
+         display: flex !important;
+         justify-content: center !important;
+      }
+      
+      .table.product-list-table th,
+      .table.product-list-table td {
+         vertical-align : middle;
+      }
+      
+     </style>
 	  
    
    
@@ -108,13 +113,13 @@
       					<td style="text-align: center;" th:text="${product.stock_id}"></td>
       					<td style="text-align: center;" th:text="${product.stock_productid}"></td>
       					<td style="text-align: center;" th:text="${product.product_name}"></td>
-      					<td style="text-align: center;" th:text="${#numbers.formatInteger(product.product_price, 3, 'COMMA')}"></td>
+      					<td style="text-align: center;" th:inline="text">[[${#numbers.formatInteger(product.product_price, 3, 'COMMA')}]]원</td>
       					<td style="text-align: center;" th:text="${product.stock_remain}"></td>
       					<td style="text-align: center;">
                   			<input type="number"  th:id="'quantity_' + ${product.stock_productid}" name="quantity_${product.stock_productid}" value="1" min="1" style="width: 50px; text-align: center;">
                			<td style="text-align: center;">
             			<!-- 구매 버튼 클릭 시 자바스크립트 함수 호출 -->
-            				<button type="button" class="btn btn-secondary btn-sm" style="border-radius: 8px; background-color:#04AA6D " 
+            				<button type="button" class="btn btn-secondary btn-sm" style="border-radius: 8px; background-color:#04AA6D; border-color:#04AA6D;" 
         						th:onclick="buyProduct([[${product.stock_productid}]], [[${product.product_price}]])">
     							구매
 							</button>

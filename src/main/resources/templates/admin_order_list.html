@@ -337,7 +337,11 @@
 				               <th>주문ID</th>
 	   			               <td><input id="order_id" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
 	   			               <th>지점명</th>
-	   			               <td><input id="order_partnerid" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/></td>
+	   			               <td>
+	   			               		<input id="order_partnerid" type="text" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/>
+	   			               		<input id="order_sender" type="hidden" class="form-control" style="width: 100%; text-align: center; display: inline-block;" readonly/>
+	   			               
+	   			               </td>
 				            </tr>
 				            <tr>
 				               <th>발주일자</th>
@@ -425,7 +429,7 @@
 		    	                
 		    	        	    document.getElementById("order_id").value = result.order_id;
 		    	        	    document.getElementById("order_partnerid").value = result.branch_name;
-		    	        	    //document.getElementById("order_sender").value = result.order_sender;
+		    	        	    document.getElementById("order_sender").value = result.order_sender;
 		    	        	    document.getElementById("order_date").value = result.order_date;
 		    	        	    document.getElementById("order_amount").value = result.order_amount;
 		    	        	    document.getElementById("order_manager").value = result.order_manager;
@@ -547,7 +551,7 @@
 	    			  return;
 	    		  }
 	    		  alert("발주가 취소되었습니다.");  
-	    	  } else { //승인
+	    	  } else { //승인 0일 경우
 	    		  
 	    		  if(status == 1 || status == 2) { //승인이나 입고완료인 경우
 	    			  alert("승인할 수 없는 상태입니다.");
@@ -579,11 +583,13 @@
 	        	    alert("발주가 승인되었습니다."); 
 		    	}
 	    	  	    	  
-	    	  const order_id = document.getElementById('order_id').value;	    	    
+	    	  const order_id = document.getElementById('order_id').value;	 
+	    	  const order_sender = document.getElementById('order_sender').value;	    	    
+
 	    	    $.ajax({
 	    	        url: '/admin/order/approval',
 	    	        method: 'GET',
-	    	        data: {approval_type: approval_type, order_id: order_id},
+	    	        data: {approval_type: approval_type, order_id: order_id, order_sender: order_sender},
 	    	        success: function(result) {
 	    	            if (result) {
 	    	            	//const modal = document.getElementById('modalContainer');

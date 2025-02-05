@@ -162,8 +162,12 @@ public class YamilyController {
 
 	//본사 - 발주승인/거절
 	@GetMapping("/admin/order/approval")
-    public ModelAndView admin_order_approval(@RequestParam("approval_type") int approval_type, @RequestParam("order_id") String order_id){
-        mv = yServ.admin_order_approval(approval_type, order_id);
+    public ModelAndView admin_order_approval(
+    		@RequestParam("approval_type") int approval_type, 
+    		@RequestParam("order_id") String order_id,
+    		@RequestParam("order_sender") String order_sender
+    		){
+        mv = yServ.admin_order_approval(approval_type, order_id, order_sender);
         return mv;
     }
 
@@ -353,11 +357,29 @@ public class YamilyController {
 	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 	
 	/* 지점 관리 */
-	@GetMapping("/adminBranchList")
-	public ModelAndView admin_Branch_List() {
-		log.info("admin_Branch_List()");
-		mv = yServ.getBranchList();
-		return mv;
+	@GetMapping("/adminBranchList") public ModelAndView admin_Branch_List(
+	  @RequestParam(value = "branch_name", required = false) String branch_name,
+	  @RequestParam(value = "branch_owner", required = false) String branch_owner,
+	  @RequestParam(value = "startDate", required = false) String startDate,
+	  @RequestParam(value = "endDate", required = false) String endDate,
+	  @RequestParam(value = "branch_region", required = false) String branch_region,
+	  @RequestParam(name = "pageNum", defaultValue = "1") int pageNum, // 현재 페이지 번호
+	  @RequestParam(name = "pageSize", defaultValue = "10") int pageSize // 페이지 크기
+	  ) { 
+		return yServ.getFilteredBranchList(branch_name, branch_owner, startDate, endDate, branch_region, pageNum, pageSize); 
+	}
+	
+	@PostMapping("/admin/branch/filter")
+	public ModelAndView filterBranches(
+		@RequestParam(value = "branch_name", required = false) String branch_name,
+		@RequestParam(value = "branch_owner", required = false) String branch_owner,
+		@RequestParam(value = "startDate", required = false) String startDate,
+		@RequestParam(value = "endDate", required = false) String endDate,
+		@RequestParam(value = "branch_region", required = false) String branch_region,
+		@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, // 현재 페이지 번호
+		@RequestParam(name = "pageSize", defaultValue = "10") int pageSize // 페이지 크기
+			) { 
+		return yServ.getFilteredBranchList(branch_name, branch_owner, startDate, endDate, branch_region, pageNum, pageSize); 
 	}
 
 	@GetMapping("/admin/branch/detail")
@@ -396,25 +418,7 @@ public class YamilyController {
 		int r = yServ.closedBranch(branch);
 
 		return "redirect:/adminBranchList";
-	}
-
-	@PostMapping("/admin/branch/filter")
-	public ModelAndView filterBranches(@RequestParam(value = "branch_name", required = false) String branch_name,
-			@RequestParam(value = "branch_owner", required = false) String branch_owner,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate,
-			@RequestParam(value = "branch_region", required = false) String branch_region) {
-
-		ModelAndView mv = new ModelAndView();
-
-		// Service 호출
-		List<BranchDTO> bList = yServ.bList(branch_name, branch_owner, startDate, endDate, branch_region);
-
-		mv.addObject("bList", bList);
-		mv.setViewName("adminBranchList");
-
-		return mv;
-	}
+	}	
 
 	@PostMapping("/admin/branch/idCheck")
 	@ResponseBody
@@ -427,11 +431,29 @@ public class YamilyController {
 	/* 거래처 관리 */
 	/* 거래처 목록 */
 	@GetMapping("/admin_Partner_List")
-	public ModelAndView admin_Partner_List() {
-		log.info("admin_Partner_List()");
-		mv = yServ.getPartnerList();
-		return mv;
+	public ModelAndView admin_Partner_List(
+		@RequestParam(value = "partner_name", required = false) String partner_name,
+		@RequestParam(value = "partner_manager", required = false) String partner_manager,
+		@RequestParam(value = "partner_email", required = false) String partner_email,
+		@RequestParam(value = "partner_phone", required = false) String partner_phone,
+		@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, // 현재 페이지 번호
+		@RequestParam(name = "pageSize", defaultValue = "10") int pageSize // 페이지 크기
+	) {
+		return yServ.getFilteredPartnerList(partner_name, partner_manager, partner_email, partner_phone, pageNum, pageSize);
 	}
+	
+	/* 거래처 목록 검색 필터 */
+	@PostMapping("/admin/partner/filter")
+	public ModelAndView filterPartners(
+		@RequestParam(value = "partner_name", required = false) String partner_name,
+		@RequestParam(value = "partner_manager", required = false) String partner_manager,
+		@RequestParam(value = "partner_email", required = false) String partner_email,
+		@RequestParam(value = "partner_phone", required = false) String partner_phone,
+		@RequestParam(name = "pageNum", defaultValue = "1") int pageNum, // 현재 페이지 번호
+		@RequestParam(name = "pageSize", defaultValue = "10") int pageSize // 페이지 크기
+		) {
+			return yServ.getFilteredPartnerList(partner_name, partner_manager, partner_email, partner_phone, pageNum, pageSize);
+		}
 
 	/* 거래처 상세보기 */
 	@GetMapping("/admin/partner/detail")
@@ -475,23 +497,7 @@ public class YamilyController {
 		return "redirect:/admin_Partner_List";
 	}
 
-	/* 거래처 목록 검색 필터 */
-	@PostMapping("/admin/partner/filter")
-	public ModelAndView filterPartners(@RequestParam(value = "partner_name", required = false) String partner_name,
-			@RequestParam(value = "partner_manager", required = false) String partner_manager,
-			@RequestParam(value = "partner_email", required = false) String partner_email,
-			@RequestParam(value = "partner_phone", required = false) String partner_phone) {
-
-		ModelAndView mv = new ModelAndView();
-
-		// Service 호출
-		List<PartnerDTO> pList = yServ.pList(partner_name, partner_manager, partner_email, partner_phone);
-
-		mv.addObject("pList", pList);
-		mv.setViewName("admin_Partner_List");
-
-		return mv;
-	}
+	
 
 	/* 거래처 삭제 */
 	@PostMapping("/admin/partner/delete")
@@ -512,12 +518,14 @@ public class YamilyController {
 
 	/* 서류 관리 */
 	/* 견적서 계약서 목록 */
-	@GetMapping("/admin_Quotation_List")
-	public String getQuotationList(Model model) {
-		List<QuotationDTO> quotations = yServ.getQuotations(); // 서비스에서 리스트 가져오기
-		model.addAttribute("qList", quotations);
-		return "admin_Quotation_List";
-	}
+	/*
+	 * @GetMapping("/admin_Quotation_List") public String getQuotationList(Model
+	 * model) { List<QuotationDTO> quotations = yServ.getQuotations(); // 서비스에서 리스트
+	 * 가져오기 model.addAttribute("qList", quotations); return "admin_Quotation_List";
+	 * }
+	 */
+
+	
 
 	/* 서류 등록 */
 	@PostMapping("/admin/quotation/add")
@@ -527,9 +535,6 @@ public class YamilyController {
 		// 파일 이름 추출
 		if (file != null && !file.isEmpty()) {
 			String originalFileName = file.getOriginalFilename();
-			
-			System.out.println(originalFileName);
-		
 			String safeFileName = originalFileName;
 
 			if (!isAllowedFileType(safeFileName)) {
@@ -548,10 +553,6 @@ public class YamilyController {
 				dir.mkdirs();
 			}
 			File destination = new File(dir, safeFileName);
-			
-			System.out.println(destination);
-
-			
 			file.transferTo(destination);
 		} else {
 			rttr.addFlashAttribute("errorMesssage", "파일을 업로드해야 합니다.");
@@ -584,11 +585,11 @@ public class YamilyController {
 	/* 파일 다운로드 */
 	private final String uploadDir = "C:/local/uploads";
 
-	@GetMapping("/admin/download-file/{fileName}")
+	@GetMapping("/download-file/{fileName}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String fileName) {
 		try {
 			// 요청된 파일 이름을 URL 디코딩
-	        String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+			String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
 
 			// 정규식으로 안전한 파일 이름 변환
 			String safeFileName = decodedFileName.replaceAll("[^a-zA-Z0-9ㄱ-ㅎ가-힣(). _-]", "_");
@@ -641,28 +642,40 @@ public class YamilyController {
 
 		return response;
 	}
-
-	/* quotation 검색 필터 */
-	@PostMapping("/admin/quotation/filter")
-	public ModelAndView filterQuotations(@RequestParam(value = "quotation_id", required = false) String quotationId,
-			@RequestParam(value = "quotation_partnername", required = false) String quotationPartnername,
-			@RequestParam(value = "quotation_hqmanager", required = false) String quotationHqmanager,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate,
-			@RequestParam(value = "searchType", required = false) String searchType) {
-
-		ModelAndView mv = new ModelAndView();
-
-		List<QuotationDTO> qList = yServ.qList(quotationId, quotationPartnername, quotationHqmanager, startDate,
-				endDate, searchType);
-
-		mv.addObject("qList", qList);
-		mv.setViewName("admin_Quotation_List");
-
-		return mv;
+	
+	// quotation 목록
+	@GetMapping("/admin_Quotation_List")
+	public ModelAndView getQuotationList(
+		@RequestParam(value = "quotation_id", required = false) String quotationId,
+        @RequestParam(value = "quotation_partnername", required = false) String quotationPartnername,
+        @RequestParam(value = "quotation_hqmanager", required = false) String quotationHqmanager,
+        @RequestParam(value = "startDate", required = false) String startDate,
+        @RequestParam(value = "endDate", required = false) String endDate,
+        @RequestParam(value = "searchType", required = false) String searchType,
+        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+	) {
+		return yServ.getFilteredQuotationList(quotationId, quotationPartnername, quotationHqmanager, startDate,
+	            endDate, searchType, pageNum, pageSize);
 	}
 
-	/*  quotation_id 중복 체크 */
+	// quotation 검색 필터
+	@PostMapping("/admin/quotation/filter")
+	public ModelAndView filterQuotations(
+	        @RequestParam(value = "quotation_id", required = false) String quotationId,
+	        @RequestParam(value = "quotation_partnername", required = false) String quotationPartnername,
+	        @RequestParam(value = "quotation_hqmanager", required = false) String quotationHqmanager,
+	        @RequestParam(value = "startDate", required = false) String startDate,
+	        @RequestParam(value = "endDate", required = false) String endDate,
+	        @RequestParam(value = "searchType", required = false) String searchType,
+	        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+	        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+
+	    return yServ.getFilteredQuotationList(quotationId, quotationPartnername, quotationHqmanager, startDate,
+	            endDate, searchType, pageNum, pageSize);
+	}
+
+	/* 서류 등록 quotation_id 중복 체크 */
 	@PostMapping("/admin/quotation/idCheck")
 	@ResponseBody
 	public int quotationIdCheck(@RequestParam(value = "quotation_id") String quotation_id) throws Exception {
@@ -673,10 +686,30 @@ public class YamilyController {
 	/* 상품 관리 */
 	/* 상품 관리 리스트 */
 	@GetMapping("/admin_ProductOrder_List")
-	public ModelAndView admin_Order_List() {
-		log.info("admin_ProductOrder_List()");
-		mv = yServ.getOrderList();
-		return mv;
+	public ModelAndView admin_Order_List(
+		@RequestParam(value = "order_id", required = false) String order_id,
+        @RequestParam(value = "order_manager", required = false) String order_manager,
+        @RequestParam(value = "startDate", required = false) String startDate,
+        @RequestParam(value = "endDate", required = false) String endDate,
+        @RequestParam(value = "searchType", required = false) String searchType,
+        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize
+	) {
+		return yServ.getFilteredOrderList(order_id, order_manager, startDate,
+	            endDate, searchType, pageNum, pageSize);
+	}
+	
+	/* productOrder 검색 필터 */
+	@PostMapping("/admin/order/filter")
+	public ModelAndView filterProductOrder(
+			@RequestParam(value = "order_id", required = false) String order_id,
+	        @RequestParam(value = "order_manager", required = false) String order_manager,
+	        @RequestParam(value = "startDate", required = false) String startDate,
+	        @RequestParam(value = "endDate", required = false) String endDate,
+	        @RequestParam(value = "searchType", required = false) String searchType,
+	        @RequestParam(name = "pageNum", defaultValue = "1") int pageNum,
+	        @RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
+		return yServ.getFilteredOrderList(order_id, order_manager, searchType, startDate, endDate, pageNum, pageSize);
 	}
 
 	/* 상품 등록 */
@@ -713,7 +746,7 @@ public class YamilyController {
 	}
 
 	/* 상품 추가 모달 검색 필터 */
-	@GetMapping("/admin/user/order/request/detail")
+	@GetMapping("admin/user/order/request/detail")
 	public ResponseEntity<List<ProductDTO>> order_request_detail(@RequestParam("product_name") String searchKeyword,
 			HttpServletRequest request) throws Exception {
 		request.setCharacterEncoding("UTF-8");
@@ -737,37 +770,469 @@ public class YamilyController {
 
 	// 발주 요청 POST
 	// 점주 발주 요청 완료
-	@PostMapping("/admin/user/order/request")
+	@PostMapping("admin/user/order/request")
 	@ResponseBody
 	public ResponseEntity<String> orderRequest(@RequestBody OrderRequestDTO orderRequest) throws Exception {
-	    // 1. OrderDTO 저장
-	    String orderId = yServ.saveOrder(orderRequest.getOrderDTO());
+		System.out.println("Received OrderRequestDTO: " + orderRequest);
 
-	    // 2. OrderDetailDTO 저장
-	    List<OrderDetailDTO> orderDetails = orderRequest.getOrderDetails();
-	    for (OrderDetailDTO detail : orderDetails) {
-	        detail.setOrderDetail_orderid(orderId); // 메인 발주 ID를 상세 발주에 매핑
-	    }
-	    yServ.saveOrderDetails(orderDetails);
+		// 1. OrderDTO 저장
+		String orderId = yServ.saveOrder(orderRequest.getOrderDTO());
 
-	    return ResponseEntity.ok("발주 요청 저장 성공");
+		// 2. OrderDetailDTO 저장
+		List<OrderDetailDTO> orderDetails = orderRequest.getOrderDetails();
+		for (OrderDetailDTO detail : orderDetails) {
+			detail.setOrderDetail_orderid(orderId); // 메인 발주 ID를 상세 발주에 매핑
+		}
+
+		for (OrderDetailDTO detail : orderDetails) {
+			System.out.println("OrderDetail 수량 확인: " + detail.getOrderDetail_amount());
+		}
+
+		for (OrderDetailDTO detail : orderDetails) {
+			System.out.println("OrderDetail: " + detail);
+		}
+
+		yServ.saveOrderDetails(orderDetails);
+
+		return ResponseEntity.ok("발주 요청 저장 성공");
+	}
+
+	@GetMapping("admin/user/order/list/detail")
+	public ResponseEntity<OrderDTO> listdetail(@RequestParam("order_id") String order_id) {
+		OrderDTO dto = yServ.adminListDetail(order_id);
+
+		if (dto != null) {
+			return ResponseEntity.ok(dto);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+	}
+
+	@GetMapping("admin/user/order/list/detail2")
+	@ResponseBody
+	public List<OrderDetailDTO> adminListDetail2(@RequestParam("orderDetail_orderid") String orderDetail_orderid) {
+		List<OrderDetailDTO> list = yServ.adminListDetail2(orderDetail_orderid);
+		return (list != null) ? list : new ArrayList<>();
 	}
 	
 	
-	  @GetMapping("/admin/user/order/list/detail") public ResponseEntity<OrderDTO>
-	  listdetail(@RequestParam("order_id") String order_id) { OrderDTO dto =
-	  yServ.listdetail(order_id);
-	  
-	  if (dto != null) { return ResponseEntity.ok(dto); } else { return
-	  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); } }
-	 
-
-	  @GetMapping("/admin/user/order/list/detail2")
-	  @ResponseBody
-	  public List<OrderDetailDTO> listdetail_2(@RequestParam("orderDetail_orderid") String orderDetail_orderid) {
-	      List<OrderDetailDTO> list = yServ.listdetail_2(orderDetail_orderid);
-	      return (list != null) ? list : new ArrayList<>();
-	  }
+	
+//	/* 지점 관리 */
+//	@GetMapping("/adminBranchList")
+//	public ModelAndView admin_Branch_List() {
+//		log.info("admin_Branch_List()");
+//		mv = yServ.getBranchList();
+//		return mv;
+//	}
+//
+//	@GetMapping("/admin/branch/detail")
+//	public ResponseEntity<BranchDTO> getBranchDetails(@RequestParam("branch_code") String branch_code) {
+//		BranchDTO dto = yServ.getBranchDetails(branch_code);
+//		if (dto != null) {
+//			// DTO를 JSON으로 반환
+//			return ResponseEntity.ok(dto);
+//		} else {
+//			// 데이터가 없을 경우 HTTP 404 상태 반환
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//		}
+//	}
+//
+//	@PostMapping("/admin/branch/add")
+//	public String addBranch(BranchDTO branch, HttpServletRequest request, RedirectAttributes rttr) throws Exception {
+//		request.setCharacterEncoding("utf-8");
+//
+//		int r = yServ.addBranch(branch);
+//
+//		return "redirect:/adminBranchList";
+//	}
+//
+//	@PostMapping("/admin/branch/modified")
+//	public String modifyBranch(BranchDTO branch, HttpServletRequest request) throws Exception {
+//		request.setCharacterEncoding("UTF-8");
+//
+//		int r = yServ.updateBranch(branch);
+//
+//		return "redirect:/adminBranchList";
+//	}
+//
+//	@PostMapping("/admin/branch/closed")
+//	public String closedBranch(BranchDTO branch) throws Exception {
+//
+//		int r = yServ.closedBranch(branch);
+//
+//		return "redirect:/adminBranchList";
+//	}
+//
+//	@PostMapping("/admin/branch/filter")
+//	public ModelAndView filterBranches(@RequestParam(value = "branch_name", required = false) String branch_name,
+//			@RequestParam(value = "branch_owner", required = false) String branch_owner,
+//			@RequestParam(value = "startDate", required = false) String startDate,
+//			@RequestParam(value = "endDate", required = false) String endDate,
+//			@RequestParam(value = "branch_region", required = false) String branch_region) {
+//
+//		ModelAndView mv = new ModelAndView();
+//
+//		// Service 호출
+//		List<BranchDTO> bList = yServ.bList(branch_name, branch_owner, startDate, endDate, branch_region);
+//
+//		mv.addObject("bList", bList);
+//		mv.setViewName("adminBranchList");
+//
+//		return mv;
+//	}
+//
+//	@PostMapping("/admin/branch/idCheck")
+//	@ResponseBody
+//	public int emailCheck(@RequestParam(value = "branch_id") String branch_id) throws Exception {
+//		int count = yServ.getMemberByEmail(branch_id);
+//		System.out.println("branch_id: " + branch_id + ", count: " + count); // 디버깅 로그
+//		return count;
+//	}
+//
+//	/* 거래처 관리 */
+//	/* 거래처 목록 */
+//	@GetMapping("/admin_Partner_List")
+//	public ModelAndView admin_Partner_List() {
+//		log.info("admin_Partner_List()");
+//		mv = yServ.getPartnerList();
+//		return mv;
+//	}
+//
+//	/* 거래처 상세보기 */
+//	@GetMapping("/admin/partner/detail")
+//	public ResponseEntity<PartnerDTO> getPartnerDetails(@RequestParam("partner_id") String partner_id) {
+//		PartnerDTO dto = yServ.getPartnerDetails(partner_id);
+//		if (dto != null) {
+//			// DTO를 JSON으로 반환
+//			return ResponseEntity.ok(dto);
+//		} else {
+//			// 데이터가 없을 경우 HTTP 404 상태 반환
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//		}
+//	}
+//
+//	/* 거래처 등록 */
+//	@PostMapping("/admin/partner/add")
+//	public String addPartner(PartnerDTO partner, HttpServletRequest request, RedirectAttributes rttr) throws Exception {
+//		request.setCharacterEncoding("utf-8");
+//
+//		int r = yServ.addPartner(partner);
+//
+//		return "redirect:/admin_Partner_List";
+//	}
+//
+//	/* 거래처 아이디 중복 검사 */
+//	@PostMapping("/admin/partner/idCheck")
+//	@ResponseBody
+//	public int partnerIdCheck(@RequestParam(value = "partner_id") String partner_id) throws Exception {
+//		int count = yServ.getPartnerById(partner_id);
+//		System.out.println("partner_id: " + partner_id + ", count: " + count); // 디버깅 로그
+//		return count;
+//	}
+//
+//	/* 거래처 수정 */
+//	@PostMapping("/admin/partner/modified")
+//	public String modifyPartner(PartnerDTO partner, HttpServletRequest request) throws Exception {
+//		request.setCharacterEncoding("UTF-8");
+//
+//		int r = yServ.updatePartner(partner);
+//
+//		return "redirect:/admin_Partner_List";
+//	}
+//
+//	/* 거래처 목록 검색 필터 */
+//	@PostMapping("/admin/partner/filter")
+//	public ModelAndView filterPartners(@RequestParam(value = "partner_name", required = false) String partner_name,
+//			@RequestParam(value = "partner_manager", required = false) String partner_manager,
+//			@RequestParam(value = "partner_email", required = false) String partner_email,
+//			@RequestParam(value = "partner_phone", required = false) String partner_phone) {
+//
+//		ModelAndView mv = new ModelAndView();
+//
+//		// Service 호출
+//		List<PartnerDTO> pList = yServ.pList(partner_name, partner_manager, partner_email, partner_phone);
+//
+//		mv.addObject("pList", pList);
+//		mv.setViewName("admin_Partner_List");
+//
+//		return mv;
+//	}
+//
+//	/* 거래처 삭제 */
+//	@PostMapping("/admin/partner/delete")
+//	public String deletePartners(@RequestParam("selectedIds") String selectedIds, RedirectAttributes redirectAttributes)
+//			throws Exception {
+//		if (selectedIds == null || selectedIds.isEmpty()) {
+//			throw new IllegalArgumentException("No IDs selected for deletion.");
+//		}
+//
+//		String[] partnerIds = selectedIds.split(",");
+//		int result = yServ.deletePartners(partnerIds);
+//
+//		// 삭제 완료 메시지 추가
+//		redirectAttributes.addFlashAttribute("message", "삭제가 완료되었습니다.");
+//
+//		return "redirect:/admin_Partner_List";
+//	}
+//
+//	/* 서류 관리 */
+//	/* 견적서 계약서 목록 */
+//	@GetMapping("/admin_Quotation_List")
+//	public String getQuotationList(Model model) {
+//		List<QuotationDTO> quotations = yServ.getQuotations(); // 서비스에서 리스트 가져오기
+//		model.addAttribute("qList", quotations);
+//		return "admin_Quotation_List";
+//	}
+//
+//	/* 서류 등록 */
+//	@PostMapping("/admin/quotation/add")
+//	public String addQuotation(@ModelAttribute QuotationDTO quotationDTO, @RequestParam("file") MultipartFile file,
+//			RedirectAttributes rttr, HttpServletRequest request) throws Exception {
+//		request.setCharacterEncoding("UTF-8");
+//		// 파일 이름 추출
+//		if (file != null && !file.isEmpty()) {
+//			String originalFileName = file.getOriginalFilename();
+//			
+//			System.out.println(originalFileName);
+//		
+//			String safeFileName = originalFileName;
+//
+//			if (!isAllowedFileType(safeFileName)) {
+//				rttr.addFlashAttribute("alertMessage", "엑셀 또는 워드 파일만 업로드 가능합니다.");
+//				System.out.println("Flash Attribute: 엑셀 또는 워드 파일만 업로드 가능합니다.");
+//				return "redirect:/admin_Quotation_List";
+//			}
+//
+//			// DTO에 파일 이름 설정
+//			quotationDTO.setQuotation_file_name(safeFileName);
+//
+//			// 로컬 파일 저장 (필요하면 사용, 안 하면 주석 처리)
+//			String uploadDir = "C:/local/uploads";
+//			File dir = new File(uploadDir);
+//			if (!dir.exists()) {
+//				dir.mkdirs();
+//			}
+//			File destination = new File(dir, safeFileName);
+//			
+//			System.out.println(destination);
+//
+//			
+//			file.transferTo(destination);
+//		} else {
+//			rttr.addFlashAttribute("errorMesssage", "파일을 업로드해야 합니다.");
+//			return "redirect:/admin/quotation/add";
+//		}
+//
+//		// 서비스 호출
+//		int result = yServ.addQuotation(quotationDTO);
+//		if (result > 0) {
+//			rttr.addFlashAttribute("successMessage", "서류 등록 완료!");
+//		} else {
+//			rttr.addFlashAttribute("errorMessage", "서류 등록 실패. 다시 시도하세요.");
+//		}
+//
+//		return "redirect:/admin_Quotation_List";
+//	}
+//
+//	/**
+//	 * 유효한 파일 확장자인지 검사
+//	 * 
+//	 * @param fileName 파일 이름
+//	 * @return 유효한 경우 true, 그렇지 않으면 false
+//	 */
+//	private boolean isAllowedFileType(String fileName) {
+//		String lowerCaseFileName = fileName.toLowerCase();
+//		return lowerCaseFileName.endsWith(".xlsx") || lowerCaseFileName.endsWith(".xls")
+//				|| lowerCaseFileName.endsWith(".docx") || lowerCaseFileName.endsWith(".doc");
+//	}
+//
+//	/* 파일 다운로드 */
+//	private final String uploadDir = "C:/local/uploads";
+//
+//	@GetMapping("/admin/download-file/{fileName}")
+//	public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String fileName) {
+//		try {
+//			// 요청된 파일 이름을 URL 디코딩
+//	        String decodedFileName = URLDecoder.decode(fileName, StandardCharsets.UTF_8);
+//
+//			// 정규식으로 안전한 파일 이름 변환
+//			String safeFileName = decodedFileName.replaceAll("[^a-zA-Z0-9ㄱ-ㅎ가-힣(). _-]", "_");
+//
+//			// 파일 경로 생성
+//			Path filePath = Paths.get(uploadDir).resolve(safeFileName).normalize();
+//			Resource resource = new UrlResource(filePath.toUri());
+//
+//			// 파일 존재 및 읽기 가능 여부 확인
+//			if (!resource.exists() || !resource.isReadable()) {
+//				throw new RuntimeException("File not found: " + fileName);
+//			}
+//
+//			// 파일 이름 인코딩
+//			String encodedFileName = UriUtils.encode(decodedFileName, "UTF-8");
+//
+//			// 파일 응답 반환
+//			return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+//					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+//					.body(resource);
+//
+//		} catch (Exception e) {
+//			log.error("File download failed", e);
+//			throw new RuntimeException("File download failed", e);
+//		}
+//	}
+//
+//	/* quotation_status 변경 */
+//	@PostMapping("/admin/quotation/updateStatus")
+//	@ResponseBody
+//	public Map<String, Object> updateQuotationStatus(@RequestBody Map<String, Object> requestData) {
+//		Map<String, Object> response = new HashMap<>();
+//
+//		try {
+//			String quotationId = (String) requestData.get("quotationId");
+//			String newStatusString = (String) requestData.get("newStatus");
+//			int newStatus = Integer.parseInt(newStatusString);
+//
+//			// 서비스 호출
+//			int result = yServ.updateQuotationStatus(quotationId, newStatus);
+//
+//			response.put("success", result > 0);
+//		} catch (NumberFormatException e) {
+//			response.put("success", false);
+//			response.put("error", "유효하지 않은 상태 값입니다.");
+//		} catch (Exception e) {
+//			response.put("success", false);
+//			response.put("error", e.getMessage());
+//		}
+//
+//		return response;
+//	}
+//
+//	/* quotation 검색 필터 */
+//	@PostMapping("/admin/quotation/filter")
+//	public ModelAndView filterQuotations(@RequestParam(value = "quotation_id", required = false) String quotationId,
+//			@RequestParam(value = "quotation_partnername", required = false) String quotationPartnername,
+//			@RequestParam(value = "quotation_hqmanager", required = false) String quotationHqmanager,
+//			@RequestParam(value = "startDate", required = false) String startDate,
+//			@RequestParam(value = "endDate", required = false) String endDate,
+//			@RequestParam(value = "searchType", required = false) String searchType) {
+//
+//		ModelAndView mv = new ModelAndView();
+//
+//		List<QuotationDTO> qList = yServ.qList(quotationId, quotationPartnername, quotationHqmanager, startDate,
+//				endDate, searchType);
+//
+//		mv.addObject("qList", qList);
+//		mv.setViewName("admin_Quotation_List");
+//
+//		return mv;
+//	}
+//
+//	/*  quotation_id 중복 체크 */
+//	@PostMapping("/admin/quotation/idCheck")
+//	@ResponseBody
+//	public int quotationIdCheck(@RequestParam(value = "quotation_id") String quotation_id) throws Exception {
+//		int count = yServ.getQuotationById(quotation_id);
+//		return count;
+//	}
+//
+//	/* 상품 관리 */
+//	/* 상품 관리 리스트 */
+//	@GetMapping("/admin_ProductOrder_List")
+//	public ModelAndView admin_Order_List() {
+//		log.info("admin_ProductOrder_List()");
+//		mv = yServ.getOrderList();
+//		return mv;
+//	}
+//
+//	/* 상품 등록 */
+//	// oList 초기화 메서드
+//	@GetMapping("admin_add_ProductOrder")
+//	public ModelAndView admin_add_ProductOrder(Model model) {
+//		ModelAndView mv = new ModelAndView();
+//
+//		List<ProductDTO> pList = yServ.getProductList();
+//
+//		mv.addObject("pList", pList);
+//		mv.setViewName("admin_add_ProductOrder");
+//
+//		return mv;
+//	}
+//
+//	/* 상품 추가 */
+//	@PostMapping("/admin/add/product")
+//	public String addProduct(@RequestParam(value = "product_id", required = false) List<String> productIds,
+//			Model model) {
+//		// 선택된 상품을 DB에 반영하거나 oList로 업데이트
+//		List<ProductDTO> selectedProducts = new ArrayList<>();
+//		for (String productId : productIds) {
+//			ProductDTO product = yServ.getProductById(productId);
+//			if (product != null) {
+//				selectedProducts.add(product);
+//			}
+//		}
+//
+//		// 기존 oList에 반영
+//		model.addAttribute("oList", selectedProducts);
+//
+//		return "admin_add_ProductOrder";
+//	}
+//
+//	/* 상품 추가 모달 검색 필터 */
+//	@GetMapping("/admin/user/order/request/detail")
+//	public ResponseEntity<List<ProductDTO>> order_request_detail(@RequestParam("product_name") String searchKeyword,
+//			HttpServletRequest request) throws Exception {
+//		request.setCharacterEncoding("UTF-8");
+//
+//		List<ProductDTO> products = yServ.order_request_detail(searchKeyword);
+//
+//		if (products != null && !products.isEmpty()) {
+//			return ResponseEntity.ok(products);
+//		} else {
+//			// 404 대신 메시지 반환
+//			return ResponseEntity.ok(Collections.emptyList());
+//		}
+//	}
+//
+//	/* hr 부서 이름 가져오기 */
+//	@GetMapping("/hqmanagers")
+//	@ResponseBody
+//	public List<Map<String, String>> getHQManagers() {
+//		return yServ.getAllHQManagers();
+//	}
+//
+//	// 발주 요청 POST
+//	// 점주 발주 요청 완료
+//	@PostMapping("/admin/user/order/request")
+//	@ResponseBody
+//	public ResponseEntity<String> orderRequest(@RequestBody OrderRequestDTO orderRequest) throws Exception {
+//	    // 1. OrderDTO 저장
+//	    String orderId = yServ.saveOrder(orderRequest.getOrderDTO());
+//
+//	    // 2. OrderDetailDTO 저장
+//	    List<OrderDetailDTO> orderDetails = orderRequest.getOrderDetails();
+//	    for (OrderDetailDTO detail : orderDetails) {
+//	        detail.setOrderDetail_orderid(orderId); // 메인 발주 ID를 상세 발주에 매핑
+//	    }
+//	    yServ.saveOrderDetails(orderDetails);
+//
+//	    return ResponseEntity.ok("발주 요청 저장 성공");
+//	}
+//	
+//	
+//	  @GetMapping("/admin/user/order/list/detail") public ResponseEntity<OrderDTO>
+//	  listdetail(@RequestParam("order_id") String order_id) { OrderDTO dto =
+//	  yServ.listdetail(order_id);
+//	  
+//	  if (dto != null) { return ResponseEntity.ok(dto); } else { return
+//	  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); } }
+//	 
+//
+//	  @GetMapping("/admin/user/order/list/detail2")
+//	  @ResponseBody
+//	  public List<OrderDetailDTO> listdetail_2(@RequestParam("orderDetail_orderid") String orderDetail_orderid) {
+//	      List<OrderDetailDTO> list = yServ.listdetail_2(orderDetail_orderid);
+//	      return (list != null) ? list : new ArrayList<>();
+//	  }
 	  
 	  
 	  

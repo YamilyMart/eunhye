@@ -149,13 +149,43 @@ public class YamilyService {
     }
 
 
-    public ModelAndView admin_order_approval(int approval_type, String order_id) {
+    public ModelAndView admin_order_approval(int approval_type, String order_id, String order_sender) {
     	mv = new ModelAndView();
+    	
+//    	String username = getCurrentUsername();
     	
     	if(approval_type == 0) { //승인 시에 물류창고 재고 감소, 지점 재고 감소
         	List<OrderDetailDTO> list = yDao.admin_order_detail(order_id);
+        	
+        	if (list == null || list.isEmpty()) {
+        	    throw new IllegalStateException("주문 상세 정보가 존재하지 않습니다: order_id=" + order_id);
+        	}
+        	
     		int a = yDao.admin_order_approval_decrease(list);
-    		int b = yDao.admin_order_approval_increase(list);
+    		
+    		//리스트에 아이디 저장
+    		for (int i=0; i<list.size(); i++) {
+    			OrderDetailDTO dto = list.get(i);
+    			dto.setUsername(order_sender);
+    		}
+    		
+    		for (int i=0; i<list.size(); i++) {
+    			OrderDetailDTO dto = list.get(i);
+				String orderDetail_productid = dto.getOrderDetail_productid();
+				
+				Map<String, Object> params = new HashMap<>();
+			    params.put("orderDetail_productid", orderDetail_productid);
+		        params.put("username", order_sender);
+				
+				String b = yDao.admin_order_approval_ex(params);
+	    		if(b == null || b.isEmpty()) { 
+	    			//발주승인하려는 제품이 지점 재고에 없을때는 insert
+	        		int c = yDao.admin_order_approval_insert(list);
+	    		} else { 
+	    			//발주승인하려는 제품이 지점 재고에 있을때는 update
+	        		int d = yDao.admin_order_approval_update(list);
+	    		}
+    		}
     	}
     	
     	int a = yDao.admin_order_approval(approval_type, order_id);
@@ -320,66 +350,232 @@ public class YamilyService {
   	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
   	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
     
-    /*거래처 관리*/
-    public ModelAndView getPartnerList() {
-        log.info("getPartnerList() 호출됨");
+    public ModelAndView getFilteredPartnerList(String partner_name, String partner_manager, String partner_email,
+			String partner_phone, int pageNum, int pageSize) {
+		ModelAndView mv = new ModelAndView("admin_Partner_List");
 
-        ModelAndView mv = new ModelAndView();
-        // DAO에서 데이터 조회
-        List<PartnerDTO> pList = yDao.getPartnerList();
-        
-        log.info("조회된 Partner 수: {}", pList.size());
+		Map<String, Object> params = new HashMap<>();
+		params.put("partner_name",
+				(partner_name != null && !partner_name.trim().isEmpty()) ? partner_name.trim() : null);
+		params.put("partner_manager",
+				(partner_manager != null && !partner_manager.trim().isEmpty()) ? partner_manager.trim() : null);
+		params.put("partner_email",
+				(partner_email != null && !partner_email.trim().isEmpty()) ? partner_email.trim() : null);
+		params.put("partner_phone",
+				(partner_phone != null && !partner_phone.trim().isEmpty()) ? partner_phone.trim() : null);
+		params.put("start", (pageNum - 1) * pageSize);
+		params.put("pageSize", pageSize);
 
-        // 데이터를 ModelAndView에 추가
-        mv.addObject("pList", pList);
-        mv.setViewName("admin_Partner_List"); // "table.html" 템플릿을 반환
-        return mv;
-    }
-    
-    // 상품 주문 목록
-    public ModelAndView getOrderList() {
-    	log.info("getOrderList() 호출됨");
-    	
-    	ModelAndView mv = new ModelAndView();
-    	
-    	List<OrderDTO> oList = yDao.getOrderList();
-    	
-    	log.info("oList 크기: {}", oList.size()); // 로그 확인
-    	log.info("oList 데이터: {}", oList); // 데이터 확인    	
-    	
-    	mv.addObject("oList", oList);
-    	mv.setViewName("admin_ProductOrder_List");
-    	
-    	return mv;
-    }
-    
-    // 지점 목록
-    public ModelAndView getBranchList() {
-    	log.info("getBranchList() 호출됨");
-    	
-    	ModelAndView mv = new ModelAndView();
-    	
-    	List<BranchDTO> bList = yDao.getBranchList();
-    	
-    	log.info("oList 크기: {}", bList.size()); // 로그 확인
-    	log.info("oList 데이터: {}", bList); // 데이터 확인
-    	
-    	mv.addObject("bList", bList);
-    	mv.setViewName("adminBranchList");
-    	
-    	return mv;
-    }
-    
-    // 지점 상세보기
-    public BranchDTO getBranchDetails(String branch_code) {
-        BranchDTO dto = yDao.getBranchDetails(branch_code);
-        return dto;
-    }
-    
-    // 지점 등록
-    public int addBranch(BranchDTO branch) throws Exception {
+		// 전체 데이터 개수 조회
+		int totalCount = yDao.countFilteredPartners(params);
+		
+		// 페이징 계산
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int startPage = Math.max(1, pageNum - 2);
+        int endPage = Math.min(totalPage, pageNum + 2);
+
+		// 페이징 처리된 데이터 조회
+		List<PartnerDTO> pagedPartners = yDao.filterAndPaginatePartners(params);
+
+		// ModelAndView에 데이터 추가
+		mv.addObject("pList", pagedPartners);
+		mv.addObject("currentPage", pageNum);
+		mv.addObject("pageSize", pageSize);
+		mv.addObject("totalCount", totalCount);
+		mv.addObject("totalPage", totalPage);
+	    mv.addObject("partner_name", partner_name);
+	    mv.addObject("partner_manager", partner_manager);
+	    mv.addObject("partner_email", partner_email);
+	    mv.addObject("partner_phone", partner_phone);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage);
+
+		return mv;
+	}
+	
+	/*
+	public ModelAndView getOrderList() {
+		log.info("getOrderList() 호출됨");
+		ModelAndView mv = new ModelAndView();
+		List<OrderDTO> oList = yDao.getOrderList();
+		log.info("oList 크기: {}", oList.size()); // 로그 확인
+		log.info("oList 데이터: {}", oList); // 데이터 확인
+		mv.addObject("oList", oList);
+		mv.setViewName("admin_ProductOrder_List");
+		return mv;
+	}
+	*/
+
+	// 상품 주문 목록
+	/*
+	 * public ModelAndView getOrderList(String order_id, String order_manager,
+	 * String startDate, String endDate, String searchType, int pageNum, int
+	 * pageSize) { ModelAndView mv = new ModelAndView("admin_ProductOrder_List");
+	 * Map<String, Object> params = new HashMap<>(); params.put("order_id",
+	 * (order_id != null && !order_id.isEmpty()) ? order_id.trim() : null);
+	 * params.put("order_manager", (order_manager != null &&
+	 * !order_manager.isEmpty()) ? order_manager.trim() : null);
+	 * params.put("order_manager", (order_manager != null &&
+	 * !order_manager.isEmpty()) ? order_manager.trim() : null);
+	 * params.put("searchType", (searchType != null && !searchType.isEmpty()) ?
+	 * searchType.trim() : null); params.put("startDate", null);
+	 * params.put("endDate", null); params.put("start", (pageNum - 1) * pageSize);
+	 * params.put("pageSize", pageSize); // 전체 데이터 개수 조회 int totalCount =
+	 * yDao.countFilteredOrders(params); // 페이징 처리된 데이터 조회 List<OrderDTO>
+	 * pagedOrders = yDao.filterAndPaginateOrders(params);
+	 * 
+	 * // 페이지 관련 계산 int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	 * int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지 int endPage
+	 * = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+	 * 
+	 * // ModelAndView에 데이터 추가 mv.addObject("oList", pagedOrders);
+	 * mv.addObject("currentPage", pageNum); mv.addObject("pageSize", pageSize);
+	 * mv.addObject("totalCount", totalCount); mv.addObject("totalPage", totalPage);
+	 * mv.addObject("order_id", order_id); mv.addObject("order_manager",
+	 * order_manager); mv.addObject("searchType", searchType);
+	 * mv.addObject("startPage", startPage); mv.addObject("endPage", endPage);
+	 * return mv; }
+	 */
+	 
+
+	public ModelAndView getFilteredOrderList(String order_id, String order_manager, String searchType, String startDate,
+			String endDate, int pageNum, int pageSize) {
+		ModelAndView mv = new ModelAndView("admin_ProductOrder_List");
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("order_id", (order_id != null && !order_id.trim().isEmpty()) ? order_id.trim() : null);
+		params.put("order_manager",
+				(order_manager != null && !order_manager.trim().isEmpty()) ? order_manager.trim() : null);
+		params.put("searchType", (searchType != null && !searchType.trim().isEmpty()) ? searchType.trim() : null);
+		params.put("startDate", (startDate != null && !startDate.trim().isEmpty()) ? startDate.trim() : null);
+		params.put("endDate", (endDate != null && !endDate.trim().isEmpty()) ? endDate.trim() : null);
+		params.put("start", (pageNum - 1) * pageSize);
+		params.put("pageSize", pageSize);
+
+		// 전체 데이터 개수 조회
+		int totalCount = yDao.adminCountFilteredOrders(params);
+		
+		 // 페이징 계산
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int startPage = Math.max(1, pageNum - 2);
+        int endPage = Math.min(totalPage, pageNum + 2);
+
+		// 페이징 처리된 데이터 조회
+		List<OrderDTO> pagedOrders = yDao.filterAndPaginateOrders(params);
+
+		// ModelAndView에 데이터 추가
+		mv.addObject("oList", pagedOrders);
+		mv.addObject("currentPage", pageNum);
+		mv.addObject("pageSize", pageSize);
+		mv.addObject("totalCount", totalCount);
+		mv.addObject("totalPage", totalPage);
+	    mv.addObject("order_id", order_id);
+	    mv.addObject("order_manager", order_manager);
+	    mv.addObject("searchType", searchType);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage);
+
+		return mv;
+	}
+	
+	
+
+	// 지점 목록
+	/*
+	 * public ModelAndView getBranchList() { log.info("getBranchList() 호출됨");
+	 * 
+	 * ModelAndView mv = new ModelAndView();
+	 * 
+	 * List<BranchDTO> bList = yDao.getBranchList();
+	 * 
+	 * log.info("oList 크기: {}", bList.size()); // 로그 확인 log.info("oList 데이터: {}",
+	 * bList); // 데이터 확인
+	 * 
+	 * mv.addObject("bList", bList); mv.setViewName("adminBranchList");
+	 * 
+	 * return mv; }
+	 */
+
+	// 지점 목록
+	/*
+	 * public ModelAndView getBranchList(int pageNum, int pageSize) { ModelAndView
+	 * mv = new ModelAndView("adminBranchList");
+	 * 
+	 * Map<String, Object> params = new HashMap<>(); params.put("branch_name",
+	 * null); // 검색 조건 없음 params.put("branch_owner", null); params.put("startDate",
+	 * null); params.put("endDate", null); params.put("start", (pageNum - 1) *
+	 * pageSize); params.put("pageSize", pageSize);
+	 * 
+	 * // 전체 데이터 개수 조회 int totalCount = yDao.countFilteredBranchs(params);
+	 * 
+	 * // 페이징 처리된 데이터 조회 List<BranchDTO> pagedBranchs =
+	 * yDao.filterAndPaginateBranchs(params);
+	 * 
+	 * // 페이지 관련 계산 int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	 * int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지 int endPage
+	 * = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+	 * 
+	 * // ModelAndView에 데이터 추가 mv.addObject("bList", pagedBranchs);
+	 * mv.addObject("currentPage", pageNum); mv.addObject("pageSize", pageSize);
+	 * mv.addObject("totalCount", totalCount); mv.addObject("totalPage", totalPage);
+	 * mv.addObject("startPage", startPage); // 추가 mv.addObject("endPage", endPage);
+	 * // 추가
+	 * 
+	 * return mv; }
+	 */
+
+	// 지점 검색 필터 페이징
+	public ModelAndView getFilteredBranchList(String branch_name, String branch_owner, String startDate, String endDate, String branch_region,
+			int pageNum, int pageSize) {
+		ModelAndView mv = new ModelAndView("adminBranchList");
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("branch_name", (branch_name != null && !branch_name.trim().isEmpty()) ? branch_name.trim() : null);
+		params.put("branch_owner",
+				(branch_owner != null && !branch_owner.trim().isEmpty()) ? branch_owner.trim() : null);
+		params.put("branch_region",
+				(branch_region != null && !branch_region.trim().isEmpty()) ? branch_region.trim() : null);
+		params.put("startDate", (startDate != null && !startDate.trim().isEmpty()) ? startDate.trim() : null);
+		params.put("endDate", (endDate != null && !endDate.trim().isEmpty()) ? endDate.trim() : null);
+		params.put("start", (pageNum - 1) * pageSize);
+		params.put("pageSize", pageSize);
+
+		// 전체 데이터 개수 조회
+		int totalCount = yDao.countFilteredBranchs(params);
+
+		// 페이징 처리된 데이터 조회
+		List<BranchDTO> pagedBranchs = yDao.filterAndPaginateBranchs(params);
+		
+		 // 페이징 계산
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int startPage = Math.max(1, pageNum - 2);
+        int endPage = Math.min(totalPage, pageNum + 2);
+
+		// ModelAndView에 데이터 추가
+		mv.addObject("bList", pagedBranchs);
+		mv.addObject("currentPage", pageNum);
+		mv.addObject("pageSize", pageSize);
+		mv.addObject("totalCount", totalCount);
+		mv.addObject("totalPage", totalPage);
+	    mv.addObject("branch_name", branch_name);
+	    mv.addObject("branch_owner", branch_owner);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage);
+	    mv.addObject("branch_region", branch_region);
+
+		return mv;
+	}
+
+	// 지점 상세보기
+	public BranchDTO getBranchDetails(String branch_code) {
+		BranchDTO dto = yDao.getBranchDetails(branch_code);
+		return dto;
+	}
+
+	// 지점 등록
+	public int addBranch(BranchDTO branch) throws Exception {
 		// TODO Auto-generated method stub
-		 // 중복 확인 로직 추가
+		// 중복 확인 로직 추가
 		/*
 		 * Map<String, Object> userMap = new HashMap<>(); userMap.put("user_id",
 		 * member.getUser_id());
@@ -391,184 +587,543 @@ public class YamilyService {
 		 * System.out.println("회원 추가 됩니다잉" + userMap);
 		 */
 
-	    // 중복되지 않은 경우 INSERT 수행
-    	
-    	//user 테이블에 암호화된 비번이랑 아이디, 권한 추가
-    	User user = new User();
-    	user.setPassword(bCryptPasswordEncoder.encode(branch.getBranch_pwd()));
-    	user.setRole("ROLE_BRANCH");
-    	user.setUsername(branch.getBranch_id());
-        yDao.userSave(user);
-    	
-    	 return yDao.addBranch(branch);
+		// 중복되지 않은 경우 INSERT 수행
+		return yDao.addBranch(branch);
 	}
-    
-    // 지점 수정
-    public int updateBranch(BranchDTO branch) throws Exception {
 
-    	//user 테이블 비번 수정
-    	User user = new User();
-    	user.setPassword(bCryptPasswordEncoder.encode(branch.getBranch_pwd()));
-    	user.setUsername(branch.getBranch_id());
-    	yDao.userUpdate(user);
-    	
-    	return yDao.updateBranch(branch);
-    }
-    
-    // 지점 폐업
-    public int closedBranch(BranchDTO branch) throws Exception {
-    	return yDao.closedBranch(branch);
-    }
-    
-    // 지점 검색 필터
-    public List<BranchDTO> bList(String branch_name, String branch_owner, String startDate, String endDate, String branch_region) {
-        Map<String, String> params = new HashMap<>();
-        params.put("branch_name", branch_name);
-        params.put("branch_owner", branch_owner);
-        params.put("startDate", startDate);
-        params.put("endDate", endDate);
-        params.put("branch_region", branch_region);
-
-        return yDao.bList(params);
-    }
-    
-	// 지점 아이디 중복 검사
-    public int getMemberByEmail(String branch_id) throws Exception {
-        int count = yDao.idCheck(branch_id);
-        System.out.println("Service - branch_id: " + branch_id + ", count: " + count); // 디버깅 로그
-        return count;
-    }
-    
-    /*거래처 관리*/
-    public PartnerDTO getPartnerDetails(String partner_id) {
-        PartnerDTO dto = yDao.getPartnerDetails(partner_id);
-        return dto;
-    }
-    
-    /*거래처 등록*/
-    public int addPartner(PartnerDTO partner) throws Exception {
-    	 return yDao.addPartner(partner);
+	// 지점 수정
+	public int updateBranch(BranchDTO branch) throws Exception {
+		return yDao.updateBranch(branch);
 	}
-    
-    // 거래처 아이디 중복 검사
-    public int getPartnerById(String partner_id) throws Exception {
-        int count = yDao.partnerIdCheck(partner_id);
-        System.out.println("Service - partner_id: " + partner_id + ", count: " + count); // 디버깅 로그
-        return count;
-    }
-    
-    // 거래처 수정
-    public int updatePartner(PartnerDTO partner) throws Exception {
-    	return yDao.updatePartner(partner);
-    }
-    
-    // 거래처 목록 검색 필터
-    public List<PartnerDTO> pList(String partner_name, String partner_manager, String partner_email, String partner_phone) {
-        Map<String, String> params = new HashMap<>();
-        params.put("partner_name", partner_name);
-        params.put("partner_manager", partner_manager);
-        params.put("partner_email", partner_email);
-        params.put("partner_phone", partner_phone);
 
-        return yDao.pList(params);
-    }
-    
-    // 거래처 삭제
-    public int deletePartners(String[] partnerIds) throws Exception {
-        return yDao.deletePartners(partnerIds);
-    }
-    
-    // 서류 관리
-    public List<QuotationDTO> getQuotations() {
-        List<QuotationDTO> qList = yDao.getQuotationList();
-
-        // URL 인코딩 처리
-        qList.forEach(q -> {
-            if (q.getQuotation_file_name() != null) {
-                try {
-                    q.setQuotation_file_name(URLEncoder.encode(q.getQuotation_file_name(), StandardCharsets.UTF_8));
-                } catch (Exception e) {
-                    log.error("파일 이름 URL 인코딩 중 오류 발생: {}",e);
-                }
-            }
-        });
-
-        return qList;
-    }
-    
-    // 서류 등록
-    public int addQuotation(QuotationDTO quotation) throws Exception {
-   	 return yDao.addQuotation(quotation);
+	// 지점 폐업
+	public int closedBranch(BranchDTO branch) throws Exception {
+		return yDao.closedBranch(branch);
 	}
-    
-    // quotation_stauts 변경
-    public int updateQuotationStatus(String quotationId, int newStatus) {
-        return yDao.updateQuotationStatus(quotationId, newStatus);
-    }
-    
-    // quotation 검색 필터
-    public List<QuotationDTO> qList(String quotation_id, String quotation_partnername, String quotation_hqmanager,
-            String startDate, String endDate, String searchType) {
+
+	// 지점 검색 필터
+	public List<BranchDTO> bList(String branch_name, String branch_owner, String startDate, String endDate,
+			String branch_region) {
 		Map<String, String> params = new HashMap<>();
-		
-		if (quotation_id != null && !quotation_id.isEmpty()) params.put("quotation_id", quotation_id);
-		if (quotation_partnername != null && !quotation_partnername.isEmpty()) params.put("quotation_partnername", quotation_partnername);
-		if (quotation_hqmanager != null && !quotation_hqmanager.isEmpty()) params.put("quotation_hqmanager", quotation_hqmanager);
-		if (startDate != null && !startDate.isEmpty()) params.put("startDate", startDate);
-		if (endDate != null && !endDate.isEmpty()) params.put("endDate", endDate);
-		if (searchType != null && !searchType.isEmpty()) params.put("searchType", searchType);
-		
+		params.put("branch_name", branch_name);
+		params.put("branch_owner", branch_owner);
+		params.put("startDate", startDate);
+		params.put("endDate", endDate);
+		params.put("branch_region", branch_region);
+
+		return yDao.bList(params);
+	}
+
+	// 지점 아이디 중복 검사
+	public int getMemberByEmail(String branch_id) throws Exception {
+		int count = yDao.idCheck(branch_id);
+		System.out.println("Service - branch_id: " + branch_id + ", count: " + count); // 디버깅 로그
+		return count;
+	}
+
+	/* 거래처 관리 */
+	public PartnerDTO getPartnerDetails(String partner_id) {
+		PartnerDTO dto = yDao.getPartnerDetails(partner_id);
+		return dto;
+	}
+
+	/* 거래처 등록 */
+	public int addPartner(PartnerDTO partner) throws Exception {
+		return yDao.addPartner(partner);
+	}
+
+	// 거래처 아이디 중복 검사
+	public int getPartnerById(String partner_id) throws Exception {
+		int count = yDao.partnerIdCheck(partner_id);
+		System.out.println("Service - partner_id: " + partner_id + ", count: " + count); // 디버깅 로그
+		return count;
+	}
+
+	// 거래처 수정
+	public int updatePartner(PartnerDTO partner) throws Exception {
+		return yDao.updatePartner(partner);
+	}
+
+	// 거래처 목록 검색 필터
+	public List<PartnerDTO> pList(String partner_name, String partner_manager, String partner_email,
+			String partner_phone) {
+		Map<String, String> params = new HashMap<>();
+		params.put("partner_name", partner_name);
+		params.put("partner_manager", partner_manager);
+		params.put("partner_email", partner_email);
+		params.put("partner_phone", partner_phone);
+
+		return yDao.pList(params);
+	}
+
+	// 거래처 삭제
+	public int deletePartners(String[] partnerIds) throws Exception {
+		return yDao.deletePartners(partnerIds);
+	}
+
+	// 서류 관리
+	public List<QuotationDTO> getQuotations() {
+		List<QuotationDTO> qList = yDao.getQuotationList();
+
+		// URL 인코딩 처리
+		qList.forEach(q -> {
+			if (q.getQuotation_file_name() != null) {
+				try {
+					q.setQuotation_file_name(URLEncoder.encode(q.getQuotation_file_name(), StandardCharsets.UTF_8));
+				} catch (Exception e) {
+					log.error("파일 이름 URL 인코딩 중 오류 발생: {}", e);
+				}
+			}
+		});
+
+		return qList;
+	}
+	
+	/*
+	 * public ModelAndView getQuotationList(int pageNum, int pageSize) { return
+	 * getQuotationList(null, null, null, null, null, null, pageNum, pageSize); }
+	 */
+
+	// 서류 관리
+	/*
+	 * public ModelAndView getQuotationList(String quotationId, String
+	 * quotationPartnername, String quotationHqmanager, String startDate, String
+	 * endDate, String searchType, int pageNum, int pageSize) { ModelAndView mv =
+	 * new ModelAndView("admin_Quotation_List");
+	 * 
+	 * // ✅ 기본값 보장 (LIMIT 오류 방지) if (pageSize <= 0) { pageSize = 10; } int start =
+	 * Math.max(0, (pageNum - 1) * pageSize);
+	 * 
+	 * Map<String, Object> params = new HashMap<>(); params.put("quotation_id",
+	 * null); // 검색 조건 없음 params.put("quotation_partnername", null);
+	 * params.put("quotation_hqmanager", null); params.put("startDate", null);
+	 * params.put("endDate", null); params.put("searchType", null);
+	 * params.put("start", (pageNum - 1) * pageSize); params.put("pageSize",
+	 * pageSize);
+	 * 
+	 * // 전체 데이터 개수 조회 int totalCount = yDao.countFilteredQuotations(params);
+	 * 
+	 * // 페이징 처리된 데이터 조회 List<QuotationDTO> pagedOrders =
+	 * yDao.filterAndPaginateQuotations(params);
+	 * 
+	 * // URL 인코딩 처리 추가 pagedOrders.forEach(q -> { if (q != null &&
+	 * q.getQuotation_file_name() != null) { try {
+	 * q.setQuotation_file_name(URLEncoder.encode(q.getQuotation_file_name(),
+	 * StandardCharsets.UTF_8)); } catch (Exception e) {
+	 * log.error("파일 이름 URL 인코딩 중 오류 발생: {}", e); } } });
+	 * 
+	 * // 페이지 관련 계산 int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+	 * int startPage = Math.max(1, pageNum - 2); // 현재 페이지 기준 이전 2개 페이지 int endPage
+	 * = Math.min(totalPage, pageNum + 2); // 현재 페이지 기준 이후 2개 페이지
+	 * 
+	 * // ModelAndView에 데이터 추가 mv.addObject("qList", pagedOrders);
+	 * mv.addObject("currentPage", pageNum); mv.addObject("pageSize", pageSize);
+	 * mv.addObject("totalCount", totalCount); mv.addObject("totalPage", totalPage);
+	 * mv.addObject("startPage", startPage); // 추가 mv.addObject("endPage", endPage);
+	 * // 추가 mv.addObject("start", start); // 추가 mv.addObject("pageSize", pageSize);
+	 * // 추가
+	 * 
+	 * return mv; }
+	 */
+
+	public ModelAndView getFilteredQuotationList(String quotation_id, String quotation_partnername,
+	        String quotation_hqmanager, String startDate, String endDate, 
+	        String searchType, int pageNum, int pageSize) {
+	    ModelAndView mv = new ModelAndView("admin_Quotation_List");
+	   
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("quotation_id", (quotation_id != null && !quotation_id.isEmpty()) ? quotation_id.trim() : null);
+	    params.put("quotation_partnername", (quotation_partnername != null && !quotation_partnername.isEmpty()) ? quotation_partnername.trim() : null);
+	    params.put("quotation_hqmanager", (quotation_hqmanager != null && !quotation_hqmanager.isEmpty()) ? quotation_hqmanager.trim() : null);
+	    params.put("startDate", (startDate != null && !startDate.isEmpty()) ? startDate : null);
+        params.put("endDate", (endDate != null && !endDate.isEmpty()) ? endDate : null);
+	    params.put("searchType", (searchType != null && !searchType.isEmpty()) ? searchType.trim() : null);
+	    params.put("start", (pageNum - 1) * pageSize);
+	    params.put("pageSize", pageSize);
+
+	    // 🔥 전체 데이터 개수 조회
+	    int totalCount = yDao.countFilteredQuotations(params);
+	    System.out.println("🔥 Total Count: " + totalCount); // 디버깅
+	    System.out.println("🔥 Page Size: " + pageSize); // 디버깅
+
+	    // 페이징 계산
+        int totalPage = (int) Math.ceil((double) totalCount / pageSize);
+        int startPage = Math.max(1, pageNum - 2);
+        int endPage = Math.min(totalPage, pageNum + 2);
+
+	    // 🔥 페이징 처리된 데이터 조회
+	    List<QuotationDTO> pagedOrders = yDao.filterAndPaginateQuotations(params);
+	    System.out.println("🔥 Retrieved Orders: " + pagedOrders.size()); // 디버깅
+
+	    // 🔥 ModelAndView에 데이터 추가
+	    mv.addObject("qList", pagedOrders);
+	    mv.addObject("currentPage", pageNum);
+	    mv.addObject("pageSize", pageSize);
+	    mv.addObject("totalCount", totalCount);
+	    mv.addObject("totalPage", totalPage);
+	    mv.addObject("quotation_id", quotation_id);
+	    mv.addObject("quotation_partnername", quotation_partnername);
+	    mv.addObject("quotation_hqmanager", quotation_hqmanager);
+	    mv.addObject("searchType", searchType);
+	    mv.addObject("startPage", startPage);
+	    mv.addObject("endPage", endPage);
+	    
+	    return mv;
+	}
+
+
+	// 서류 등록
+	public int addQuotation(QuotationDTO quotation) throws Exception {
+		return yDao.addQuotation(quotation);
+	}
+
+	// quotation_stauts 변경
+	public int updateQuotationStatus(String quotationId, int newStatus) {
+		return yDao.updateQuotationStatus(quotationId, newStatus);
+	}
+
+	// quotation 검색 필터
+	public List<QuotationDTO> qList(String quotation_id, String quotation_partnername, String quotation_hqmanager,
+			String startDate, String endDate, String searchType, int pageNum, int pageSize) {
+		Map<String, String> params = new HashMap<>();
+
+		if (quotation_id != null && !quotation_id.isEmpty())
+			params.put("quotation_id", quotation_id);
+		if (quotation_partnername != null && !quotation_partnername.isEmpty())
+			params.put("quotation_partnername", quotation_partnername);
+		if (quotation_hqmanager != null && !quotation_hqmanager.isEmpty())
+			params.put("quotation_hqmanager", quotation_hqmanager);
+		if (startDate != null && !startDate.isEmpty())
+			params.put("startDate", startDate);
+		if (endDate != null && !endDate.isEmpty())
+			params.put("endDate", endDate);
+		if (searchType != null && !searchType.isEmpty())
+			params.put("searchType", searchType);
+
 		return yDao.qList(params);
-		}
-    
-    // quotation_id 중복 체크
-    public int getQuotationById(String quotation_id) throws Exception {
-        int count = yDao.quotationIdCheck(quotation_id);
-        return count;
-    }
-    
-    // 상품 등록 GET
+	}
+
+	// quotation_id 중복 체크
+	public int getQuotationById(String quotation_id) throws Exception {
+		int count = yDao.quotationIdCheck(quotation_id);
+		return count;
+	}
+
+	// 상품 등록 GET
 //    public int getAddOrder(OrderDTO order) throws Exception {
 //    	return yDao.getAddOrder(order);
 //    }
-    
-    public List<ProductDTO> getProductList() {
-    	return yDao.getProductList();
-    }
-    
-    public ProductDTO getProductById(String productId) {
-        return yDao.findProductById(productId);
-    }
-    
-    public List<ProductDTO> order_request_detail(String searchKeyword) {
-    	return yDao.order_request_detail(searchKeyword);
-    }
-    
-    // hr부서 이름 가져오기
-    public List<Map<String, String>> getAllHQManagers() {
-        return yDao.getAllHQManagers();
-    }
-    
-    //점주 발주 요청 완료
-    public String saveOrder(OrderDTO orderDTO) throws Exception {
-        yDao.insertOrder(orderDTO);
-        return orderDTO.getOrder_id(); // 발주 ID 반환
-    }
-    
-    public OrderDTO listdetail(String order_id) {
-        return yDao.listdetail(order_id);
-    }
 
-    public List<OrderDetailDTO> listdetail_2(String orderDetail_orderid) {
-        return yDao.listdetail_2(orderDetail_orderid);
-    }
-    
-	
-	public void saveOrderDetails(List<OrderDetailDTO> orderDetails) throws Exception{ 
-		for (OrderDetailDTO detail : orderDetails) {
-			yDao.insertOrderDetail(detail); 
-		} 
+	public List<ProductDTO> getProductList() {
+		return yDao.getProductList();
 	}
+
+	public ProductDTO getProductById(String productId) {
+		return yDao.findProductById(productId);
+	}
+
+	public List<ProductDTO> order_request_detail(String searchKeyword) {
+		return yDao.order_request_detail(searchKeyword);
+	}
+
+	// hr부서 이름 가져오기
+	public List<Map<String, String>> getAllHQManagers() {
+		return yDao.getAllHQManagers();
+	}
+
+	// 점주 발주 요청 완료
+	public String saveOrder(OrderDTO orderDTO) throws Exception {
+		yDao.insertOrder(orderDTO);
+		return orderDTO.getOrder_id(); // 발주 ID 반환
+	}
+
+	public void saveOrderDetails(List<OrderDetailDTO> orderDetails) throws Exception {
+		String orderId = orderDetails.get(0).getOrderDetail_orderid();
+
+		int count = 0;
+
+		for (OrderDetailDTO detail : orderDetails) {
+			count += 1;
+			yDao.insertOrderDetail(detail);
+			yDao.adminUpdateStock(detail);
+		}
+
+		yDao.adminUpdateOrderAmount(orderId, count);
+	}
+
+	public OrderDTO adminListDetail(String order_id) {
+		return yDao.adminListDetail(order_id);
+	}
+
+	public List<OrderDetailDTO> adminListDetail2(String orderDetail_orderid) {
+		return yDao.adminListDetail2(orderDetail_orderid);
+	}
+
+	// 상품 목록 검색 필터
+	public List<OrderDTO> oList(String order_id, String order_manager, String searchType, String startDate,
+			String endDate) {
+		Map<String, String> params = new HashMap<>();
+		params.put("order_id", order_id != null ? order_id.trim() : "");
+		params.put("order_manager", order_manager != null ? order_manager.trim() : "");
+		params.put("searchType", searchType != null ? searchType : "");
+		params.put("startDate", startDate != null ? startDate : "");
+		params.put("endDate", endDate != null ? endDate : "");
+
+		return yDao.pOList(params);
+	}
+    
+    
+    
+    
+//    /*거래처 관리*/
+//    public ModelAndView getPartnerList() {
+//        log.info("getPartnerList() 호출됨");
+//
+//        ModelAndView mv = new ModelAndView();
+//        // DAO에서 데이터 조회
+//        List<PartnerDTO> pList = yDao.getPartnerList();
+//        
+//        log.info("조회된 Partner 수: {}", pList.size());
+//
+//        // 데이터를 ModelAndView에 추가
+//        mv.addObject("pList", pList);
+//        mv.setViewName("admin_Partner_List"); // "table.html" 템플릿을 반환
+//        return mv;
+//    }
+//    
+//    // 상품 주문 목록
+//    public ModelAndView getOrderList() {
+//    	log.info("getOrderList() 호출됨");
+//    	
+//    	ModelAndView mv = new ModelAndView();
+//    	
+//    	List<OrderDTO> oList = yDao.getOrderList();
+//    	
+//    	log.info("oList 크기: {}", oList.size()); // 로그 확인
+//    	log.info("oList 데이터: {}", oList); // 데이터 확인    	
+//    	
+//    	mv.addObject("oList", oList);
+//    	mv.setViewName("admin_ProductOrder_List");
+//    	
+//    	return mv;
+//    }
+//    
+//    // 지점 목록
+//    public ModelAndView getBranchList() {
+//    	log.info("getBranchList() 호출됨");
+//    	
+//    	ModelAndView mv = new ModelAndView();
+//    	
+//    	List<BranchDTO> bList = yDao.getBranchList();
+//    	
+//    	log.info("oList 크기: {}", bList.size()); // 로그 확인
+//    	log.info("oList 데이터: {}", bList); // 데이터 확인
+//    	
+//    	mv.addObject("bList", bList);
+//    	mv.setViewName("adminBranchList");
+//    	
+//    	return mv;
+//    }
+//    
+//    // 지점 상세보기
+//    public BranchDTO getBranchDetails(String branch_code) {
+//        BranchDTO dto = yDao.getBranchDetails(branch_code);
+//        return dto;
+//    }
+//    
+//    // 지점 등록
+//    public int addBranch(BranchDTO branch) throws Exception {
+//		// TODO Auto-generated method stub
+//		 // 중복 확인 로직 추가
+//		/*
+//		 * Map<String, Object> userMap = new HashMap<>(); userMap.put("user_id",
+//		 * member.getUser_id());
+//		 * 
+//		 * Map<String, Object> foundUser = catDogDAO.login(userMap); if (foundUser !=
+//		 * null) { throw new RuntimeException("Duplicate user_id: " +
+//		 * member.getUser_id()); }
+//		 * 
+//		 * System.out.println("회원 추가 됩니다잉" + userMap);
+//		 */
+//
+//	    // 중복되지 않은 경우 INSERT 수행
+//    	
+//    	//user 테이블에 암호화된 비번이랑 아이디, 권한 추가
+//    	User user = new User();
+//    	user.setPassword(bCryptPasswordEncoder.encode(branch.getBranch_pwd()));
+//    	user.setRole("ROLE_BRANCH");
+//    	user.setUsername(branch.getBranch_id());
+//        yDao.userSave(user);
+//    	
+//    	 return yDao.addBranch(branch);
+//	}
+//    
+//    // 지점 수정
+//    public int updateBranch(BranchDTO branch) throws Exception {
+//
+//    	//user 테이블 비번 수정
+//    	User user = new User();
+//    	user.setPassword(bCryptPasswordEncoder.encode(branch.getBranch_pwd()));
+//    	user.setUsername(branch.getBranch_id());
+//    	yDao.userUpdate(user);
+//    	
+//    	return yDao.updateBranch(branch);
+//    }
+//    
+//    // 지점 폐업
+//    public int closedBranch(BranchDTO branch) throws Exception {
+//    	return yDao.closedBranch(branch);
+//    }
+//    
+//    // 지점 검색 필터
+//    public List<BranchDTO> bList(String branch_name, String branch_owner, String startDate, String endDate, String branch_region) {
+//        Map<String, String> params = new HashMap<>();
+//        params.put("branch_name", branch_name);
+//        params.put("branch_owner", branch_owner);
+//        params.put("startDate", startDate);
+//        params.put("endDate", endDate);
+//        params.put("branch_region", branch_region);
+//
+//        return yDao.bList(params);
+//    }
+//    
+//	// 지점 아이디 중복 검사
+//    public int getMemberByEmail(String branch_id) throws Exception {
+//        int count = yDao.idCheck(branch_id);
+//        System.out.println("Service - branch_id: " + branch_id + ", count: " + count); // 디버깅 로그
+//        return count;
+//    }
+//    
+//    /*거래처 관리*/
+//    public PartnerDTO getPartnerDetails(String partner_id) {
+//        PartnerDTO dto = yDao.getPartnerDetails(partner_id);
+//        return dto;
+//    }
+//    
+//    /*거래처 등록*/
+//    public int addPartner(PartnerDTO partner) throws Exception {
+//    	 return yDao.addPartner(partner);
+//	}
+//    
+//    // 거래처 아이디 중복 검사
+//    public int getPartnerById(String partner_id) throws Exception {
+//        int count = yDao.partnerIdCheck(partner_id);
+//        System.out.println("Service - partner_id: " + partner_id + ", count: " + count); // 디버깅 로그
+//        return count;
+//    }
+//    
+//    // 거래처 수정
+//    public int updatePartner(PartnerDTO partner) throws Exception {
+//    	return yDao.updatePartner(partner);
+//    }
+//    
+//    // 거래처 목록 검색 필터
+//    public List<PartnerDTO> pList(String partner_name, String partner_manager, String partner_email, String partner_phone) {
+//        Map<String, String> params = new HashMap<>();
+//        params.put("partner_name", partner_name);
+//        params.put("partner_manager", partner_manager);
+//        params.put("partner_email", partner_email);
+//        params.put("partner_phone", partner_phone);
+//
+//        return yDao.pList(params);
+//    }
+//    
+//    // 거래처 삭제
+//    public int deletePartners(String[] partnerIds) throws Exception {
+//        return yDao.deletePartners(partnerIds);
+//    }
+//    
+//    // 서류 관리
+//    public List<QuotationDTO> getQuotations() {
+//        List<QuotationDTO> qList = yDao.getQuotationList();
+//
+//        // URL 인코딩 처리
+//        qList.forEach(q -> {
+//            if (q.getQuotation_file_name() != null) {
+//                try {
+//                    q.setQuotation_file_name(URLEncoder.encode(q.getQuotation_file_name(), StandardCharsets.UTF_8));
+//                } catch (Exception e) {
+//                    log.error("파일 이름 URL 인코딩 중 오류 발생: {}",e);
+//                }
+//            }
+//        });
+//
+//        return qList;
+//    }
+//    
+//    // 서류 등록
+//    public int addQuotation(QuotationDTO quotation) throws Exception {
+//   	 return yDao.addQuotation(quotation);
+//	}
+//    
+//    // quotation_stauts 변경
+//    public int updateQuotationStatus(String quotationId, int newStatus) {
+//        return yDao.updateQuotationStatus(quotationId, newStatus);
+//    }
+//    
+//    // quotation 검색 필터
+//    public List<QuotationDTO> qList(String quotation_id, String quotation_partnername, String quotation_hqmanager,
+//            String startDate, String endDate, String searchType) {
+//		Map<String, String> params = new HashMap<>();
+//		
+//		if (quotation_id != null && !quotation_id.isEmpty()) params.put("quotation_id", quotation_id);
+//		if (quotation_partnername != null && !quotation_partnername.isEmpty()) params.put("quotation_partnername", quotation_partnername);
+//		if (quotation_hqmanager != null && !quotation_hqmanager.isEmpty()) params.put("quotation_hqmanager", quotation_hqmanager);
+//		if (startDate != null && !startDate.isEmpty()) params.put("startDate", startDate);
+//		if (endDate != null && !endDate.isEmpty()) params.put("endDate", endDate);
+//		if (searchType != null && !searchType.isEmpty()) params.put("searchType", searchType);
+//		
+//		return yDao.qList(params);
+//		}
+//    
+//    // quotation_id 중복 체크
+//    public int getQuotationById(String quotation_id) throws Exception {
+//        int count = yDao.quotationIdCheck(quotation_id);
+//        return count;
+//    }
+//    
+//    // 상품 등록 GET
+////    public int getAddOrder(OrderDTO order) throws Exception {
+////    	return yDao.getAddOrder(order);
+////    }
+//    
+//    public List<ProductDTO> getProductList() {
+//    	return yDao.getProductList();
+//    }
+//    
+//    public ProductDTO getProductById(String productId) {
+//        return yDao.findProductById(productId);
+//    }
+//    
+//    public List<ProductDTO> order_request_detail(String searchKeyword) {
+//    	return yDao.order_request_detail(searchKeyword);
+//    }
+//    
+//    // hr부서 이름 가져오기
+//    public List<Map<String, String>> getAllHQManagers() {
+//        return yDao.getAllHQManagers();
+//    }
+//    
+//    //점주 발주 요청 완료
+//    public String saveOrder(OrderDTO orderDTO) throws Exception {
+//        yDao.insertOrder(orderDTO);
+//        return orderDTO.getOrder_id(); // 발주 ID 반환
+//    }
+//    
+//    public OrderDTO listdetail(String order_id) {
+//        return yDao.listdetail(order_id);
+//    }
+//
+//    public List<OrderDetailDTO> listdetail_2(String orderDetail_orderid) {
+//        return yDao.listdetail_2(orderDetail_orderid);
+//    }
+//    
+//	
+//	public void saveOrderDetails(List<OrderDetailDTO> orderDetails) throws Exception{ 
+//		for (OrderDetailDTO detail : orderDetails) {
+//			yDao.insertOrderDetail(detail); 
+//		} 
+//	}
 	
 	//현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
     //현주ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ

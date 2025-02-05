@@ -77,7 +77,7 @@
 			color: #ff6600;
 			font-weight: bold;
 		}
-		
+
 		.table {
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -106,7 +106,7 @@
 			vertical-align: middle;
 			/* 텍스트 가운데 정렬 */
 			font-weight: bold;
-			
+
 		}
 
 		.styled-table td input {
@@ -129,18 +129,19 @@
 			width: 100%;
 			/* 입력 필드 너비 조정 (필요 시) */
 		}
-		
+
 		.ellipsis-text {
-		    text-overflow: ellipsis;
-		    white-space: nowrap;
-		    overflow: hidden;
-		    max-width: 140px;
-		    text-align: left;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			max-width: 140px;
+			text-align: left;
 		}
 	</style>
 </head>
 
 <head th:insert="~{fragments/links :: head}"></head>
+
 <head th:include="fragments/sidebar :: sidebar"></head>
 
 <body class="dashboard dashboard_1">
@@ -148,7 +149,6 @@
 		<div class="inner_container">
 			<!-- right content -->
 			<div id="content">
-			<head th:include="fragments/topbar :: topbar"></head>
 				<!-- dashboard inner -->
 				<div class="midde_cont">
 					<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
@@ -172,71 +172,76 @@
 									</tr>
 									<tr>
 										<th>발주 아이디</th>
-					            		<td>
-					            			<input type="text" id="order_id"  name="order_id">
-					            		</td>
+										<td>
+											<input type="text" id="order_id" name="order_id">
+										</td>
 									</tr>
 									<tr>
 										<th style="width: 120px;">담당자</th>
 										<td>
 											<select id="select_hrManager" name="quotation_hqmanager">
-									            <!-- 옵션이 동적으로 추가됩니다 -->
-									        </select>
+												<!-- 옵션이 동적으로 추가됩니다 -->
+											</select>
 										</td>
 									</tr>
 									<tr>
 										<th>담당자 아이디</th>
-					            		<td>
-					            			<input type="text" id="order_sender"  name="order_sender">
-					            		</td>
+										<td>
+											<input type="text" id="order_sender" name="order_sender">
+										</td>
 									</tr>
-									
+
 									<tr>
 										<th style="width: 120px;">요청사항</th>
 										<td>
-											<textarea id="info" name="order_memo" rows="2" style="width: 100%;"></textarea>
+											<textarea id="info" name="order_memo" rows="2"
+												style="width: 100%;"></textarea>
 										</td>
 									</tr>
 								</table>
-							<hr style="color: black">
-							<div style="display: flex; justify-content: space-between;">
-								<div>
+								<hr style="color: black">
+								<div style="display: flex; justify-content: space-between;">
+									<div>
+									</div>
+									<div>
+										<button type="button" class="btn btn-sm"
+											style="width: 120px; border-radius: 8px; background-color: #04AA6D; color: white;"
+											onclick="addQuotationModal()">상품 추가</button>
+									</div>
 								</div>
-								<div>
-									<button type="button" class="btn btn-sm"
-										style="width: 120px; border-radius: 8px; background-color: #04AA6D; color: white;"
-										onclick="addQuotationModal()">상품 추가</button>
+								<div class="wrapper mt-5" id="productListContainer">
+									<table class="table product-list-table">
+										<thead>
+											<tr>
+												<th class="table-light text-center">NO</th>
+												<th class="table-light text-center">상품 코드</th>
+												<th class="table-light text-center">상품명</th>
+												<th class="table-light text-center">주문수량</th>
+												<th class="table-light text-center">개별단가</th>
+												<th class="table-light text-center">공급가액</th>
+												<th class="table-light text-center">부가세</th>
+												<th class="table-light text-center">주문금액</th>
+												<th class="table-light text-center">삭제</th>
+											</tr>
+										</thead>
+										<tbody id="orderListBody">
+											<!-- 검색 결과 데이터가 여기에 추가됨 -->
+										</tbody>
+									</table>
 								</div>
-							</div>
-							<div class="wrapper mt-5" id="productListContainer">
-								<table class="table product-list-table">
-								    <thead>
-								        <tr>
-											<th class="table-light text-center">NO</th>
-								            <th class="table-light text-center">상품 코드</th>
-								            <th class="table-light text-center">상품명</th>
-								            <th class="table-light text-center">주문수량</th>
-								            <th class="table-light text-center">개별단가</th>
-								            <th class="table-light text-center">공급가액</th>
-								            <th class="table-light text-center">부가세</th>
-								            <th class="table-light text-center">주문금액</th>
-											<th class="table-light text-center">삭제</th>
-								        </tr>
-								    </thead>
-									<tbody id="orderListBody">
-					    				<!-- 검색 결과 데이터가 여기에 추가됨 -->
-									</tbody>
-								</table>
-							</div>
-					        <div style="text-align: right; margin-top: 20px;">
-					      	 	<span style="font-size: 20px; font-weight: bold;">총 주문 금액(VAT 포함)</span>
-								<input id="totalAmount" name="order_sum" style="border: none; font-size: 30px; background-color: #f8f8f8; text-align: right; color: #8B393B; font-weight: bold;">
-								<span style="border: none; font-size: 30px; background-color: #f8f8f8; text-align: center; color: #8B393B; font-weight: bold;">원</span>
-						    </div>
-							<div style="display: flex; justify-content: center; margin-top:20px;">
-								 <button type="submit" class="btn btn-primary btn-sm" style="width: 100px; border-radius: 8px; margin-right:20px;">주문 진행</button>
-							      <button type="reset" class="btn btn-danger btn-sm" style="width: 100px; border-radius: 8px;">주문 취소</button>
-						    </div>
+								<div style="text-align: right; margin-top: 20px;">
+									<span style="font-size: 20px; font-weight: bold;">총 주문 금액(VAT 포함)</span>
+									<input id="totalAmount" name="order_sum"
+										style="border: none; font-size: 30px; background-color: #f8f8f8; text-align: right; color: #8B393B; font-weight: bold;">
+									<span
+										style="border: none; font-size: 30px; background-color: #f8f8f8; text-align: center; color: #8B393B; font-weight: bold;">원</span>
+								</div>
+								<div style="display: flex; justify-content: center; margin-top:20px;">
+									<button type="submit" class="btn btn-primary btn-sm"
+										style="width: 100px; border-radius: 8px; margin-right:20px;">주문 진행</button>
+									<button type="reset" class="btn btn-danger btn-sm"
+										style="width: 100px; border-radius: 8px;">주문 취소</button>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -244,74 +249,79 @@
 			</div>
 		</div>
 		<!--등록 모달-->
-		<div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-		        <div class="modal-dialog modal-lg modal-dialog-centered">
-		            <div class="modal-content" style="width:100%; margin:0 auto;">
-		                <div class="modal-header" style="background-color: #04AA6D;">
-		                    <h5 class="modal-title" id="productModalLabel" style="color: white; font-size: 1rem;">상품 추가</h5>
-		                    <button type="button" id="closeAddModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
-		                </div>
-		                <div class="modal-body">
-		                    <div class="mb-3">
-		                        <div>
-		                            <input type="text" class="form-control" id="searchInput" placeholder="검색" style="width: 350px; display: inline-block;">
-		                            <button type="button" id="searchButton" style="display: inline-block; border: none; background-color: #bbb; padding: 3.5px 8px; margin-right: 5px; font-size: 14px; cursor: pointer; color: #696767;">검색</button>
-		                        </div>
-								<label for="searchInput" class="form-label">*거래처 OR 상품 코드 OR 상품명 을 입력해주세요</label>
-		                    </div>
-							<div id="searchResultsContainer">
-			                    <table class="table table-bordered">
-			                        <thead>
-			                            <tr>
-			                                <th scope="col" style="text-align: left;">상품코드</th>
-											<th scope="col" style="text-align: left;">거래처 명</th>
-			                                <th scope="col" style="text-align: left;">상품명</th>
-			                                <th scope="col" style="text-align: left;">개별 단가</th>
-											<th scope="col" style="text-align: left;">선택</th>
-			                            </tr>
-			                        </thead>
-									<tbody id="searchResultsBody">
-					                   <!-- 검색 결과가 여기 추가됩니다 -->
-					               </tbody>
-			                    </table>
-								</div>
-							</form>
-		                </div>
-		            </div>
-		        </div>
-		    </div>
+		<div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="productModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content" style="width:100%; margin:0 auto;">
+					<div class="modal-header" style="background-color: #04AA6D;">
+						<h5 class="modal-title" id="productModalLabel" style="color: white; font-size: 1rem;">상품 추가</h5>
+						<button type="button" id="closeAddModal" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"
+							style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3">
+							<div>
+								<input type="text" class="form-control" id="searchInput" placeholder="검색"
+									style="width: 350px; display: inline-block;">
+								<button type="button" id="searchButton"
+									style="display: inline-block; border: none; background-color: #bbb; padding: 3.5px 8px; margin-right: 5px; font-size: 14px; cursor: pointer; color: #696767;">검색</button>
+							</div>
+							<label for="searchInput" class="form-label">*거래처 OR 상품 코드 OR 상품명 을 입력해주세요</label>
+						</div>
+						<div id="searchResultsContainer">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th scope="col" style="text-align: left;">상품코드</th>
+										<th scope="col" style="text-align: left;">거래처 명</th>
+										<th scope="col" style="text-align: left;">상품명</th>
+										<th scope="col" style="text-align: left;">개별 단가</th>
+										<th scope="col" style="text-align: left;">선택</th>
+									</tr>
+								</thead>
+								<tbody id="searchResultsBody">
+									<!-- 검색 결과가 여기 추가됩니다 -->
+								</tbody>
+							</table>
+						</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
+	</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript">
 		// 수량 감소
 		function amountMinus(product_id) {
-		    const amountField = document.getElementById("product_amount_" + product_id);
-		    let amount = parseInt(amountField.value) || 1;
+			const amountField = document.getElementById("product_amount_" + product_id);
+			let amount = parseInt(amountField.value) || 1;
 
-		    if (amount > 1) {
-		        amount--;
-		        amountField.value = amount;
-		        updateCalculations(product_id);
-		    }
+			if (amount > 1) {
+				amount--;
+				amountField.value = amount;
+				updateCalculations(product_id);
+			}
 		}
 
 		// 수량 증가
 		function amountPlus(product_id) {
-		    const amountField = document.getElementById("product_amount_" + product_id);
-		    let amount = parseInt(amountField.value) || 1;
+			const amountField = document.getElementById("product_amount_" + product_id);
+			let amount = parseInt(amountField.value) || 1;
 
-		    amount++;
-		    amountField.value = amount;
-		    updateCalculations(product_id);
-		}		
-		
+			amount++;
+			amountField.value = amount;
+			updateCalculations(product_id);
+		}
+
 
 		// 숫자를 천 단위로 포맷팅하는 함수
 		function formatNumber(number) {
-		    return number.toLocaleString('en-US'); // 천 단위 콤마 표시
-		}		
-		
+			return number.toLocaleString('en-US'); // 천 단위 콤마 표시
+		}
+
 		// 날짜 계산
 		document.getElementById('endDate').value = new Date().toISOString().split('T')[0];
 
@@ -320,7 +330,7 @@
 			const targetDate = new Date();
 			targetDate.setDate(today.getDate() + daysAgo);
 			document.getElementById("endDate").value = targetDate.toISOString().split('T')[0];
-		}		
+		}
 
 		// 상품 등록 모달
 		// 버튼 클릭 이벤트에 연결
@@ -340,21 +350,21 @@
 			// 모달이 숨겨질 때 발생하는 이벤트에 초기화 로직 연결
 			document.getElementById('addQuotationModal').addEventListener('hidden.bs.modal', resetModalFields);
 		}
-		
+
 		// 입력 필드를 초기화하는 함수
-  		function resetModalFields() {
-  		    // 모든 input 요소를 초기화
-  		    const inputs = document.querySelectorAll('#addQuotationModal input');
-  		    inputs.forEach(input => {
-  		        input.value = ''; // 값을 초기화
-  		    });
-			
+		function resetModalFields() {
+			// 모든 input 요소를 초기화
+			const inputs = document.querySelectorAll('#addQuotationModal input');
+			inputs.forEach(input => {
+				input.value = ''; // 값을 초기화
+			});
+
 			// 에러 메시지 초기화
-		    const idCheckLabel = document.getElementById('add_quotation_id_check_label');
-		    if (idCheckLabel) {
-		        idCheckLabel.textContent = '';
-		    }
-  		}
+			const idCheckLabel = document.getElementById('add_quotation_id_check_label');
+			if (idCheckLabel) {
+				idCheckLabel.textContent = '';
+			}
+		}
 
 		// quotation_id 유효성 검사
 		let originalBranchId = ''; // 초기 아이디를 저장할 변수
@@ -372,266 +382,271 @@
 			// 기존 아이디와 다르면 중복 체크 실행
 			checkDuplicateId('add_quotation_id', 'add_quotation_id_check_label');
 		}
-		
+
 		// 모달 검색 결과의 tbody ID
-	    const searchResultsBody = document.getElementById('searchResultsBody');
+		const searchResultsBody = document.getElementById('searchResultsBody');
 
-	    // 기존 페이지 선택된 값 추가될 tbody ID
-	    const orderListBody = document.getElementById('orderListBody');
-	    
-	    
-	    
-	    document.getElementById('searchResultsBody').addEventListener('click', function (e) {
-	  	    if (e.target.tagName === 'BUTTON' && e.target.dataset.product) {
-	  	        const product = JSON.parse(e.target.dataset.product);
-	  	        addToOrderList(product);
-	  	    }
-	  	});
-		
+		// 기존 페이지 선택된 값 추가될 tbody ID
+		const orderListBody = document.getElementById('orderListBody');
+
+
+
+		document.getElementById('searchResultsBody').addEventListener('click', function (e) {
+		    if (e.target.tagName === 'BUTTON' && e.target.dataset.product) {
+		        const product = JSON.parse(e.target.dataset.product);
+
+		        // 중복 확인
+		        const existingRows = Array.from(document.querySelectorAll('#orderListBody tr'));
+		        const isDuplicate = existingRows.some(row => row.dataset.productCode === product.product_code);
+
+		        if (isDuplicate) {
+		            alert('이미 선택된 상품입니다!');
+		            return; // 중복일 경우 추가하지 않음
+		        }
+
+		        addToOrderList(product); // 중복이 아니면 추가
+		    }
+		});
+
 		function addToOrderList(product) {
-    	    const productListContainer = document.querySelector('#productListContainer tbody');
+		    const productListContainer = document.querySelector('#orderListBody');
 
-    	    // 중복 체크: 상품 코드로 비교
-    	    const existingRows = Array.from(productListContainer.querySelectorAll('tr'));
-    	    const isDuplicate = existingRows.some(row => row.dataset.productCode === product.product_code);
+		    // 새로운 행 추가
+		    const newRow = document.createElement('tr');
+		    newRow.dataset.productCode = product.product_code; // 중복 방지용 속성 추가
+		    newRow.dataset.partnerId = product.partnerid; // 추가 정보 저장
+		    newRow.innerHTML = `
+		        <td style="text-align: center; vertical-align:middle;">${productListContainer.children.length + 1}</td>
+		        <td style="vertical-align:middle;">${product.product_id}</td>
+		        <td style="vertical-align:middle;">${product.product_name}</td>
+		        <td style="vertical-align:middle;">
+		            <input type="number" name="quantity" value="1" min="1" class="form-control" style="text-align: center">
+		        </td>
+		        <td style="text-align: center; vertical-align:middle;">${formatNumber(product.product_price)}</td>
+		        <td style="text-align: center; vertical-align:middle;">
+		            <span class="total-price">${formatNumber(product.product_price)}</span>
+		        </td>
+		        <td style="text-align: center; vertical-align:middle;">
+		            <span class="total-price">${formatNumber(product.product_price / 10)}</span>
+		        </td>
+		        <td style="text-align: center; vertical-align:middle;">
+		            <span class="total-price">${formatNumber(product.product_price + (product.product_price / 10))}</span>
+		        </td>
+		        <td style="text-align: center; vertical-align:middle;">
+		            <button class="btn btn-danger btn-sm" onclick="removeRow(this);">삭제</button>
+		        </td>
+		    `;
 
-    	    if (isDuplicate) {
-    	        alert('이미 추가된 상품입니다.');
-    	        return;
-    	    
-    	     // 모달 닫기
-    	       const modal = document.getElementById('addQuotationModal');
-    	       modal.classList.add('hidden');
-    	    }
+		    productListContainer.appendChild(newRow);
 
-    	    // 새로운 행 추가
-    	    const newRow = document.createElement('tr');
-    	    newRow.dataset.productCode = product.product_code; // 중복 방지를 위한 데이터 속성
-    	    newRow.innerHTML = `
-    	        <td style="text-align: center; vertical-align:middle;">${productListContainer.children.length + 1}</td>
-    	        <td style="vertical-align:middle;">${product.product_id}</td>
-    	        <td style="vertical-align:middle;">${product.product_name}</td>
-    	        <td style="vertical-align:middle;">
-    	            <input type="number" name="quantity" value="1" min="1" class="form-control" style="text-align: center">
-    	        </td>
-    	        <td style="text-align: center; vertical-align:middle;">${product.product_price}</td>
-    	        <td style="text-align: center; vertical-align:middle;">
-    	            <span class="total-price">${product.product_price}</span>					
-    	        </td>
-				<td style="text-align: center; vertical-align:middle;">
-    	            <span class="total-price">${product.product_price / 10}</span>
-    	        </td>
-				<td style="text-align: center; vertical-align:middle;">
-    	            <span class="total-price">${product.product_price + (product.product_price / 10)}</span>
-    	        </td>
-    	        <td style="text-align: center; vertical-align:middle;">
-                	<button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotal();">삭제</button>
-            	</td>
-    	    `;
+		    // 수량 변경 이벤트 추가
+		    newRow.querySelector('input[name="quantity"]').addEventListener('change', function () {
+		        updateRowTotal(newRow); // 개별 총합 갱신
+		        updateTotal(); // 전체 총합 갱신
+		    });
 
-    	    productListContainer.appendChild(newRow);
-    	    
-    	    
-    	 // 수량 변경 이벤트 추가
-    	    newRow.querySelector('input[name="quantity"]').addEventListener('change', function () {
-    	        updateRowTotal(newRow); // 개별 총합 갱신
-    	        updateTotal(); // 전체 총합 갱신
-    	    });
+		    // 전체 합계 업데이트
+		    updateTotal();
+		}
 
-    	    // 합계 업데이트
-    	    updateTotal();
-    	}
-				
-			// 검색 기능
-	      document.getElementById('searchButton').addEventListener('click', function () {
-	          const searchKeyword  = document.getElementById('searchInput').value;
+		function removeRow(button) {
+		    const row = button.closest('tr');
+		    row.remove();
+		    updateTotal();
+		}
 
-	          if (searchKeyword .trim() === '') {
-	              alert('상품명을 입력하세요!');
-	              return;
-	          }
 
-	          // Ajax 요청
-	          $.ajax({
-	              url: '/admin/user/order/request/detail',
-	              method: 'GET',
-	              data: { product_name: searchKeyword  },
-	              success: function (result) {
-	                  const tbody = document.getElementById('searchResultsBody');
-	                  tbody.innerHTML = ''; // 기존 결과 초기화
+		// 검색 기능
+		document.getElementById('searchButton').addEventListener('click', function () {
+			const searchKeyword = document.getElementById('searchInput').value;
 
-	                  if (result && result.length > 0) {
-	                      // 결과 표시
-	                      result.forEach((product) => {
-	                          const tr = document.createElement('tr');
-	                          tr.innerHTML = `
+			if (searchKeyword.trim() === '') {
+				alert('상품명을 입력하세요!');
+				return;
+			}
+
+			// Ajax 요청
+			$.ajax({
+				url: 'admin/user/order/request/detail',
+				method: 'GET',
+				data: {product_name: searchKeyword},
+				success: function (result) {
+					const tbody = document.getElementById('searchResultsBody');
+					tbody.innerHTML = ''; // 기존 결과 초기화
+
+					if (result && result.length > 0) {
+						// 결과 표시
+						result.forEach((product) => {
+							const tr = document.createElement('tr');
+							tr.innerHTML = `
 	                              <td>${product.product_id}</td>
 								  <td>${product.partner_name}</td>
 	                              <td>${product.product_name}</td>
 	                              <td>${product.product_price}</td>
 	                        	  <td>
-	                              <button class="btn btn-primary btn-sm" style="border-radius: 8px; color: white; background-color: #04AA6D;"  data-product='${JSON.stringify(product)}'>선택</button>
+	                              <button class="btn btn-primary btn-sm" style="border-radius: 8px; color: white; background-color: #04AA6D; border-color:#04AA6D;"  data-product='${JSON.stringify(product)}'>선택</button>
 	                          </td>
 	                          `;
-	                          tbody.appendChild(tr);
-	                      });
-	                  } else {
-	                	  tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">검색 결과가 없습니다.</td></tr>';
-	                  }
-	              },
-	              error: function () {
-	                  alert('검색 중 오류가 발생했습니다.');
-	              }
-	          });
-	      });
-				      
-		  function updateRowTotal(row) {
-		          const quantityInput = row.querySelector('input[name="quantity"]');
-		          const unitPriceCell = row.querySelector('td:nth-child(5)');
-		          const supplyPriceCell = row.querySelector('td:nth-child(6)');
-		          const taxCell = row.querySelector('td:nth-child(7)');
-		          const totalPriceCell = row.querySelector('td:nth-child(8)');
+							tbody.appendChild(tr);
+						});
+					} else {
+						tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">검색 결과가 없습니다.</td></tr>';
+					}
+				},
+				error: function () {
+					alert('검색 중 오류가 발생했습니다.');
+				}
+			});
+		});
 
-		          // 입력 값과 단가 가져오기
-		          const quantity = parseInt(quantityInput.value, 10) || 0;
-		          const unitPrice = parseFloat(unitPriceCell.textContent.replace(/,/g, '')) || 0;
+		function updateRowTotal(row) {
+			const quantityInput = row.querySelector('input[name="quantity"]');
+			const unitPriceCell = row.querySelector('td:nth-child(5)');
+			const supplyPriceCell = row.querySelector('td:nth-child(6)');
+			const taxCell = row.querySelector('td:nth-child(7)');
+			const totalPriceCell = row.querySelector('td:nth-child(8)');
 
-		          // 계산
-		          const supplyPrice = quantity * unitPrice; // 공급가액
-		          const tax = Math.floor(supplyPrice * 0.1); // 부가세 (10%)
-		          const totalPrice = supplyPrice + tax; // 주문금액
+			// 입력 값과 단가 가져오기
+			const quantity = parseInt(quantityInput.value, 10) || 0;
+			const unitPrice = parseFloat(unitPriceCell.textContent.replace(/,/g, '')) || 0;
 
-		          // 결과 업데이트
-		          supplyPriceCell.textContent = formatNumber(supplyPrice);
-		          taxCell.textContent = formatNumber(tax);
-		          totalPriceCell.textContent = formatNumber(totalPrice);
-		      }
+			// 계산
+			const supplyPrice = quantity * unitPrice; // 공급가액
+			const tax = Math.floor(supplyPrice * 0.1); // 부가세 (10%)
+			const totalPrice = supplyPrice + tax; // 주문금액
 
-		      // 전체 합계 계산
-		      function updateTotal() {
-		          const rows = document.querySelectorAll('#orderListBody tr');
-		          let totalAmount = 0;
+			// 결과 업데이트
+			supplyPriceCell.textContent = formatNumber(supplyPrice);
+			taxCell.textContent = formatNumber(tax);
+			totalPriceCell.textContent = formatNumber(totalPrice);
+		}
 
-		          rows.forEach(row => {
-		              const totalPriceCell = row.querySelector('td:nth-child(8)');
-		              const totalPrice = parseFloat(totalPriceCell.textContent.replace(/,/g, '')) || 0;
-		              totalAmount += totalPrice;
-		          });
+		// 전체 합계 계산
+		function updateTotal() {
+			const rows = document.querySelectorAll('#orderListBody tr');
+			let totalAmount = 0;
 
-		          // 총합 표시 (여기서 totalAmount를 총합 필드에 표시하거나 처리)
-		          console.log(`총 주문 금액: ${formatNumber(totalAmount)}`);
-		          document.getElementById('totalAmount').value  = formatNumber(totalAmount);
-		      }
+			rows.forEach(row => {
+				const totalPriceCell = row.querySelector('td:nth-child(8)');
+				const totalPrice = parseFloat(totalPriceCell.textContent.replace(/,/g, '')) || 0;
+				totalAmount += totalPrice;
+			});
 
-		      // 숫자 포맷팅 함수 (천 단위 콤마 추가)
-		      function formatNumber(number) {
-		          return number.toLocaleString('en-US');
-		      }
+			// 총합 표시 (여기서 totalAmount를 총합 필드에 표시하거나 처리)
+			console.log(`총 주문 금액: ${formatNumber(totalAmount)}`);
+			document.getElementById('totalAmount').value = formatNumber(totalAmount);
+		}
 
-		      // 수량 변경 이벤트 리스너 추가
-		      document.getElementById('orderListBody').addEventListener('input', function (event) {
-		          if (event.target.name === 'quantity') {
-		              const row = event.target.closest('tr');
-		              updateRowTotal(row); // 개별 행 계산 업데이트
-		              updateTotal(); // 전체 합계 업데이트
-		          }
-		      });
+		// 숫자 포맷팅 함수 (천 단위 콤마 추가)
+		function formatNumber(number) {
+			return number.toLocaleString('en-US');
+		}
 
-		      // 초기 총합 업데이트 호출 (초기 상태에서 값 설정)
-		      document.addEventListener('DOMContentLoaded', function () {
-		          const rows = document.querySelectorAll('#orderListBody tr');
-		          rows.forEach(row => updateRowTotal(row));
-		          updateTotal();
-		      });
-			  
-			  // hr 부서 이름 가져오기
-			  document.addEventListener('DOMContentLoaded', function () {
-			      $.ajax({
-			          url: '/hqmanagers',
-			          method: 'GET',
-			          success: function (result) {
-			              const selectElement = document.getElementById('select_hrManager');
-			              const orderInput = document.getElementById('order_sender');
+		// 수량 변경 이벤트 리스너 추가
+		document.getElementById('orderListBody').addEventListener('input', function (event) {
+			if (event.target.name === 'quantity') {
+				const row = event.target.closest('tr');
+				updateRowTotal(row); // 개별 행 계산 업데이트
+				updateTotal(); // 전체 합계 업데이트
+			}
+		});
 
-			              selectElement.innerHTML = '<option value="" disabled selected>담당자 선택</option>';
+		// 초기 총합 업데이트 호출 (초기 상태에서 값 설정)
+		document.addEventListener('DOMContentLoaded', function () {
+			const rows = document.querySelectorAll('#orderListBody tr');
+			rows.forEach(row => updateRowTotal(row));
+			updateTotal();
+		});
 
-			              result.forEach(manager => {
-			                  const option = document.createElement('option');
-			                  option.value = manager.hr_id; // 담당자 ID
-			                  option.textContent = manager.hr_name; // 담당자 이름
-			                  selectElement.appendChild(option);
-			              });
+		// hr 부서 이름 가져오기
+		document.addEventListener('DOMContentLoaded', function () {
+			$.ajax({
+				url: '/hqmanagers',
+				method: 'GET',
+				success: function (result) {
+					const selectElement = document.getElementById('select_hrManager');
+					const orderInput = document.getElementById('order_sender');
 
-			              selectElement.addEventListener('change', function () {
-			                  const selectedId = selectElement.value;
-			                  orderInput.value = selectedId; // 선택한 담당자 ID를 input에 표시
-			              });
-			          },
-			          error: function () {
-			              alert('담당자 데이터를 가져오는 중 오류가 발생했습니다.');
-			          }
-			      });
-			  });
+					selectElement.innerHTML = '<option value="" disabled selected>담당자 선택</option>';
 
-			  
-			  // 주문 등록 POST 요청
-			  document.querySelector('button[type="submit"]').addEventListener('click', function (e) {
-	      	    e.preventDefault(); // 기본 폼 제출 방지
+					result.forEach(manager => {
+						const option = document.createElement('option');
+						option.value = manager.hr_id; // 담당자 ID
+						option.textContent = manager.hr_name; // 담당자 이름
+						selectElement.appendChild(option);
+					});
 
-	      	    // OrderDTO 데이터 수집
-	      	    const orderDTO = {
-					order_id: document.querySelector('input[name="order_id"]').value,
-					order_sender: document.querySelector('input[name="order_sender"]').value,
-					order_sum: parseInt(document.getElementById('totalAmount').value.replace(/,/g, ''), 10),
-					order_manager: document.querySelector('select[name="quotation_hqmanager"]').value,
-	      	        order_delivery: document.querySelector('input[name="order_delivery"]').value,
-	      	        order_memo: document.querySelector('textarea[name="order_memo"]').value,
-	      	    };
+					selectElement.addEventListener('change', function () {
+						const selectedId = selectElement.value;
+						orderInput.value = selectedId; // 선택한 담당자 ID를 input에 표시
+					});
+				},
+				error: function () {
+					alert('담당자 데이터를 가져오는 중 오류가 발생했습니다.');
+				}
+			});
+		});
 
-	      	    // OrderDetailDTO 데이터 수집
-	      	    const orderDetails = [];
-	      	    document.querySelectorAll('#orderListBody tr').forEach((row) => {
-	      	        const productId = row.querySelector('td:nth-child(2)').textContent.trim();
-					const productName = row.querySelector('td:nth-child(3)').textContent.trim();	
-	      	        const quantity = parseInt(row.querySelector('input[name="quantity"]').value, 10);
-	      	        const price = parseInt(row.querySelector('td:nth-child(5)').textContent.trim(), 10);
-					const supplyPrice = parseInt(row.querySelector('td:nth-child(6)').textContent.trim(), 10);
-					const vat = parseInt(row.querySelector('td:nth-child(7)').textContent.trim(), 10);
-					const orderAmount = parseInt(row.querySelector('td:nth-child(8)').textContent.trim(), 10);
-	      	        const sum = price * quantity;
 
-	      	        orderDetails.push({
-	      	            orderDetail_productId: productId,
-						orderDetail_producName: productName,
-						orderDetail_quantity: quantity,
-						orderDetail_productPrice : price,
-						orderDetail_supplyPrice : supplyPrice,
-						orderDetail_productVAT: vat,
-						orderDetail_orderAmount : orderAmount,
-	      	            orderDetail_sum: sum,
-	      	        });
-	      	    });
+		// 주문 등록 POST 요청
+		document.querySelector('button[type="submit"]').addEventListener('click', function (e) {
+			e.preventDefault(); // 기본 폼 제출 방지
 
-	      	    // Ajax 요청 보내기
-	      	    $.ajax({
-	      	        url: '/admin/user/order/request',
-	      	        method: 'POST',
-	      	        contentType: 'application/json',
-	      	        data: JSON.stringify({
-	      	            orderDTO: orderDTO,
-	      	            orderDetails: orderDetails,
-	      	        }),
-	      	        success: function (response) {
-	      	            alert('발주 요청이 성공적으로 저장되었습니다!');
-	      	            window.location.href = '/admin_ProductOrder_List';
-	      	        },
-	      	        error: function (error) {
-	      	            alert('오류 발생: ' + error.responseText);
-	      	        },
-	      	    });
-	      	});
-			
-			
+			// OrderDTO 데이터 수집
+			const orderDTO = {
+				order_id: document.querySelector('input[name="order_id"]').value,
+				order_sender: document.querySelector('input[name="order_sender"]').value,
+				order_sum: parseInt(document.getElementById('totalAmount').value.replace(/,/g, ''), 10),
+				order_manager: document.querySelector('select[name="quotation_hqmanager"]').value,
+				order_delivery: document.querySelector('input[name="order_delivery"]').value,
+				order_memo: document.querySelector('textarea[name="order_memo"]').value,
+			};
+
+			// OrderDetailDTO 데이터 수집
+			const orderDetails = [];
+			document.querySelectorAll('#orderListBody tr').forEach((row) => {
+				const productId = row.querySelector('td:nth-child(2)').textContent.trim();
+				const partnerId = row.dataset.partnerid;
+				const productName = row.querySelector('td:nth-child(3)').textContent.trim();
+				const quantity = parseInt(row.querySelector('input[name="quantity"]').value, 10);
+				const price = parseInt(row.querySelector('td:nth-child(5)').textContent.trim(), 10);
+				const supplyPrice = parseInt(row.querySelector('td:nth-child(6)').textContent.trim(), 10);
+				const vat = parseInt(row.querySelector('td:nth-child(7)').textContent.trim(), 10);
+				const orderAmount = parseInt(row.querySelector('td:nth-child(8)').textContent.trim(), 10);
+				const sum = price * quantity;
+
+				orderDetails.push({
+					orderDetail_productid: productId,
+			        orderDetail_partnerid: partnerId,
+			        orderDetail_producname: productName,
+			        orderDetail_quantity: quantity, // 수량
+			        orderDetail_price: price, // 개별 단가
+			        orderDetail_supplyPrice: supplyPrice, // 공급가액
+			        orderDetail_productVAT: vat, // 부가세
+			        orderDetail_amount: quantity, // **수량을 넣어야 함!**
+			        orderDetail_sum: sum, // 총합
+				});
+			});
+
+			// Ajax 요청 보내기
+			$.ajax({
+				url: 'admin/user/order/request',
+				method: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					orderDTO: orderDTO,
+					orderDetails: orderDetails,
+				}),
+				success: function (response) {
+					alert('발주 요청이 성공적으로 저장되었습니다!');
+					window.location.href = '/admin_ProductOrder_List';
+				},
+				error: function (error) {
+					alert('오류 발생: ' + error.responseText);
+				},
+			});
+		});
 	</script>
 </body>
+
 </html>

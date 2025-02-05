@@ -96,6 +96,23 @@
         </foreach>
     </update>
     
+    <insert id="admin_order_approval_insert">
+    	<foreach collection="list" item="item" separator=";">
+	        insert into stock(stock_productid, stock_remain, stock_type, stock_branchid)
+        	values (#{item.orderDetail_productid}, #{item.orderDetail_amount}, 0, #{item.username})
+        </foreach>
+    </insert>
+    
+    <update id="admin_order_approval_update">
+    	<foreach collection="list" item="item" separator=";">
+	        update stock
+	        set stock_remain = stock_remain + #{item.orderDetail_amount}
+	        where stock_productid = #{item.orderDetail_productid}
+	        and stock_branchid = #{item.username}
+	        and stock_type = 0
+        </foreach>
+    </update>
+    
     <select id="admin_stock_list_search" parameterType="map">
     	select * from `stock`, `product` 
     	where stock.stock_productid = product.product_id 
@@ -114,8 +131,8 @@
         SELECT COUNT(*)
         FROM `stock`, `product`
         where stock.stock_productid = product.product_id 
-        and stock_type = 1 and stock_del = 0
-          
+        and stock_type = 1 
+        and stock_del = 0  
    		<if test="searchType == 0">
    			and product.product_name like concat('%',#{keyword},'%')
    		</if>
@@ -297,49 +314,181 @@
   	//우진ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
      -->
     
-	    <!--본사 지점 목록 검색 필터-->
-	<select id="bList" parameterType="map" resultType="BranchDTO">
-	    SELECT * 
-	    FROM branch
+	<!--본사 지점 목록 검색 필터-->
+<select id="bList" parameterType="map" resultType="BranchDTO">
+    SELECT * 
+    FROM branch
+    WHERE 1=1
+  	<if test = "branch_name != ''">
+  		AND branch_name LIKE CONCAT('%', #{branch_name}, '%')
+	</if>
+  	<if test = "branch_owner != ''">
+		AND branch_owner LIKE CONCAT('%', #{branch_owner}, '%')
+	</if>
+  	<if test = "startDate != ''">
+		 AND DATE(branch_regdate) &gt;= #{startDate}
+	</if>
+  	<if test = "endDate != ''">
+		 AND DATE(branch_regdate) &lt;= #{endDate}
+	</if>
+	<if test = "branch_region != ''">
+		AND branch_region LIKE CONCAT('%', #{branch_region}, '%')
+	</if>
+</select>
+
+<!--본사 거래처 목록 검색 필터-->
+<select id="pList" parameterType="map" resultType="PartnerDTO">
+    SELECT * 
+    FROM partner
+    WHERE 1=1
+  	<if test = "partner_name != ''">
+  		AND partner_name LIKE CONCAT('%', #{partner_name}, '%')
+	</if>
+  	<if test = "partner_manager != ''">
+		AND partner_manager LIKE CONCAT('%', #{partner_manager}, '%')
+	</if>
+	<if test = "partner_email != ''">
+		AND partner_email LIKE CONCAT('%', #{partner_email}, '%')
+	</if>
+	<if test = "partner_phone != ''">
+		AND partner_phone LIKE CONCAT('%', #{partner_phone}, '%')
+	</if>
+</select>
+
+<select id="qList" parameterType="map" resultType="QuotationDTO">
+    SELECT * 
+    FROM quotation
+    WHERE 1=1
+    <if test="quotation_id != null and quotation_id != ''">
+        AND quotation_id LIKE CONCAT('%', #{quotation_id}, '%')
+    </if>
+    <if test="quotation_partnername != null and quotation_partnername != ''">
+        AND quotation_partnername LIKE CONCAT('%', #{quotation_partnername}, '%')
+    </if>
+    <if test="quotation_hqmanager != null and quotation_hqmanager != ''">
+        AND quotation_hqmanager LIKE CONCAT('%', #{quotation_hqmanager}, '%')
+    </if>
+    <if test="startDate != null and startDate != ''">
+        AND DATE(quotation_date) &gt;= #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+        AND DATE(quotation_date) &lt;= #{endDate}
+    </if>
+    <if test="searchType != null and searchType != ''">
+        AND quotation_status = 
+        <choose>
+            <when test="searchType == 'considering'">0</when>
+            <when test="searchType == 'holding'">1</when>
+            <when test="searchType == 'completed'">2</when>
+        </choose>
+    </if>
+    ORDER BY quotation_date DESC
+    LIMIT #{start}, #{pageSize}
+</select>
+
+<!--검색 조건에 따라 전체 데이터 개수 반환-->
+<select id="adminCountFilteredOrders" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM `order`
+        WHERE 1=1
+          AND order_type = 1
+        <if test="order_id != null and order_id.trim() != ''">
+            AND order_id LIKE CONCAT('%', #{order_id}, '%')
+        </if>
+        <if test="order_manager != null and order_manager.trim() != ''">
+            AND order_manager LIKE CONCAT('%', #{order_manager}, '%')
+        </if>
+        <if test="searchType != null and searchType.trim() != ''">
+            <if test="searchType == 'orderDate'">
+                <if test="startDate != null and startDate.trim() != ''">
+                    AND DATE(order_date) >= #{startDate}
+                </if>
+                <if test="endDate != null and endDate.trim() != ''">
+                    AND DATE(order_date) &lt;= #{endDate}
+                </if>
+            </if>
+            <if test="searchType == 'requestDate'">
+                <if test="startDate != null and startDate.trim() != ''">
+                    AND DATE(order_delivery) >= #{startDate}
+                </if>
+                <if test="endDate != null and endDate.trim() != ''">
+                    AND DATE(order_delivery) &lt;= #{endDate}
+                </if>
+            </if>
+        </if>
+    </select>
+
+    <!-- 페이징 처리된 데이터 조회 -->
+    <select id="filterAndPaginateOrders" parameterType="map" resultType="OrderDTO">
+        SELECT *
+        FROM `order`
+        WHERE 1=1
+          AND order_type = 1
+        <if test="order_id != null and order_id.trim() != ''">
+            AND order_id LIKE CONCAT('%', #{order_id}, '%')
+        </if>
+        <if test="order_manager != null and order_manager.trim() != ''">
+            AND order_manager LIKE CONCAT('%', #{order_manager}, '%')
+        </if>
+        <if test="order_manager != null and order_manager.trim() != ''">
+            AND order_manager LIKE CONCAT('%', #{order_manager}, '%')
+        </if>
+        <if test="searchType != null and searchType.trim() != ''">
+            <if test="searchType == 'orderDate'">
+                <if test="startDate != null and startDate.trim() != ''">
+                    AND DATE(order_date) >= #{startDate}
+                </if>
+                <if test="endDate != null and endDate.trim() != ''">
+                    AND DATE(order_date) &lt;= #{endDate}
+                </if>
+            </if>
+            <if test="searchType == 'requestDate'">
+                <if test="startDate != null and startDate.trim() != ''">
+                    AND DATE(order_delivery) >= #{startDate}
+                </if>
+                <if test="endDate != null and endDate.trim() != ''">
+                    AND DATE(order_delivery) &lt;= #{endDate}
+                </if>
+            </if>
+        </if>
+        ORDER BY order_date DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+    
+    <!--검색 조건에 따라 전체 데이터 개수 반환-->
+	<select id="countFilteredQuotations" parameterType="map" resultType="int">
+	    SELECT COUNT(*)
+	    FROM quotation
 	    WHERE 1=1
-	  	<if test = "branch_name != ''">
-	  		AND branch_name LIKE CONCAT('%', #{branch_name}, '%')
-		</if>
-	  	<if test = "branch_owner != ''">
-			AND branch_owner LIKE CONCAT('%', #{branch_owner}, '%')
-		</if>
-	  	<if test = "startDate != ''">
-			 AND DATE(branch_regdate) &gt;= #{startDate}
-		</if>
-	  	<if test = "endDate != ''">
-			 AND DATE(branch_regdate) &lt;= #{endDate}
-		</if>
-		<if test = "branch_region != ''">
-			AND branch_region LIKE CONCAT('%', #{branch_region}, '%')
-		</if>
+	    
+	    <if test="quotation_id != null and quotation_id != ''">
+	        AND quotation_id LIKE CONCAT('%', #{quotation_id}, '%')
+	    </if>
+	    <if test="quotation_partnername != null and quotation_partnername != ''">
+	        AND quotation_partnername LIKE CONCAT('%', #{quotation_partnername}, '%')
+	    </if>
+	    <if test="quotation_hqmanager != null and quotation_hqmanager != ''">
+	        AND quotation_hqmanager LIKE CONCAT('%', #{quotation_hqmanager}, '%')
+	    </if>
+	    <if test="startDate != null and startDate != ''">
+	        AND DATE(quotation_date) &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	        AND DATE(quotation_date) &lt;= #{endDate}
+	    </if>
+	    <if test="searchType != null and searchType != ''">
+	        AND quotation_status = 
+	        <choose>
+	            <when test="searchType = 'considering'">0</when>
+	            <when test="searchType = 'holding'">1</when>
+	            <when test="searchType = 'completed'">2</when>
+	        </choose>
+	    </if>
 	</select>
-	
-	<!--본사 거래처 목록 검색 필터-->
-	<select id="pList" parameterType="map" resultType="PartnerDTO">
-	    SELECT * 
-	    FROM partner
-	    WHERE 1=1
-	  	<if test = "partner_name != ''">
-	  		AND partner_name LIKE CONCAT('%', #{partner_name}, '%')
-		</if>
-	  	<if test = "partner_manager != ''">
-			AND partner_manager LIKE CONCAT('%', #{partner_manager}, '%')
-		</if>
-		<if test = "partner_email != ''">
-			AND partner_email LIKE CONCAT('%', #{partner_email}, '%')
-		</if>
-		<if test = "partner_phone != ''">
-			AND partner_phone LIKE CONCAT('%', #{partner_phone}, '%')
-		</if>
-	</select>
-	
-	<select id="qList" parameterType="map" resultType="QuotationDTO">
-	    SELECT * 
+    
+    <!-- 페이징 처리된 데이터 조회 -->
+	<select id="filterAndPaginateQuotations" parameterType="map" resultType="QuotationDTO">
+	    SELECT *
 	    FROM quotation
 	    WHERE 1=1
 	    <if test="quotation_id != null and quotation_id != ''">
@@ -360,13 +509,103 @@
 	    <if test="searchType != null and searchType != ''">
 	        AND quotation_status = 
 	        <choose>
-	            <when test="searchType == 'considering'">0</when>
-	            <when test="searchType == 'holding'">1</when>
-	            <when test="searchType == 'completed'">2</when>
+	            <when test="searchType = 'considering'">0</when>
+	            <when test="searchType = 'holding'">1</when>
+	            <when test="searchType = 'completed'">2</when>
 	        </choose>
 	    </if>
 	    ORDER BY quotation_date DESC
+	    LIMIT #{start}, #{pageSize}
 	</select>
+
+    
+    <!--검색 조건에 따라 전체 데이터 개수 반환-->
+	<select id="countFilteredBranchs" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM branch
+        WHERE 1=1
+        <if test="branch_name != null and branch_name.trim() != ''">
+            AND branch_name LIKE CONCAT('%', #{branch_name}, '%')
+        </if>
+        <if test="branch_owner != null and branch_owner.trim() != ''">
+            AND branch_owner LIKE CONCAT('%', #{branch_owner}, '%')
+        </if>
+        <if test="branch_region != null and branch_region.trim() != ''">
+            AND branch_region LIKE CONCAT('%', #{branch_region}, '%')
+        </if>
+        <if test="startDate != null and startDate != ''">
+	        AND DATE(branch_regdate) &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	        AND DATE(branch_regdate) &lt;= #{endDate}
+	    </if>
+    </select>
+
+    <!-- 페이징 처리된 데이터 조회 -->
+    <select id="filterAndPaginateBranchs" parameterType="map" resultType="BranchDTO">
+        SELECT *
+        FROM branch
+        WHERE 1=1
+         <if test="branch_name != null and branch_name.trim() != ''">
+            AND branch_name LIKE CONCAT('%', #{branch_name}, '%')
+        </if>
+        <if test="branch_owner != null and branch_owner.trim() != ''">
+            AND branch_owner LIKE CONCAT('%', #{branch_owner}, '%')
+        </if>
+        <if test="branch_region != null and branch_region.trim() != ''">
+            AND branch_region LIKE CONCAT('%', #{branch_region}, '%')
+        </if>
+        <if test="startDate != null and startDate != ''">
+	        AND DATE(branch_regdate) &gt;= #{startDate}
+	    </if>
+	    <if test="endDate != null and endDate != ''">
+	        AND DATE(branch_regdate) &lt;= #{endDate}
+	    </if>
+        ORDER BY branch_regdate DESC
+        LIMIT #{start}, #{pageSize}
+    </select>
+    
+    <!--검색 조건에 따라 전체 데이터 개수 반환-->
+	<select id="countFilteredPartners" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM `partner`
+        WHERE 1=1
+        <if test="partner_name != null and partner_name.trim() != ''">
+            AND partner_name LIKE CONCAT('%', #{partner_name}, '%')
+        </if>
+        <if test="partner_manager != null and partner_manager.trim() != ''">
+            AND partner_manager LIKE CONCAT('%', #{partner_manager}, '%')
+        </if>
+        <if test="partner_email != null and partner_email.trim() != ''">
+            AND partner_email LIKE CONCAT('%', #{partner_email}, '%')
+        </if>
+         <if test="partner_phone != null and partner_phone.trim() != ''">
+            AND partner_phone LIKE CONCAT('%', #{partner_phone}, '%')
+        </if>
+    </select>
+
+    <!-- 페이징 처리된 데이터 조회 -->
+    <select id="filterAndPaginatePartners" parameterType="map" resultType="PartnerDTO">
+        SELECT *
+        FROM `partner`
+        WHERE 1=1
+        <if test="partner_name != null and partner_name.trim() != ''">
+            AND partner_name LIKE CONCAT('%', #{partner_name}, '%')
+        </if>
+        <if test="partner_manager != null and partner_manager.trim() != ''">
+            AND partner_manager LIKE CONCAT('%', #{partner_manager}, '%')
+        </if>
+        <if test="partner_email != null and partner_email.trim() != ''">
+            AND partner_email LIKE CONCAT('%', #{partner_email}, '%')
+        </if>
+         <if test="partner_phone != null and partner_phone.trim() != ''">
+            AND partner_phone LIKE CONCAT('%', #{partner_phone}, '%')
+        </if>
+        LIMIT #{start}, #{pageSize}
+    </select>
+	
+	
+	
 	
 	
 	<!-- 

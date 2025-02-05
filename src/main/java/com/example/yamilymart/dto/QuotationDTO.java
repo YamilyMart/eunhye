@@ -20,4 +20,6 @@ public class QuotationDTO {
     private String quotation_file_name;
     private int quotation_type;
     private int quotation_status;
+    
+    
 }

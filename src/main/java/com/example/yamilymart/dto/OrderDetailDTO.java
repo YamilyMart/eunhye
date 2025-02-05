@@ -21,6 +21,16 @@ public class OrderDetailDTO {
 	
 	private int stock_remain;
 	
+	//
+	private String username;
+	
+	private String orderDetail_partnerid;
+	
+	private int supply_price;
+	private int tax;
+	private int total_price;
+	private String partner_name;
+	
 	
 	
 }

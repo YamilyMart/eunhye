@@ -40,67 +40,64 @@
    	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
    	 
    	   <style>
-	 	html, body {
-		    font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
-		}
-			
-        .msg_list_main::-webkit-scrollbar {
-          width: 10px;
-        }
-        .msg_list_main::-webkit-scrollbar-thumb {
-          background-color: grey;
-          border-radius: 10px;
-          background-clip: padding-box;
-          border: 2px solid transparent;
-        }
-        .msg_list_main::-webkit-scrollbar-track {
-          background-color: white;
-          border-radius: 10px;
-          box-shadow: inset 0px 0px 5px white;
-        }
-            .msg_list_main {
-            height: 500px;
-            overflow: hidden; /* 기본적으로 스크롤바 숨김 */
-            transition: overflow 1s ease; /* 부드러운 전환 */
-          }
+.msg_list_main::-webkit-scrollbar {
+   width: 10px;
+}
 
-          .msg_list_main:hover {
-            overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
-          }
-          
-          .msg_list {
-			   list-style-type: none;
-			   padding: 0;
-			   margin: 0;
-			}
-			
-			.item-row {
-			   display: flex;
-			   align-items: center;
-			   padding: 10px 0;
-			   border-bottom: 1px solid #ddd;
-			}
-			
-			.item-image {
-			   flex: 0 0 120px; /* 고정 크기 */
-			   text-align: center;
-			}
-			
-			.item-info {
-			   width: 65%; /* 제품명 span의 고정 너비 설정 */
-			   margin-right: 5px; /* 팔린갯수와의 간격 */
-			   overflow: hidden;
-			   white-space: nowrap;
-			   text-overflow: ellipsis; /* 텍스트 길면 ... */
-			}
-			
-			.item-quantity {
-			   width: 30%; /* 팔린갯수 span의 고정 너비 */
-			   text-align: left; /* 왼쪽 정렬 */
-			}
-          
-          
-      </style>
+.msg_list_main::-webkit-scrollbar-thumb {
+   background-color: grey;
+   border-radius: 10px;
+   background-clip: padding-box;
+   border: 2px solid transparent;
+}
+
+.msg_list_main::-webkit-scrollbar-track {
+   background-color: white;
+   border-radius: 10px;
+   box-shadow: inset 0px 0px 5px white;
+}
+
+.msg_list_main {
+   height: 500px;
+   overflow: hidden; /* 기본적으로 스크롤바 숨김 */
+   transition: overflow 1s ease; /* 부드러운 전환 */
+}
+
+.msg_list_main:hover {
+   overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
+}
+
+.msg_list {
+   list-style-type: none;
+   padding: 0;
+   margin: 0;
+}
+
+.item-row {
+   display: flex;
+   align-items: center;
+   padding: 10px 0;
+   border-bottom: 1px solid #ddd;
+}
+
+.item-image {
+   flex: 0 0 120px; /* 고정 크기 */
+   text-align: center;
+}
+
+.item-info {
+   width: 65%; /* 제품명 span의 고정 너비 설정 */
+   margin-right: 5px; /* 팔린갯수와의 간격 */
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis; /* 텍스트 길면 ... */
+}
+
+.item-quantity {
+   width: 30%; /* 팔린갯수 span의 고정 너비 */
+   text-align: left; /* 왼쪽 정렬 */
+}
+</style>
    </head>
    <body class="dashboard dashboard_1">
       <div class="full_container">
@@ -259,7 +256,7 @@
                                                          </span>
                                                          <span class="item-quantity">
                                                             <span class="name_user">팔린수량: [[${str.sale_amount}]]</span>
-                                                            <span class="name_user">금액: [[${str.sale_sum}]]</span>
+                                                            <span class="name_user">금액: [[${#numbers.formatInteger(str.sale_sum, 3, 'COMMA')}]] 원</span>
                                                          </span>
                                                       </li>
                                                    </th::block>

@@ -43,7 +43,7 @@
    	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
    	 
    	 
-           <style>
+              <style>
           #modalOpenButton, #modalCloseButton {
         cursor: pointer;
       }
@@ -71,18 +71,25 @@
       #modalContainer.hidden {
         display: none;
       }
-	  
-	  
-	  .pagination {
-	  	display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
-	  }
+     
+     
+     .pagination {
+        display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
+     }
 
-	  .pagination ul {
-	  	display: flex !important;
-	  	justify-content: center !important;
-	  }
-	  
-	  
+     .pagination ul {
+        display: flex !important;
+        justify-content: center !important;
+     }
+     
+     .table.product-list-table th,
+     .table.product-list-table td,  
+     .table.table-bordered th,
+     .table.table-bordered td {
+        vertical-align: middle;
+     
+     }
+
 .modal-body::-webkit-scrollbar {
     width: 10px;
   }
@@ -101,7 +108,7 @@
     
    }
         
-        </style>
+</style>
    
   
    		
@@ -173,16 +180,16 @@
       					<td style="text-align: center;" th:text="${order.order_date}"></td>
       					<td style="text-align: center;" th:text="${order.order_delivery}"></td>
       					<td style="text-align: center;" th:text="${order.order_amount}"></td>
-      					<td style="text-align: center;" th:text="${#numbers.formatInteger(order.order_sum, 3, 'COMMA')}"></td>
+      					<td style="text-align: center;" th:inline="text">[[${#numbers.formatInteger(order.order_sum, 3, 'COMMA')}]]원</td>
      					<td style="text-align: center;">
                            <th:block th:switch="${order.order_status}">
-                           		<span th:case="0"><button type="button" class="btn cur-p btn-secondary">발주대기</button></span>
-                           		<span th:case="1"><button type="button" class="btn cur-p btn-primary">발주승인</button></span>
-                           		<span th:case="2"><button type="button" class="btn cur-p btn-success">입고완료</button></span>
-                           		<span th:case="3"><button type="button" class="btn cur-p btn-danger">발주취소</button></span>
+                           		<span th:case="0"><button type="button" class="btn cur-p btn-secondary" disabled>발주대기</button></span>
+                           		<span th:case="1"><button type="button" class="btn cur-p btn-primary" disabled>발주승인</button></span>
+                           		<span th:case="2"><button type="button" class="btn cur-p btn-success" disabled>입고완료</button></span>
+                           		<span th:case="3"><button type="button" class="btn cur-p btn-danger" disabled>발주취소</button></span>
                         	</th:block>
                         </td>
-     					<td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" style="background-color:#8B393B;" th:onclick="orderDetail([[${order.order_id}]])">상세보기</button></td>
+     					<td style="text-align: center;"><button type="button" class="btn btn-secondary btn-sm" style="background-color:#8B393B; border-color:#8B393B; border-radius: 8px;  " th:onclick="orderDetail([[${order.order_id}]])">상세보기</button></td>
     				</tr>
    				  
   				</th:block>
@@ -293,7 +300,7 @@
                    </table>
                </div>
             
-               <div style="margin: 0 30px 0 0; text-align: right;">
+               <div style="margin: 0 30px 20px 0; text-align: right;">
                   <h5>총 금액</h5>
                   <h2 id="order_sum">원</h2>
                </div>
@@ -400,9 +407,9 @@ document.getElementById('modalCloseButton').addEventListener('click', function (
                                      <td style="text-align: center;">${detail.orderDetail_orderid}</td>
                                      <td style="text-align: center;">${detail.orderDetail_productid}</td>
                                      <td style="text-align: center;">${detail.product_name}</td>
-                                     <td style="text-align: center;">${detail.orderDetail_price.toLocaleString()}</td>
+                                     <td style="text-align: center;">${detail.orderDetail_price.toLocaleString()}원</td>
                                      <td style="text-align: center;">${detail.orderDetail_amount}</td>
-                                     <td style="text-align: center;">${detail.orderDetail_sum.toLocaleString()}</td>
+                                     <td style="text-align: center;">${detail.orderDetail_sum.toLocaleString()}원</td>
                                  `;
                                                                   
                                  tbody.appendChild(tr);

@@ -19,5 +19,6 @@ public class ProductDTO {
 
 	//우진
 	private int order_amount = 1;
+	
 
 }

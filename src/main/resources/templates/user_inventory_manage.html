@@ -42,25 +42,30 @@
    
    
    <style>
-	   	.table.product-list-table td input[type="number"] {
-	         width: 60px; /* 수량 입력란의 너비 */
-	         padding: 5px; /* 패딩으로 여백 추가 */
-	         text-align: center; /* 텍스트 가운데 정렬 */
-	         display: block; /* 블록 레벨로 변경하여 가운데 정렬 */
-	         margin: 0 auto; /* 가운데 정렬 */
+         .table.product-list-table td input[type="number"] {
+            width: 60px; /* 수량 입력란의 너비 */
+            padding: 5px; /* 패딩으로 여백 추가 */
+            text-align: center; /* 텍스트 가운데 정렬 */
+            display: block; /* 블록 레벨로 변경하여 가운데 정렬 */
+            margin: 0 auto; /* 가운데 정렬 */
      }
-	 
-	 .pagination {
-	 	display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
-	 }
+     
+        .table.product-list-table th,
+        .table.product-list-table td {
+           vertical-align: middle;
+        }
+     
+     
+    
+    .pagination {
+       display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
+    }
 
-	 .pagination ul {
-	 	display: flex !important;
-	 	justify-content: center !important;
-	 }
+    .pagination ul {
+       display: flex !important;
+       justify-content: center !important;
+    }
 
-   
-   
    </style>
    
   
@@ -113,14 +118,14 @@
       					<td style="text-align: center;" th:text="${stock.stock_id}"></td>
       					<td style="text-align: center;" th:text="${stock.stock_productid}"></td>
       					<td style="text-align: center;" th:text="${stock.product_name}"></td>
-      					<td style="text-align: center;" th:text="${#numbers.formatInteger(stock.product_price, 3, 'COMMA')}"></td>
+      					<td style="text-align: center;" th:inline="text">[[${#numbers.formatInteger(stock.product_price, 3, 'COMMA')}]]원</td>
       					<td style="text-align: center;">
       						<input type="number" class="form-control form-control-sm text-center"  style="width: 50px; text-align: center;" th:id="'stock_remain_'+ ${stock.stock_id}"
       						th:value="${stock.stock_remain}" min="0">
       					</td>
       					
      					<td style="text-align: center;">
-        				<button type="button" class="btn btn-secondary btn-sm" style="border-radius: 8px; background-color:#9D3CC3"
+        				<button type="button" class="btn btn-secondary btn-sm" style="border-radius: 8px; background-color:#9D3CC3; border-color:#9D3CC3;"
         					 th:onclick="updateStock([[${stock.stock_id}]])">    
           					재고변경
        					</button>

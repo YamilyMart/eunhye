@@ -63,7 +63,6 @@
 
 		.pagination {
 			display: flex;
-			gap: 15px;
 			margin: 0 auto;
 		}
 
@@ -77,7 +76,7 @@
 			color: #ff6600;
 			font-weight: bold;
 		}
-		
+
 		.table {
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -106,7 +105,7 @@
 			vertical-align: middle;
 			/* 텍스트 가운데 정렬 */
 			font-weight: bold;
-			
+
 		}
 
 		.styled-table td input {
@@ -129,21 +128,26 @@
 			width: 100%;
 			/* 입력 필드 너비 조정 (필요 시) */
 		}
-		
+
 		.ellipsis-text {
-		    text-overflow: ellipsis;
-		    white-space: nowrap;
-		    overflow: hidden;
-		    max-width: 140px;
-		    text-align: left;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			max-width: 140px;
+			text-align: left;
+		}
+
+		[type="radio"] {
+			accent-color: #04AA6D;
+		}
+
+		.radio-container label,
+		input {
+			cursor: pointer;
 		}
 		
-		[type="radio"] {
-	        accent-color: #04AA6D;
-	    }
-		
-		.radio-container label,input{
-			cursor: pointer;
+		.quotation-table tbody tr td{
+			vertical-align: middle;
 		}
 	</style>
 </head>
@@ -157,16 +161,15 @@
 		<div class="inner_container">
 			<!-- right content -->
 			<div id="content">
-			<head th:include="fragments/topbar :: topbar"></head>
 				<div th:if="${alertMessage}" class="alert alert-danger" style="margin-bottom: 20px;">
-                    <span th:text="${alertMessage}"></span>
-                </div>
+					<span th:text="${alertMessage}"></span>
+				</div>
 				<div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 20px;">
-                    <span th:text="${successMessage}"></span>
-                </div>
+					<span th:text="${successMessage}"></span>
+				</div>
 				<div th:if="${errorMessage}" class="alert alert-warning" style="margin-bottom: 20px;">
-                    <span th:text="${errorMessage}"></span>
-                </div>
+					<span th:text="${errorMessage}"></span>
+				</div>
 				<!-- dashboard inner -->
 				<div class="midde_cont">
 					<div class="container-fluid">
@@ -235,133 +238,178 @@
 										onclick="addQuotationModal()">서류 등록</button>
 								</div>
 							</div>
+							<th:block th:if="${totalCount > 0}">
 							<div class="wrapper mt-5" id="productListContainer">
-								<table class="table product-list-table">
-								    <thead>
-								        <tr>
-								            <th class="table-light text-center">코드</th>
-								            <th class="table-light text-center">종류</th>
-								            <th class="table-light text-center">거래처</th>
-								            <th class="table-light text-center">담당자</th>
-								            <th class="table-light text-center">등록일</th>
-								            <th class="table-light text-center">정보</th>
-								            <th class="table-light text-center">상태</th>
-								            <th class="table-light text-center">첨부파일</th>
-								        </tr>
-								    </thead>
-								    <tbody>
-								        <tr th:each="q : ${qList}">
-								            <td style="text-align: center;" th:text="${q.quotation_id}"></td>
-								            <td style="text-align: left;" 
-								                th:text="${q.quotation_type == 0 ? '견적서' : (q.quotation_type == 1 ? '계약서' : '알 수 없음')}">
+								<table class="table product-list-table quotation-table">
+									<thead>
+										<tr>
+											<!--<th class="table-light text-center">NO</th>-->
+											<th class="table-light text-center">코드</th>
+											<th class="table-light text-center">종류</th>
+											<th class="table-light text-center">거래처</th>
+											<th class="table-light text-center">담당자</th>
+											<th class="table-light text-center">등록일</th>
+											<th class="table-light text-center">정보</th>
+											<th class="table-light text-center">상태</th>
+											<th class="table-light text-center">첨부파일</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="q, stat : ${qList}">
+											<!--<td class="text-center" th:text="${stat.index + 1}"></td>-->
+											<td style="text-align: left;" th:text="${q.quotation_id}"></td>
+											<td style="text-align: left;"
+												th:text="${q.quotation_type == 0 ? '견적서' : (q.quotation_type == 1 ? '계약서' : '알 수 없음')}">
 											</td>
-								            <td style="text-align: left;" th:text="${q.quotation_partnername}"></td>
-								            <td style="text-align: left;" th:text="${q.quotation_hqmanager}"></td>
-								            <td style="text-align: center;" th:text="${q.quotation_date}"></td>
-											<td class="ellipsis-text" 
-											    th:text="${q.quotation_description}" 
-											    data-bs-toggle="tooltip" 
-											    th:attr="title=${q.quotation_description}"
-												style="cursor: pointer;"
-												>
+											<td style="text-align: left;" th:text="${q.quotation_partnername}"></td>
+											<td style="text-align: left;" th:text="${q.quotation_hqmanager}"></td>
+											<td style="text-align: center;" th:text="${q.quotation_date}"></td>
+											<td class="ellipsis-text" th:text="${q.quotation_description}"
+												data-bs-toggle="tooltip" th:attr="title=${q.quotation_description}"
+												style="cursor: pointer;">
 											</td>
 											<td style="text-align: center;">
-									            <select class="form-select update-status" 
-									                    th:value="${q.quotation_status}" 
-									                    th:attr="data-id=${q.quotation_id}">
-									                <option value="0" th:selected="${q.quotation_status == 0}">검토중</option>
-									                <option value="1" th:selected="${q.quotation_status == 1}">보류</option>
-									                <option value="2" th:selected="${q.quotation_status == 2}">완료</option>
-									            </select>
-									        </td>
+												<select class="form-select update-status"
+													th:value="${q.quotation_status}"
+													th:attr="data-id=${q.quotation_id}">
+													<option value="0" th:selected="${q.quotation_status == 0}">검토중
+													</option>
+													<option value="1" th:selected="${q.quotation_status == 1}">보류
+													</option>
+													<option value="2" th:selected="${q.quotation_status == 2}">완료
+													</option>
+												</select>
+											</td>
 											<td style="text-align: center;">
-											    <a th:href="@{/admin/download-file/{fileName}(fileName=${q.quotation_file_name})}" 
-											       th:attr="download=${q.quotation_file_name}">
-											        <img th:src="${#strings.endsWith(q.quotation_file_name, '.xlsx') ? '/images/images/excel.svg' 
+												<a th:href="@{/download-file/{fileName}(fileName=${q.quotation_file_name})}"
+													th:attr="download=${q.quotation_file_name}">
+													<img th:src="${#strings.endsWith(q.quotation_file_name, '.xlsx') ? '/images/images/excel.svg' 
 											                  : (#strings.endsWith(q.quotation_file_name, '.docx') ? '/images/images/word.svg' 
-											                  : '/images/images/default.svg')}" 
-											             alt="file icon" style="width: 32px; height: 32px;">
-											    </a>
+											                  : '/images/images/default.svg')}" alt="file icon" style="width: 32px; height: 32px;">
+												</a>
 											</td>
-								        </tr>
-								    </tbody>
+										</tr>
+									</tbody>
 								</table>
 							</div>
-							<!--<div class="pagination-container">
-			         <div class="pagination">
-			            <a th:if="${startPage > 1}" th:href="@{${basePath}(pageNum=${startPage - 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&lt;</a>
-			            <a th:each="page : ${#numbers.sequence(startPage, endPage)}" th:href="@{${basePath}(pageNum=${page}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}" th:classappend="${currentPage == page} ? 'active' : ''" th:text="${page}"></a>
-			            <a th:if="${endPage < totalPage}" th:href="@{${basePath}(pageNum=${endPage + 1}, pageListNum=${pageListNum}, searchType=${searchType}, searchKeyword=${searchKeyword}, startDate=${startDate}, endDate=${endDate})}">&gt;</a>
-			         </div>
-			      </div>-->
+							<nav aria-label="Page navigation">
+							    <ul class="pagination justify-content-center">
+							         <!--이전 페이지 버튼 -->
+							        <li class="page-item" th:classappend="${currentPage <= 1} ? 'disabled' : ''">
+							            <a class="page-link" 
+							               th:href="${currentPage > 1} ? @{/admin_Quotation_List(quotation_id=${quotation_id}, quotation_partnername=${quotation_partnername},
+										quotation_hqmanager=${quotation_hqmanager}, startDate=${startDate}, endDate=${endDate}, searchType=${searchType}, pageNum=${currentPage - 1}, pageSize=${pageSize})} : '#'" 
+							               aria-label="Previous">
+							                &lt;
+							            </a>
+							        </li>
+							         <!--페이지 번호 버튼 -->
+							        <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}"
+							            th:classappend="${currentPage == page} ? 'active' : ''">
+							            <a class="page-link" th:href="@{/admin_Quotation_List(quotation_id=${quotation_id}, quotation_partnername=${quotation_partnername},
+										 quotation_hqmanager=${quotation_hqmanager}, startDate=${startDate}, endDate=${endDate}, searchType=${searchType}, pageNum=${page}, pageSize=${pageSize})}" th:text="${page}"></a>
+							        </li>
+							         <!--다음 페이지 버튼 -->
+							        <li class="page-item" th:classappend="${currentPage >= totalPage} ? 'disabled' : ''">
+							            <a class="page-link" 
+							               th:href="${currentPage < totalPage} ? @{/admin_Quotation_List(quotation_id=${quotation_id}, quotation_partnername=${quotation_partnername},
+										quotation_hqmanager=${quotation_hqmanager}, startDate=${startDate}, endDate=${endDate}, searchType=${searchType}, pageNum=${currentPage + 1}, pageSize=${pageSize})} : '#'" 
+							               aria-label="Next">
+							                <span aria-hidden="true">&gt;</span>
+							            </a>
+							        </li>
+							    </ul>
+							</nav>
+							</th:block>
+							<th:block th:if="${totalCount <= 0}">
+								<p style="text-align: center; margin-top: 100px;">
+									<img src="/images/images/cancel.png" class="img-responsive" alt="cancel image" style="width: 150px; height: 150px;" />
+								</p>
+								<p style="text-align: center; font-size: 4em; color: grey; margin-top: 100px;">조회 가능한 데이터가 없습니다</p>
+							</th:block>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!--등록 모달-->
-		<div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		    <div class="modal-dialog modal-lg modal-dialog-centered">
-		        <div class="modal-content" style="width:67%; margin:0 auto">
-		            <div class="modal-header" style="background-color: #04AA6D;">
-		                <h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">서류 등록</h5>
-						<button type="button" id="closeAddModal" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-								                    style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
-		            </div>
-		            <div class="modal-body">
-		                <form method="post" action="/admin/quotation/add" name="addQuotationModal-frm" enctype="multipart/form-data">
-		                    <table class="styled-table" style="width: 100%; border-collapse: collapse;">
-		                        <tr>
-		                            <td style="text-align: left; vertical-align: middle;">서류 종류</td>
-		                            <td class="radio-container" style="text-align: left; vertical-align: middle;">
-										<input type="radio" id="quotation_estimate" name="quotation_type" value="0" style="width: 10px;" checked/>
-		                                <label for="quotation_estimate" style="margin-right: 15px; display: inline;">견적서</label>
-										<input type="radio" id="quotation_contract" name="quotation_type" value="1" style="width: 10px;" />
-	                                	<label for="quotation_contract">계약서</label>
-		                            </td>
-		                        </tr>
-		                        <tr>
-		                            <td style="text-align: left; vertical-align: middle;">거래처 아이디</td>
-		                            <td>
-		                                <input id="add_quotation_id" name="quotation_id" type="text" style="width: 100%;" onblur="checkDuplicateId('add_quotation_id', 'add_quotation_id_check_label')" required/>
-										<label id="add_quotation_id_check_label" style="margin-left: 10px; color: red; display: inline;"></label>
-		                            </td>
-		                        </tr>
-		                        <tr>
-		                            <td style="text-align: left; vertical-align: middle;">회사명</td>
-		                            <td>
-		                                <input id="companyName" name="quotation_partnername" type="text" style="width: 100%;" required/>
-		                            </td>
-		                        </tr>
-		                        <tr>
-		                            <td style="text-align: left; vertical-align: middle;">담당자</td>
-		                            <td>
-		                                <input id="manager" name="quotation_hqmanager" type="text" style="width: 100%;" required/>
-		                            </td>
-		                        </tr>
+		<div class="modal fade" id="addQuotationModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content" style="width:67%; margin:0 auto">
+					<div class="modal-header" style="background-color: #04AA6D;">
+						<h5 class="modal-title" id="exampleModalLabel" style="color: white; font-size: 1rem;">서류 등록</h5>
+						<button type="button" id="closeAddModal" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"
+							style="background-color: rgb(192, 192, 192); font-weight: bold;"></button>
+					</div>
+					<div class="modal-body">
+						<form method="post" action="/admin/quotation/add" name="addQuotationModal-frm"
+							enctype="multipart/form-data">
+							<table class="styled-table" style="width: 100%; border-collapse: collapse;">
 								<tr>
-								    <td style="text-align: left; vertical-align: middle;">첨부파일</td>
-								    <td>
-								        <input id="imageUpload" name="file" type="file" style="display: inline;" required />
-								    </td>
+									<td style="text-align: left; vertical-align: middle;">서류 종류</td>
+									<td class="radio-container" style="text-align: left; vertical-align: middle;">
+										<input type="radio" id="quotation_estimate" name="quotation_type" value="0"
+											style="width: 10px;" checked />
+										<label for="quotation_estimate"
+											style="margin-right: 15px; display: inline;">견적서</label>
+										<input type="radio" id="quotation_contract" name="quotation_type" value="1"
+											style="width: 10px;" />
+										<label for="quotation_contract">계약서</label>
+									</td>
 								</tr>
-		                        <tr>
-		                            <td style="text-align: left; vertical-align: middle;">정보</td>
-		                            <td>
-		                                <textarea id="info" name="quotation_description" rows="4" style="width: 100%;" required></textarea>
-		                            </td>
-		                        </tr>
-		                    </table>
-		                    <div style="text-align: center; margin-top: 20px;">
-		                        <button type="submit" class="btn btn-md"
-		                            style="border-radius: 8px; color: white; background-color: #04AA6D;">등록</button>
-		                    </div>
-		                </form>
-		            </div>
-		        </div>
-		    </div>
+								<tr>
+									<td style="text-align: left; vertical-align: middle;">거래처 아이디</td>
+									<td>
+										<input id="add_quotation_id" name="quotation_id" type="text"
+											style="width: 100%;"
+											onblur="checkDuplicateId('add_quotation_id', 'add_quotation_id_check_label')"
+											required />
+										<label id="add_quotation_id_check_label"
+											style="margin-left: 10px; color: red; display: inline;"></label>
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align: left; vertical-align: middle;">회사명</td>
+									<td>
+										<input id="companyName" name="quotation_partnername" type="text"
+											style="width: 100%;" required />
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align: left; vertical-align: middle;">담당자</td>
+									<td>
+										<input id="manager" name="quotation_hqmanager" type="text" style="width: 100%;"
+											required />
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align: left; vertical-align: middle;">첨부파일</td>
+									<td>
+										<input id="imageUpload" name="file" type="file" style="display: inline;"
+											required />
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align: left; vertical-align: middle;">정보</td>
+									<td>
+										<textarea id="info" name="quotation_description" rows="4" style="width: 100%;"
+											required></textarea>
+									</td>
+								</tr>
+							</table>
+							<div style="text-align: center; margin-top: 20px;">
+								<button type="submit" class="btn btn-md"
+									style="border-radius: 8px; color: white; background-color: #04AA6D;">등록</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
-		</div>
+	</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script type="text/javascript">
@@ -372,7 +420,7 @@
 			const targetDate = new Date();
 			targetDate.setDate(today.getDate() + daysAgo);
 			document.getElementById("startDate").value = targetDate.toISOString().split('T')[0];
-		}		
+		}
 
 		// 상세보기 모달
 		// 버튼 클릭 이벤트에 연결
@@ -433,21 +481,21 @@
 			// 모달이 숨겨질 때 발생하는 이벤트에 초기화 로직 연결
 			document.getElementById('addQuotationModal').addEventListener('hidden.bs.modal', resetModalFields);
 		}
-		
+
 		// 입력 필드를 초기화하는 함수
-  		function resetModalFields() {
-  		    // 모든 input 요소를 초기화
-  		    const inputs = document.querySelectorAll('#addQuotationModal input');
-  		    inputs.forEach(input => {
-  		        input.value = ''; // 값을 초기화
-  		    });
-			
+		function resetModalFields() {
+			// 모든 input 요소를 초기화
+			const inputs = document.querySelectorAll('#addQuotationModal input');
+			inputs.forEach(input => {
+				input.value = ''; // 값을 초기화
+			});
+
 			// 에러 메시지 초기화
-		    const idCheckLabel = document.getElementById('add_quotation_id_check_label');
-		    if (idCheckLabel) {
-		        idCheckLabel.textContent = '';
-		    }
-  		}
+			const idCheckLabel = document.getElementById('add_quotation_id_check_label');
+			if (idCheckLabel) {
+				idCheckLabel.textContent = '';
+			}
+		}
 
 		// quotation_id 유효성 검사
 		let originalBranchId = ''; // 초기 아이디를 저장할 변수
@@ -500,54 +548,55 @@
 				}
 			});
 		}
-		
+
 		// 테이블 툴팁
 		document.addEventListener('DOMContentLoaded', function () {
-		        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-		        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-		            return new bootstrap.Tooltip(tooltipTriggerEl);
-		        });
-		    });
-			
+			const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+			const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+				return new bootstrap.Tooltip(tooltipTriggerEl);
+			});
+		});
+
 		// quotation_status ajax 요청
 		document.addEventListener('DOMContentLoaded', function () {
-		    const selectElements = document.querySelectorAll('.update-status');
-		    
-		    selectElements.forEach(function (selectElement) {
-		        selectElement.addEventListener('change', function () {
-		            const quotationId = this.getAttribute('data-id');
-		            const newStatus = this.value;
+			const selectElements = document.querySelectorAll('.update-status');
 
-		            // 로딩 상태 표시
-		            const originalText = this.options[this.selectedIndex].text;
-		            this.disabled = true;
-		            this.options[this.selectedIndex].text = '업데이트 중...';
+			selectElements.forEach(function (selectElement) {
+				selectElement.addEventListener('change', function () {
+					const quotationId = this.getAttribute('data-id');
+					const newStatus = this.value;
 
-		            $.ajax({
-		                url: '/admin/quotation/updateStatus',
-		                method: 'POST',
-		                contentType: 'application/json',
-		                data: JSON.stringify({ quotationId: quotationId, newStatus: newStatus }),
-		                success: function (response) {
-		                    if (response.success) {
-		                        alert('상태가 성공적으로 업데이트되었습니다.');
-		                    } else {
-		                        alert('상태 업데이트 실패: ' + (response.error || '알 수 없는 이유'));
-		                    }
-		                },
-		                error: function (xhr, status, error) {
-		                    console.error('상태 업데이트 요청 실패:', error);
-		                    alert('상태 업데이트 중 에러가 발생했습니다.');
-		                },
-		                complete: function () {
-		                    // 로딩 상태 복원
-		                    selectElement.disabled = false;
-		                    selectElement.options[selectElement.selectedIndex].text = originalText;
-		                }
-		            });
-		        });
-		    });
+					// 로딩 상태 표시
+					const originalText = this.options[this.selectedIndex].text;
+					this.disabled = true;
+					this.options[this.selectedIndex].text = '업데이트 중...';
+
+					$.ajax({
+						url: '/admin/quotation/updateStatus',
+						method: 'POST',
+						contentType: 'application/json',
+						data: JSON.stringify({quotationId: quotationId, newStatus: newStatus}),
+						success: function (response) {
+							if (response.success) {
+								alert('상태가 성공적으로 업데이트되었습니다.');
+							} else {
+								alert('상태 업데이트 실패: ' + (response.error || '알 수 없는 이유'));
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error('상태 업데이트 요청 실패:', error);
+							alert('상태 업데이트 중 에러가 발생했습니다.');
+						},
+						complete: function () {
+							// 로딩 상태 복원
+							selectElement.disabled = false;
+							selectElement.options[selectElement.selectedIndex].text = originalText;
+						}
+					});
+				});
+			});
 		});
 	</script>
 </body>
+
 </html>
