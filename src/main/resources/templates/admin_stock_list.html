@@ -94,6 +94,52 @@
 		
    	  
    	  </style>
+   	  
+   	     	  <style>
+		  .scroll_con::-webkit-scrollbar {
+		    width: 10px;
+		  }
+		  .scroll_con::-webkit-scrollbar-thumb {
+		    background-color: grey;
+		    border-radius: 10px;
+		    background-clip: padding-box;
+		    border: 2px solid transparent;
+		  }
+		  .scroll_con::-webkit-scrollbar-track {
+		    background-color: white;
+		    border-radius: 10px;
+		    box-shadow: inset 0px 0px 5px white;
+		  }
+		  
+	      .scroll_con {
+		      height: 440px;
+		      overflow: hidden; /* 기본적으로 스크롤바 숨김 */
+		      transition: overflow 1s ease; /* 부드러운 전환 */
+	      }
+
+		    .scroll_con:hover {
+		      overflow: auto; /* 마우스 올렸을 때 스크롤바 표시 */
+		    }
+		    
+		    .counter_section:hover {
+		    	  cursor : pointer;
+		    }
+		    
+		    .modal-open {
+			  overflow: hidden;
+			  width:100%;
+			}
+			
+			.modal-open::-webkit-scrollbar {
+			  display: none;
+			  overflow: hidden;
+			 
+			}
+			
+			body {
+				overflow: hidden;
+			}
+		</style>
    
    </head>
    <body class="dashboard dashboard_1">
@@ -242,9 +288,9 @@
 				            <tr>
 				               <th>거래처 명</th>
 	   			               <td>
-		   			               <input id="product_partner_name" style="width: 90%; display: inline-block;" class="form-control" type="text" readonly required/>
+		   			               <input id="product_partner_name" style="width: 92%; display: inline-block;" class="form-control" type="text" readonly required/>
 		   			               <input id="product_partnerid" style="display: inline-block;" name="product_partnerid" class="form-control" type="hidden"/>
-		   			                <button type="button" class="btn btn-secondary" th:onclick="partnerSearch();">
+		   			                <button type="button" class="btn btn-primary" th:onclick="partnerSearch();">
 									   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 										  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
 									   </svg>
@@ -262,9 +308,9 @@
 				            <tr>
 				               <th>상품코드 <span style="color: red;">*영문자/숫자포함</span></th>
 	   			               <td>
-	   			               <input id="product_id" style="width: 83%; display: inline-block;" name="product_id" class="form-control" type="text" required/>
+	   			               <input id="product_id" style="width: 85%; display: inline-block;" name="product_id" class="form-control" type="text" required/>
 	   			               <input type="hidden" id="reid" name="reid" value="false">
-	   			               <button type="button" class="btn cur-p btn-outline-primary" th:onclick="productCheck();">중복체크</button>
+	   			               <button type="button" class="btn cur-p btn-secondary" th:onclick="productCheck();">중복체크</button>
 	   			               </td>
 				            </tr>
 				            <tr>
@@ -382,7 +428,7 @@
       
       					<hr style="color: black">
 
-					      <div class="wrapper mt-5" id="partnerListContainer">
+					      <div class="wrapper mt-5 scroll_con" id="partnerListContainer">
 					
 					         <table class="table product-list-table">
 					            <thead>

@@ -60,6 +60,26 @@ html, body {
                                  </div>
                               </div>
                            </div>
+                           <!-- window Trigger Button -->
+   <form id="chatForm" action="/index" method="get" style="display:none;">
+   <!-- Hidden form to send hr_code -->
+   <input type="text" th:value="${staff.hr_code}" id="hr_code" name="hr_code" readonly>
+   </form>
+                           
+   <a href="javascript:void(0);" class="btn btn-primary" onclick="openChatRoom()" style="border-color: #04AA6D; color: #04AA6D"
+				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
+				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"	>Open Chat</a>
+                           
+   <script>
+   function openChatRoom() {
+   // Get the hr_code from the hidden form
+    var hrCode = document.getElementById('hr_code').value;
+                                   
+   // Open the index.html page (chatroom) in a new window with 400x600 size, passing hr_code as a URL parameter
+   window.open('/index?hr_code=' + hrCode, 'ChatWindow', 'width=400,height=600');
+   }
+   </script>
+   <!--  end -->
                         </div>
                         
             			<div class="col-md-8">
@@ -176,11 +196,51 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
+<!-- 							                                    <div class="col-md-12 text-center mt-3">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            Previous Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage > 1}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+                    &lt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage <= 1}">
+                    &lt;
+                </a>
+            </li>
+
+            Page Numbers
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
+                <a class="page-link" 
+                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
+                   th:classappend="${currentPage == page} ? 'active' : ''" 
+                   th:text="${page}">
+                </a>
+            </li>
+
+            Next Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage < totalPage}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+                    &gt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
+                    &gt;
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div> -->
 							                                 </div>
 							                              </div>
 							                           </div>
 							                        </div>
                                                   <!-- table 1 end -->
+                                                  <!-- Pagination Section -->
+
+
+			                 <!-- 페이징 end -->  
                                                 </div>
                                                 <div class="tab-pane fade" id="bossContent" role="tabpanel" aria-labelledby="nav-profile-tab">
                                                    <!-- table 2 start -->
@@ -277,6 +337,42 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
+<!-- 							                                     <div class="col-md-12 text-center mt-3">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            Previous Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage > 1}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+                    &lt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage <= 1}">
+                    &lt;
+                </a>
+            </li>
+
+            Page Numbers
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
+                <a class="page-link" 
+                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
+                   th:classappend="${currentPage == page} ? 'active' : ''" 
+                   th:text="${page}">
+                </a>
+            </li>
+
+            Next Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage < totalPage}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+                    &gt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
+                    &gt;
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div> -->
 							                                 </div>
 							                              </div>
 							                           </div>
@@ -325,7 +421,43 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
-							                                 </div>
+<!-- 							                                     <div class="col-md-12 text-center mt-3">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            Previous Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage > 1}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+                    &lt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage <= 1}">
+                    &lt;
+                </a>
+            </li>
+
+            Page Numbers
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
+                <a class="page-link" 
+                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
+                   th:classappend="${currentPage == page} ? 'active' : ''" 
+                   th:text="${page}">
+                </a>
+            </li>
+
+            Next Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage < totalPage}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+                    &gt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
+                    &gt;
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+			 -->				                                 </div>
 							                              </div>
 							                           </div>
 							                        </div>
@@ -373,6 +505,42 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
+<!-- 							                                     <div class="col-md-12 text-center mt-3">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            Previous Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage > 1}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+                    &lt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage <= 1}">
+                    &lt;
+                </a>
+            </li>
+
+            Page Numbers
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
+                <a class="page-link" 
+                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
+                   th:classappend="${currentPage == page} ? 'active' : ''" 
+                   th:text="${page}">
+                </a>
+            </li>
+
+            Next Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage < totalPage}" 
+                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+                    &gt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
+                    &gt;
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div> -->
 							                                 </div>
 							                              </div>
 							                           </div>

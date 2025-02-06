@@ -15,6 +15,11 @@ background-color: #04AA6D;
 html, body {
     font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
 }
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjust spacing as needed */
+}
 
 </style>
 
@@ -231,13 +236,61 @@ html, body {
                                           </th:block> 
                                        </tbody>
                                     </table>
+                                      <!-- Pagination Section -->
+<!-- <div class="col-md-12 text-center mt-3">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            Previous Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage > 1}" 
+                   th:href="@{/admin/staff/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
+                    &lt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage <= 1}">
+                    &lt;
+                </a>
+            </li>
+
+            Page Numbers
+            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
+                <a class="page-link" 
+                   th:href="@{/admin/staff/main(pageNum=${page}, pageSize=${pageSize})}"
+                   th:classappend="${currentPage == page} ? 'active' : ''" 
+                   th:text="${page}">
+                </a>
+            </li>
+
+            Next Page
+            <li class="page-item">
+                <a class="page-link" th:if="${currentPage < totalPage}" 
+                   th:href="@{/admin/staff/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
+                    &gt;
+                </a>
+                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
+                    &gt;
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div> -->
+
+			                 <!-- 페이징 end -->   
                                  </div>
                               </div>
+                              
                            </div>
                         </div>
+                        
+               <!-- 페이징 -->			
+             
+                        
                      </div>
+                     
                   </div>
                   <!-- second table end -->
+                
+			
+  
                   <!-- model popup -->
          <!-- The Modal -->
          <div class="modal fade" id="myModal">

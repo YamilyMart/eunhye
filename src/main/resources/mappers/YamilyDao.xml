@@ -279,15 +279,7 @@
 		GROUP BY YEAR(sale_date), MONTH(sale_date)
 		ORDER BY sale_year DESC, sale_month DESC
 		LIMIT 6;
-    <!--  
-	    SELECT 
-		    SUM(sale_sum) AS sale_sum,
-		    MONTH(sale_date) AS sale_month,
-		    YEAR(sale_date) AS sale_year
-		FROM sale
-		GROUP BY YEAR(sale_date), MONTH(sale_date)
-		ORDER BY sale_year DESC, sale_month DESC
-		LIMIT 6; -->
+
     </select>
     
         <select id="admin_main_branchSale">
@@ -626,7 +618,7 @@
 		hr_sybname = #{hr_sybname}, hr_oriname = #{hr_oriname} where hr_code = #{hr_code}
 	</update>
 	
-	<select id="staffSearch" resultType="StaffDTO">
+	<select id="staffSearch" parameterType="map" resultType="StaffDTO">
 		select * from hr
 		<where>
 		<if test="staff_search !='' and staff_search != null">
@@ -645,6 +637,7 @@
 			 and hr_del = 0
 		</if>
 		</where>
+		order by hr_code
 	</select>
 	
 	<!-- temporary login -->
@@ -672,15 +665,18 @@
 	OR (#{hr_authority} = 7 AND hr_authority in (6,7));
 	</select>
 	
-	<select id="appList" parameterType="java.lang.Integer" resultType="ApprovalDTO">
-		select * from approval left join hr on hr.hr_code = approval.hr_code where approval.hr_code = #{hr_code}
-	</select>
+	<select id="appList" resultType="ApprovalDTO">
+    SELECT * FROM approval
+    WHERE hr_code = #{hr_code}
+    ORDER BY app_date DESC
+</select>
+
 	
 	<select id="appDetail" parameterType="java.lang.Integer" resultType="ApprovalDTO">
 		select * from approval left join hr on hr.hr_code = approval.hr_code where approval.app_id = #{app_id}
 	</select>
 	
-	<select id="appListBoss" parameterType="java.lang.Integer" resultType="ApprovalDTO">
+	<select id="appListBoss" parameterType="map" resultType="ApprovalDTO">
 	SELECT * 
 	FROM approval
 	LEFT JOIN hr ON hr.hr_code = approval.boss_code
@@ -692,8 +688,18 @@
         WHEN approval.app_status = 2 THEN 0
         ELSE 1
     END,
-    approval.app_status;
+    approval.app_status
 	</select>
+	
+		<select id="CountListBoss"> 
+SELECT COUNT(*) 
+FROM approval
+LEFT JOIN hr ON hr.hr_code = approval.boss_code
+WHERE 
+    (approval.boss_code = #{hr_code} AND approval.boss_code_second = 0)
+    OR approval.boss_code_second = #{hr_code}
+</select>
+
 	
 	<update id="bossView" parameterType="java.lang.Integer">
 		update approval set app_view = 1 where app_id = #{app_id}
