@@ -62,7 +62,9 @@
 }
  
 #sidebar ul li a {
-	color: #222;
+	color: rgb(0, 0, 0);
+	        font-weight: 400;
+	
 }
 
 #sidebar ul.components ul li a {
@@ -74,7 +76,10 @@
 }
 
 #sidebar ul li a:hover, #sidebar ul li a:focus {
-    color: #222;
+    color: rgb(0, 0, 0);
+        background-color: #ccccc4;
+        font-weight: 500;
+   
 }
 
 .dark_bg {

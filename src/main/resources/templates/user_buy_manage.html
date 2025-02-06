@@ -8,7 +8,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <!-- site metas -->
-      <title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
+      <title>구매관리</title>
       <meta name="keywords" content="">
       <meta name="description" content="">
       <meta name="author" content="">
@@ -43,7 +43,10 @@
 	  
 	  
 	  <style>
-      
+         	   html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+		
       .pagination {
          display: block !important; /* 페이지 네이션이 숨겨져 있으면 보이도록 설정 */
       }
@@ -73,13 +76,15 @@
             <!-- right content -->
             <div id="content">
                <head th:include="fragments/user_topbar :: topbar"></head>
-
+            	            	<div class="page_title" style="margin-bottom: 0px;">
+                   <h2 style="margin-bottom: 0px;">구매관리</h2>
+                </div>
 
          <!-- 메인 내용 -->
                  <div class="main p-5">
-            <h6>
+<!--             <h6>
                <strong>물품목록</strong>
-            </h6>
+            </h6> -->
             <form action="/user/buy/manage" method="post">
                <table class="table table-bordered">
                   <tr>

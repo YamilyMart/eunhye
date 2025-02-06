@@ -39,6 +39,12 @@
   	  <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
 
 <!-- <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">  -->
+
+	<style type="text/css">
+
+	
+	</style>
+
 </head>
 <body class="dashboard dashboard_1">
 	<!-- Sidebar  -->
@@ -70,17 +76,19 @@
 				<h4>메뉴</h4>
 				<ul class="list-unstyled components">
 				
-					<li><a href="/admin/main"><i class="fa fa-clock-o orange_color"></i> <span>메인페이지</span></a></li>
-					<li><a href="/admin/order/list"><i class="fa fa-clock-o orange_color"></i> <span>발주관리</span></a></li>
-					<li><a href="/admin/stock/list"><i class="fa fa-clock-o orange_color"></i> <span>재고관리</span></a></li>
-					<li><a href="/admin/sale/list"><i class="fa fa-clock-o orange_color"></i> <span>매출관리</span></a></li>
-<!-- 					<li><a href="/yamily_login"><i class="fa fa-clock-o orange_color"></i> <span>로그인</span></a></li>\
- -->					
+					<li class="menu"><a class="menu" href="/admin/main"><i class="fa fa-home orange_color"></i> <span>메인페이지</span></a></li>
+					<li class="menu"><a class="menu" href="/admin/order/list"><i class="fa fa-paper-plane red_color"></i> <span>발주관리</span></a></li>
+					<li class="menu"><a class="menu" href="/admin/stock/list"><i class="fa fa-cubes yellow_color"></i> <span>재고관리</span></a></li>
+					<li class="menu"><a class="menu" href="/admin/sale/list"><i class="fa fa-bar-chart-o green_color"></i> <span>매출관리</span></a></li>
+ 					<li class="menu"><a class="menu" href="/admin/staff/main"><i class="fa fa-group orange_color"></i> <span>인사관리</span></a></li>
+ 					<li class="menu"><a class="menu" href="/admin/approval/main?"><i class="fa fa-check red_color"></i> <span>결재관리</span></a></li>
+ 					<li class="menu"><a class="menu" href="/admin_Partner_List"><i class="fa fa-briefcase blue2_color"></i> <span>거래처관리</span></a></li>
+ 					<li class="menu"><a class="menu" href="/adminBranchList"><i class="fa fa-map purple_color2"></i> <span>지점관리</span></a></li>
+ 					<li class="menu"><a class="menu" href="/admin_ProductOrder_List"><i class="fa fa-shopping-cart orange_color"></i> <span>상품주문관리</span></a></li>
+ 					<li class="menu"><a class="menu" href="/admin_Quotation_List"><i class="fa fa-folder-open yellow_color"></i> <span>서류관리</span></a></li>
+ 					
  
- 					<li><a href="/admin/staff/main"><i class="fa fa-clock-o orange_color"></i> <span>인사관리</span></a></li>
- 					<li><a href="/admin/approval/main?"><i class="fa fa-clock-o orange_color"></i> <span>결재관리</span></a></li>
- 
-					
+				<!-- 	
 					<li class="active">
 	               <a href="#partner_list" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-dashboard yellow_color"></i> <span>거래처 관리</span></a>
 	               <ul class="collapse list-unstyled" id="partner_list">
@@ -175,7 +183,7 @@
 					<li><a href="/charts.html"><i
 							class="fa fa-bar-chart-o green_color"></i> <span>Charts</span></a></li>
 					<li><a href="/settings.html"><i
-							class="fa fa-cog yellow_color"></i> <span>Settings</span></a></li>
+							class="fa fa-cog yellow_color"></i> <span>Settings</span></a></li> -->
 				</ul>
 			</div>
 		</nav>

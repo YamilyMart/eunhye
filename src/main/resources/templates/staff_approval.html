@@ -3,7 +3,7 @@
 <th:block th:fragment="setContent(content)">
 <head>
 <meta charset="UTF-8">
-<title>Staff Dashboard</title>
+<title>결재관리</title>
 <div th:replace="~{fragments/css :: css}"></div>
 <style>
   #calendar {
@@ -66,7 +66,7 @@ html, body {
    <input type="text" th:value="${staff.hr_code}" id="hr_code" name="hr_code" readonly>
    </form>
                            
-   <a href="javascript:void(0);" class="btn btn-primary" onclick="openChatRoom()" style="border-color: #04AA6D; color: #04AA6D"
+   <a href="javascript:void(0);" class="btn cur-p btn-outline-primary" onclick="openChatRoom()" style="border-color: #04AA6D; color: #04AA6D"
 				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
 				                         							onmouseout="this.style.backgroundColor=''; this.style.color='#04AA6D';"	>Open Chat</a>
                            
@@ -196,42 +196,7 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
-<!-- 							                                    <div class="col-md-12 text-center mt-3">
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            Previous Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage > 1}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
-                    &lt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage <= 1}">
-                    &lt;
-                </a>
-            </li>
 
-            Page Numbers
-            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
-                <a class="page-link" 
-                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
-                   th:classappend="${currentPage == page} ? 'active' : ''" 
-                   th:text="${page}">
-                </a>
-            </li>
-
-            Next Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage < totalPage}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
-                    &gt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
-                    &gt;
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div> -->
 							                                 </div>
 							                              </div>
 							                           </div>
@@ -337,42 +302,7 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
-<!-- 							                                     <div class="col-md-12 text-center mt-3">
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            Previous Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage > 1}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
-                    &lt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage <= 1}">
-                    &lt;
-                </a>
-            </li>
 
-            Page Numbers
-            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
-                <a class="page-link" 
-                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
-                   th:classappend="${currentPage == page} ? 'active' : ''" 
-                   th:text="${page}">
-                </a>
-            </li>
-
-            Next Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage < totalPage}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
-                    &gt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
-                    &gt;
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div> -->
 							                                 </div>
 							                              </div>
 							                           </div>
@@ -421,43 +351,7 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
-<!-- 							                                     <div class="col-md-12 text-center mt-3">
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            Previous Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage > 1}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
-                    &lt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage <= 1}">
-                    &lt;
-                </a>
-            </li>
-
-            Page Numbers
-            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
-                <a class="page-link" 
-                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
-                   th:classappend="${currentPage == page} ? 'active' : ''" 
-                   th:text="${page}">
-                </a>
-            </li>
-
-            Next Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage < totalPage}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
-                    &gt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
-                    &gt;
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div>
-			 -->				                                 </div>
+			                                 </div>
 							                              </div>
 							                           </div>
 							                        </div>
@@ -505,42 +399,7 @@ html, body {
 							                                          </tr>
 							                                       </tbody>
 							                                    </table>
-<!-- 							                                     <div class="col-md-12 text-center mt-3">
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            Previous Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage > 1}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage - 1}, pageSize=${pageSize})}">
-                    &lt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage <= 1}">
-                    &lt;
-                </a>
-            </li>
 
-            Page Numbers
-            <li class="page-item" th:each="page : ${#numbers.sequence(startPage ?: 1, endPage ?: 1)}">
-                <a class="page-link" 
-                   th:href="@{/admin/approval/main(pageNum=${page}, pageSize=${pageSize})}"
-                   th:classappend="${currentPage == page} ? 'active' : ''" 
-                   th:text="${page}">
-                </a>
-            </li>
-
-            Next Page
-            <li class="page-item">
-                <a class="page-link" th:if="${currentPage < totalPage}" 
-                   th:href="@{/admin/approval/main(pageNum=${currentPage + 1}, pageSize=${pageSize})}">
-                    &gt;
-                </a>
-                <a class="page-link disabled" th:if="${currentPage >= totalPage}">
-                    &gt;
-                </a>
-            </li>
-        </ul>
-    </nav>
-</div> -->
 							                                 </div>
 							                              </div>
 							                           </div>
@@ -590,14 +449,11 @@ html, body {
 				                                    <table class="table table-bordered">
 				                                       <tbody>
 				                                          <tr>
-				                                            <td>양식</td>
+				                                            <td class="table-light text-center" style="width: 150px; vertical-align: middle;">양식</td>
 				                                             <td>
 				                                             <input type="hidden" name="hr_code" th:value="${staff.hr_code}" readonly />
 				                                             <input type="hidden" id="selected_hr_code" name="selected_hr_code" value="" />
-				                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="app_cat" id="app_cat" 
-				                                             style="border-color: #04AA6D; color: white; background-color: #04AA6D"
-                                             					onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';"
-                                             					onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">
+				                                             <select class="form-select" data-toggle="dropdown" name="app_cat" id="app_cat">
 				                                             	<option value="">선택</option>
 				                                           		<option value="0">휴가</option>
 				                                           		<option value="1">근로시간단축신청서</option>
@@ -607,8 +463,8 @@ html, body {
 				                                             </td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>결재자</td>
-				                                             <td><input type="text" id="boss_hr_name" name="hr_name" readonly>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">결재자</td>
+				                                             <td><input class="form-control" style="display: inline-block; width: 90%;" type="text" id="boss_hr_name" name="hr_name" readonly>
 				                                             <button id="btnPop" type="button" class="btn cur-p btn-outline-primary" onclick="$('#bossCheck').modal('show')"
 				                                            	 style="border-color: #04AA6D; color: #04AA6D"
 				                                         			onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
@@ -617,7 +473,7 @@ html, body {
 				                                             </td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>직급</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">직급</td>
 				                                             <td th:if = "${staff.hr_authority == 1}" th:text = "'staff'"></td> 
 				                                             <td th:if = "${staff.hr_authority == 2}" th:text = "'assistant manager'"></td>
 				                                             <td th:if = "${staff.hr_authority == 3}" th:text = "'manager'"></td>
@@ -627,26 +483,28 @@ html, body {
 				                                             <td th:if = "${staff.hr_authority == 7	}" th:text = "'president'"></td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>신청일</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">신청일</td>
 				                                             <td>
-				                                             <input type="date" id="app_startdate" name="app_datestart">&nbsp --- &nbsp<input type="date" id="app_enddate" name="app_dateend">
+				                                             <input class="form-control" style="width: 40%; display:inline-block;" type="date" id="app_startdate" name="app_datestart">
+				                                             &nbsp ~ &nbsp
+				                                             <input class="form-control" style="width: 40%; display:inline-block;" type="date" id="app_enddate" name="app_dateend">
 				                                             </td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>제목</td>
-				                                             <td><input type="text" id="app_title" name="app_title">	
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">제목</td>
+				                                             <td><input class="form-control" type="text" id="app_title" name="app_title">	
 				                                             </td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>사유</td>
-				                                             <td><textarea id="app_info" name="app_info" cols="50"></textarea></td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">사유</td>
+				                                             <td><textarea class="form-control" id="app_info" name="app_info" cols="50"></textarea></td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>파일 업로드</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">파일 업로드</td>
 				                                             <td>
 				                                             <div class="filebox">
-																	<label for="approvalFile">파일 업로드</label>
-																	<input type="file" id="approvalFile" name="approvalFile" accept="application/pdf, image/*, .docx, .doc, .txt" />
+																	<input class="form-control" type="file" id="approvalFile" name="approvalFile" accept="application/pdf, image/*, .docx, .doc, .txt" />
+																	
 						                                 	</div>
 				                                             
 				                                             </td>
@@ -699,15 +557,15 @@ html, body {
 				                                       <input type="number" id="hr_code" name="hr_code" th:value="${staff.hr_code}" hidden>
 				                                       <input type="number" id="specs_id" name="app_id" hidden>
 				                                          <tr>
-				                                            <td>양식</td>
+				                                            <td class="table-light text-center" style="width: 150px; vertical-align: middle;">양식</td>
 				                                             <td id="specs_cat"></td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>작성 일자</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">작성 일자</td>
 				                                             <td id="specs_date"></td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>결재자</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">결재자</td>
 				                                             <td id="specs_boss"></td>
 				                                             <td id="secondCheck" style="display: none">
 				                                             	<input type="text" id="second_boss" name="hr_name" readonly>
@@ -718,36 +576,36 @@ html, body {
 				                                             </td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>직급</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">직급</td>
 				                                             <td id="specs_auth"></td>
 				                                             
 				                                          </tr>
 				                                          <tr>
-				                                             <td>신청일</td>
-				                                             <td>
-				                                             <p id="specs_startdate"></p>&nbsp --- &nbsp<p id="specs_enddate"></p>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">신청일</td>
+				                                             <td style="vertical-align: middle;">
+				                                             <p id="specs_startdate" style="display: inline-block;"></p> ~ <p id="specs_enddate" style="display: inline-block;"></p>
 				                                             </td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>제목</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">제목</td>
 				                                             <td id="specs_title"></td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>사유</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">사유</td>
 				                                             <td id="specs_info"></td>
 				                                          </tr>
 				                                          <tr>
-				                                             <td>파일 업로드</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">파일 업로드</td>
 				                                             <td><a class="btn cur-p btn-outline-primary" id="downloadFileBtn" href="#" style="width: 100px; border-color: #04AA6D; color: white; background-color: #04AA6D"
 				                                         			onmouseover="this.style.backgroundColor='white'; this.style.color='#04AA6D';" 
 				                         							onmouseout="this.style.backgroundColor='#04AA6D'; this.style.color='white';">다운로드</a></td>
 				                                          </tr>
 				                                          <tr id="specs_rejection_row">
-				                                             <td>반려 사유</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">반려 사유</td>
 				                                             <td id="specs_rejection"></td>
 				                                          </tr>
 				                                          <tr id="app_rejection_row">
-				                                          	<td>반려사유</td>
+				                                          	<td class="table-light text-center" style="width: 150px; vertical-align: middle;">반려사유</td>
 				                                          	<td><textarea id="app_rejection" name="app_rejection" cols="50"></textarea>
 				                                       </tbody>
 				                                    </table>
@@ -824,7 +682,7 @@ html, body {
 				                                    <table class="table table-bordered">
 				                                       <tbody>
 				                                          <tr>
-				                                             <td>결재자 이름 검색</td>
+				                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">결재자 이름 검색</td>
 				                                             <td><input type="text" id="boss" name="hr_name"></td>
 				                                             <input type="text" id="hr_code" name="hr_code" th:value="${staff.hr_code}" hidden>
 				                                          </tr>

@@ -40,6 +40,10 @@
    	 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
    	 
    	   <style>
+   	      	   html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+		
 .msg_list_main::-webkit-scrollbar {
    width: 10px;
 }
@@ -209,6 +213,7 @@
                                           <div class="msg_section">
                                              <div class="msg_list_main">
                                                 <ul class="msg_list">
+                                                
 												   <th:block th:each="str, a: ${saleStatusList}">
 												      <li class="item-row">
 												         <span class="item-image">
@@ -219,7 +224,7 @@
 												            <span class="msg_user" data-th-text="${#numbers.formatInteger(str.sum_amount * str.product_price, 3, 'COMMA') + '원'}"></span>
 												         </span>
 												         <span class="item-quantity">
-												            팔린갯수:[[${str.sum_amount}]]
+												            팔린갯수: [[${str.sum_amount}]]개
 												         </span>
 												      </li>
 												   </th:block>
@@ -355,13 +360,14 @@
             let myChart = new Chart(myCt, {
                  type: 'bar',
                  data: {
-                   labels: [minus_m + "월", minus_m+1 + "월", minus_m+2 + "월", minus_m+3 + "월", minus_m+4 + "월", month + "월"],
+                   labels: [minus_m + "월", minus_m+1 + "월", minus_m+2 + "월", minus_m+3 + "월", month-1 + "월", month + "월"],
                    datasets: [
                      {
                        label: '평균 월 매출 (원)',
                        data: chartData,
-                       borderColor: "rgba(255, 99, 132, 1)",
-                       backgroundColor: "rgba(255, 99, 132, 0.2)"
+                       borderColor: ["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)","rgb(75, 192, 192)","rgb(54, 162, 235)","rgb(153, 102, 255)"],
+			              backgroundColor: ["rgba(255, 99, 132, 0.2)","rgba(255, 159, 64, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)","rgba(54, 162, 235, 0.2)","rgba(153, 102, 255, 0.2)"],
+			              borderWidth: 1
                      },
                      {
                          label: "매출 변화율 (%)",
@@ -389,9 +395,8 @@
       
       
       <!-- jQuery -->
-<!--       <script src="js/jquery.min.js"></script>
- -->      
- 	 <script src="/js/popper.min.js"></script>
+      <!-- <script src="/js/jquery.min.js"></script> -->
+      <script src="/js/popper.min.js"></script>
       <script src="/js/bootstrap.min.js"></script>
       <!-- wow animation -->
       <script src="/js/animate.js"></script>
@@ -410,7 +415,7 @@
          var ps = new PerfectScrollbar('#sidebar');
       </script>
       <!-- custom js -->
+      <script src="/js/chart_custom_style1.js"></script>
       <script src="/js/custom.js"></script>
-      <script src="/js/chart_custom_style2.js"></script>
    </body>
 </html>

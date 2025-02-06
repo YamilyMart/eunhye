@@ -3,7 +3,7 @@
 <th:block th:fragment="setContent(content)">
 <head>
 <meta charset="UTF-8">
-<title>Staff Dashboard</title>
+<title>인사관리</title>
 <div th:replace="~{fragments/css :: css}"></div>
 <style>
 button:hover {
@@ -319,22 +319,20 @@ html, body {
                               <div class="table_section padding_infor_info">
                                  <div class="table-responsive-sm">
                                 	<form action="/admin/staff/add" method="post" enctype="multipart/form-data" onsubmit="return valForm()">
-                                	<div class="filebox">
+<!--                                 	<div class="filebox">
 											<label for="file">이미지 업로드</label>
 											<input type="file" name="files" id="file" multiple>
-                                 	</div>
+                                 	</div> -->
                                     <table class="table table-bordered">
                                        <tbody>
                                           <tr>
-                                             <td>이름</td>
-                                             <td><input type="text" id="hr_name" name="hr_name"></td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">이름</td>
+                                             <td><input class="form-control" type="text" id="hr_name" name="hr_name"></td>
                                           </tr>
                                           <tr>
-                                            <td>직급</td>
+                                            <td class="table-light text-center" style="width: 150px;  vertical-align: middle;">직급</td>
                                              <td>
-                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="hr_authority" id="hr_authority" style="border-color: #04AA6D; color: #04AA6D"
-                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" 
-                                             onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';">
+                                             <select class="form-select" data-toggle="dropdown" name="hr_authority" id="hr_authority">
                                            		<option value="1">staff</option>
                                            		<option value="2">assistant manager</option>
                                            		<option value="3">manager</option>
@@ -346,33 +344,38 @@ html, body {
                                              </td>
                                           </tr>
                                           <tr>
-                                             <td>입사 날짜</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">입사 날짜</td>
                                              <td>
-                                             <input type="date" id="hr_joindate" name="hr_joindate">
+                                             <input type="date" class="form-control" id="hr_joindate" name="hr_joindate">
                                              </td>
                                           </tr>
                                           <tr>
-                                             <td>권한</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">권한</td>
                                              <td>
-                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="hr_grade" id="hr_grade" style="border-color: #04AA6D; color: #04AA6D"
-                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';"
-                                             onmouseout="this.style.backgroundColor='white'; this.style.color='#04AA6D';">
+                                             <select class="form-select" data-toggle="dropdown" name="hr_grade" id="hr_grade">
                                            		<option value="1">관리자</option>
                                            		<option value="2">일반 staff</option>
                                              </select>
                                              </td>
                                           </tr>
+                                          
                                           <tr>
-                                             <td>아이디</td>
-                                             <td><input type="text" id="hr_id_input" name="hr_id" readonly>
+                                             <td class="table-light text-center" style="width: 150px;  vertical-align: middle;" >이미지</td>
+                                             <td>
+                                             <input style="height: 33px; padding-left: 12px;" class="form-control" type="file" name="files" id="file" multiple>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">아이디</td>
+                                             <td><input class="form-control" type="text" id="hr_id_input" name="hr_id" style="width: 90%; display: inline-block;" readonly>
                                              <button id="btnPop" type="button" class="btn cur-p btn-outline-primary" style="border-color: #04AA6D; color: #04AA6D"
                                              onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';" onmouseout="this.style.backgroundColor=''; this.style.color='';"
                                              onclick="$('#idCheck').modal('show')">🔍</button>
                                              </td>
                                           </tr>
                                           <tr>
-                                             <td>비밀번호</td>
-                                             <td><input type="text" id="hr_pwd_input" name="hr_pwd"></td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">비밀번호</td>
+                                             <td><input class="form-control" type="text" id="hr_pwd_input" name="hr_pwd"></td>
                                           </tr>
                                        </tbody>
                                     </table>
@@ -411,8 +414,8 @@ html, body {
                                     <table class="table table-bordered">
                                        <tbody>
                                           <tr>
-                                             <td>아이디 검색</td>
-                                             <td><input type="text" id="id_hr_id" name="hr_id"></td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">아이디 검색</td>
+                                             <td><input class="form-control" type="text" id="id_hr_id" name="hr_id"></td>
                                           </tr>
                                     </table>
                                     <div id="msg"></div>
@@ -424,8 +427,8 @@ html, body {
                                              <th>이름</th>
                                              <th>직급</th>
                                              <th>입사날짜</th>
-                                             <th>권한</th>
-                                          </tr>
+<!--                                              <th>권한</th>
+ -->                                          </tr>
                                           <tr id="userRow">
                                           </tr>
                                          </thead>
@@ -474,7 +477,7 @@ html, body {
                                  <div class="row">
                                  <div class="col-md-6 col-sm-12">
                                  	<div style="text-align: center">
-                                 	<img style="width: 100%; height: 300px; object-fit: cover" id="dstaffImage" src="/images/no_image.jpg" alt="Staff Image" class="image">
+                                 	<img style="width: 70%; height: 200px; object-fit: cover" id="dstaffImage" src="/images/no_image.jpg" alt="Staff Image" class="image">
 									</div>
 									<p></p>
                                  	<div style="text-align: center"><h4 id="d_hr_name"></h4></div>
@@ -484,19 +487,19 @@ html, body {
                                     <table class="table table-bordered">
                                        <tbody>
                                           <tr>
-                                             <td>NO.</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">NO.</td>
                                              <td id="d_hr_code"></td>
                                           </tr>
                                           <tr>
-                                            <td>입사날짜</td>
+                                            <td class="table-light text-center" style="width: 150px; vertical-align: middle;">입사날짜</td>
                                             <td id="d_hr_joindate"></td>
                                           </tr>
                                           <tr>
-                                             <td>권한</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">권한</td>
                                              <td id="d_hr_grade"></td>
                                           </tr>
                                            <tr>
-                                             <td>휴가 일수</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">휴가 일수</td>
                                              <td id="d_hr_pdo"></td>
                                           </tr>
                                        </tbody>
@@ -504,7 +507,7 @@ html, body {
                                     <table class="table table-bordered">
                                        <tbody>
                                           <tr>
-                                             <td>아이디</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">아이디</td>
                                              <td id="d_hr_id"></td>
                                           </tr>
           <!--                                 <tr>
@@ -548,12 +551,13 @@ html, body {
                               <div class="table_section padding_infor_info">
                                  <div class="row">
                                  <div class="col-md-6 col-sm-12">
-                                 	<div style="text-align: center">
-                                 	<img style="width: 100%; height: 300px; object-fit: cover" id="staffImage" src="/images/no_image.jpg" alt="Staff Image" class="image">
-                                 	<div class="filebox">
+                                 	<div style="text-align: center; margin: 100px 0 0 0;">
+                                 	<img style="width: 60%; height: 180px; object-fit: cover" id="staffImage" src="/images/no_image.jpg" alt="Staff Image" class="image">
+<!--                                  	<div class="filebox">
 											<label for="file">이미지 업로드</label>
 											<input type="file" name="files" id="file" multiple>
-                                 	</div>
+										
+                                 	</div> -->
 									</div>
 									<p></p>
                                  	<div style="text-align: center"><h4 id="e_hr_name"></h4></div>
@@ -564,27 +568,32 @@ html, body {
                                     <table class="table table-bordered">
                                        <tbody>
                                           <tr>
-                                             <td>NO.</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">NO.</td>
                                              <td id="e_hr_code"></td>
                                           </tr>
                                           <tr>
-                                            <td>입사날짜</td>
+                                            <td class="table-light text-center" style="width: 150px; vertical-align: middle;">입사날짜</td>
                                             <td id="e_hr_joindate"></td>
                                           </tr>
                                           <tr>
-                                             <td>권한</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">권한</td>
                                              <td>
-                                             <select class="btn cur-p btn-outline-primary" data-toggle="dropdown" name="hr_grade" id="e_hr_grade" style="border-color: #04AA6D; color: #04AA6D"
-                                             onmouseover="this.style.backgroundColor='#04AA6D'; this.style.color='white';">
+                                             <select class="form-select" data-toggle="dropdown" name="hr_grade" id="e_hr_grade">
                                            		<option value="1">관리자</option>
                                            		<option value="2">일반 staff</option>
                                              </select>
                                              </td>
                                           </tr>
                                            <tr>
-                                             <td>휴가 일수</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">휴가 일수</td>
                                              <td>
-                                             <input type="number" name="hr_pdo" id="e_hr_pdo_input" placeholder=""/>
+                                             <input class="form-control" type="number" name="hr_pdo" id="e_hr_pdo_input" placeholder=""/>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">이미지</td>
+                                             <td>
+                                             <input style="height: 33px; padding-left: 12px;" class="form-control" type="file" name="files" id="file" multiple>
                                              </td>
                                           </tr>
                                        </tbody>
@@ -592,15 +601,15 @@ html, body {
                                     <table class="table table-bordered">
                                        <tbody>
                                           <tr>
-                                             <td>아이디</td>
+                                             <td class="table-light text-center" style="width: 150px; vertical-align: middle;">아이디</td>
                                              <td>
-                                             <input type="text" name="hr_id" id="e_hr_id_input" placeholder="" readonly/>
+                                             <input class="form-control" type="text" name="hr_id" id="e_hr_id_input" placeholder="" readonly/>
                                              </td>
                                           </tr>
                                           <tr>
-                                            <td>비밀번호</td>
+                                            <td class="table-light text-center" style="width: 150px; vertical-align: middle;">비밀번호</td>
                                             <td>
-                                            <input type="text" name="hr_pwd" id="e_hr_pwd_input" placeholder=""/>
+                                            <input class="form-control" type="text" name="hr_pwd" id="e_hr_pwd_input" placeholder=""/>
                                             </td>
                                           </tr>
                                        </tbody>

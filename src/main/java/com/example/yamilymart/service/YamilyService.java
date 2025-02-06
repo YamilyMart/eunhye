@@ -79,6 +79,7 @@ public class YamilyService {
         
         int count = monthSaleList.size();
         int[] monthSaleArr = new int[count]; // 배열 크기 초기화
+       
 
         //달별 매출 배열 저장
         for(int i=0; i<count; i++) {
@@ -1393,17 +1394,17 @@ public class YamilyService {
 	    	mv.addObject("SaleTodayList",SaleTodayList);
 	    	
 	    	
-//	    	List<SaleDTO> saleMonthList =  yDao.homeMonth(username);
-//	    		int[] saleMonth = new int[6];
-//	    		for(int i=0; i<6; i++) {
-//	    			saleMonth[i] = saleMonthList.get(i).getSale_sum();
-//	    		}
-//	    		mv.addObject("saleMonth",saleMonth);
-//	    		
+	    	List<SaleDTO> saleMonthList =  yDao.homeMonth(username);
 	    	
-	    	
-	    		
-	    	
+    		int[] saleMonth = new int[6];
+
+	        if (saleMonthList.size() != 0) {
+	    		for(int i=0; i<6; i++) {
+	    			saleMonth[i] = saleMonthList.get(i).getSale_sum();
+	    		}	        	
+	        }	
+	    	mv.addObject("saleMonth",saleMonth);
+
 	    	mv.setViewName("user_main");
 	    	return mv;
 	    }

@@ -8,7 +8,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <!-- site metas -->
-      <title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
+      <title>발주요청목록</title>
       <meta name="keywords" content="">
       <meta name="description" content="">
       <meta name="author" content="">
@@ -44,6 +44,10 @@
    	 
    	 
               <style>
+                 	   html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+		
           #modalOpenButton, #modalCloseButton {
         cursor: pointer;
       }
@@ -121,13 +125,15 @@
             <!-- right content -->
             <div id="content">
                <head th:include="fragments/user_topbar :: topbar"></head>
-
+            	            	<div class="page_title" style="margin-bottom: 0px;">
+                   <h2 style="margin-bottom: 0px;">발주요청목록</h2>
+                </div>
 
          <!-- 메인 내용 -->
                  <div class="main p-5">
-            <h6>
+<!--             <h6>
                <strong>발주목록</strong>
-            </h6>
+            </h6> -->
             <form action="/user/order/list" method="post">
                <table class="table table-bordered">
             <tr>

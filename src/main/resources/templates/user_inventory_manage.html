@@ -8,7 +8,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="viewport" content="initial-scale=1, maximum-scale=1">
       <!-- site metas -->
-      <title>Pluto - Responsive Bootstrap Admin Panel Templates</title>
+      <title>재고관리</title>
       <meta name="keywords" content="">
       <meta name="description" content="">
       <meta name="author" content="">
@@ -42,6 +42,10 @@
    
    
    <style>
+      	   html, body {
+    		font-family: 'Poppins', 'Noto Sans KR', sans-serif !important;
+		}
+		
          .table.product-list-table td input[type="number"] {
             width: 60px; /* 수량 입력란의 너비 */
             padding: 5px; /* 패딩으로 여백 추가 */
@@ -79,13 +83,15 @@
             <!-- right content -->
             <div id="content">
                <head th:include="fragments/user_topbar :: topbar"></head>
-
+            	            	<div class="page_title" style="margin-bottom: 0px;">
+                   <h2 style="margin-bottom: 0px;">재고관리</h2>
+                </div>
 
          <!-- 메인 내용 -->
                  <div class="main p-5">
-            <h6>
+<!--             <h6>
                <strong>재고관리</strong>
-            </h6>
+            </h6> -->
             <form action="/user/inventory/manage" method="post">
                <table class="table table-bordered">
                   <tr>

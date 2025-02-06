@@ -865,12 +865,18 @@ span {
     display: block;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.9);
-    font-weight: 300;
+        font-weight: 400;
+    
 }
 
 #sidebar ul li a:hover,
 #sidebar ul li a:focus {
     color: rgba(255, 255, 255, 0.95);
+    
+    background-color: #708090;
+            font-weight: 400;
+    
+    
 }
 
 #sidebar ul.components li {

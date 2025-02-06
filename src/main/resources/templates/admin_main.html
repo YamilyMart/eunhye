@@ -73,6 +73,36 @@
 		    .counter_section:hover {
 		    	  cursor : pointer;
 		    }
+			.msg_list {
+			   list-style-type: none;
+			   padding: 0;
+			   margin: 0;
+			}
+			.item-row {
+			   display: flex;
+			   align-items: center;
+			   padding: 10px 0;
+			   border-bottom: 1px solid #ddd;
+			}
+			
+			.item-image {
+			   flex: 0 0 120px; /* 고정 크기 */
+			   text-align: center;
+			}
+			
+			.item-info {
+			   width: 65%; /* 제품명 span의 고정 너비 설정 */
+			   margin-right: 5px; /* 팔린갯수와의 간격 */
+			   overflow: hidden;
+			   white-space: nowrap;
+			   text-overflow: ellipsis; /* 텍스트 길면 ... */
+			}
+			
+			.item-quantity {
+			   width: 30%; /* 팔린갯수 span의 고정 너비 */
+			   text-align: left; /* 왼쪽 정렬 */
+			}
+
 		</style>
    </head>
    <body class="dashboard dashboard_1">
@@ -187,13 +217,15 @@
 	                                             <ul class="msg_list">
 	                                             
 	                                                <th::block th:each="str, a: ${productSaleList}">
-		                                                <li>
-		                                                   <span><img style="width: 100px; height: 70px;" th:src="@{/display(filename=${str.product_image})}"></span> 
+		                                                <li class="item-row">
+		                                                   <span class="item-image">
+		                                                   		<img style="width: 100px; height: 70px;" th:src="@{/display(filename=${str.product_image})}">
+		                                                   </span> 
 		                                                   <span>
-			                                                   <span class="name_user">[[${a.index + 1}]]위 [[${str.product_name}]]</span>
-			                                                   <!-- <span class="msg_user">[[${str.count}]]</span>  -->
+			                                                   <span>[[${a.index + 1}]]위 [[${str.product_name}]]</span>
+			                                                   <br>
 			                                                   <span>매출: </span>
-			                                                   <span class="msg_user" data-th-text="${#numbers.formatInteger(str.count * str.product_price, 3, 'COMMA') + '원'}"></span>
+			                                                   <span data-th-text="${#numbers.formatInteger(str.count * str.product_price, 3, 'COMMA') + '원'}">[[${str.count * str.product_price}]]</span>
 		                                                   </span>
 		                                                </li>
 	                                                </th::block>
@@ -298,8 +330,8 @@
       <script th:inline="javascript">
 	      const currentDate = new Date();
 	      
-		  // 현재 달 구하기
-		  const month = currentDate.getMonth() + 1;
+		  // 현재 달 구하기 2
+		  const month = currentDate.getMonth() + 1; 
 		  
 		  var minus_m = 0;
 		  if((month-5) < 1) {
@@ -319,7 +351,7 @@
 		      let myChart = new Chart(myCt, {
 			        type: 'bar',
 			        data: {
-			          labels: [minus_m + "월", minus_m+1 + "월", minus_m+2 + "월", minus_m+3 + "월", minus_m+4 + "월", month + "월"],
+			          labels: [minus_m + "월", minus_m+1 + "월", minus_m+2 + "월", minus_m+3 + "월", month-1 + "월", month + "월"],
 			          datasets: [
 			            {
 			              label: '평균 월 매출 (원)',

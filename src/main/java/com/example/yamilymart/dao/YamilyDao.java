@@ -152,7 +152,7 @@ public interface YamilyDao {
 	int updateBranch(BranchDTO branch) throws Exception;
 
 	/* 본사 지점 폐업 */
-	@Update("UPDATE branch " + "SET branch_id = '-', " + "    branch_pwd = '-', " + "    branch_status = 1, "
+	@Update("UPDATE branch " + "SET branch_id = '-', " + "    branch_status = 1, "
 			+ "    branch_enddate = now() " + "WHERE branch_code = #{branch_code}")
 	int closedBranch(BranchDTO branch) throws Exception;
 
